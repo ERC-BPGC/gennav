@@ -1,4 +1,5 @@
 pip
+pytest
 descartes
 matplotlib
 numpy
