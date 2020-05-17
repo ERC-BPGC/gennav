@@ -2,7 +2,7 @@
 import os
 
 try:
-    from trotbot.core import Planner, ObstacleChecker
+    from gennav.core import Planner, ObstacleChecker
     import random , numpy as np
     import math
     import cmath

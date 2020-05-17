@@ -1,5 +1,5 @@
 import unittest
-from trotbot.utils.iterator_obs_checker import CheckIndividualPoints
+from gennav.utils.iterator_obs_checker import CheckIndividualPoints
 from geometry_msgs.msg import Point32, PoseArray, Point, Quaternion, Pose
 
 class SimpleTest(unittest.TestCase):
