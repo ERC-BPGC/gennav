@@ -6,7 +6,7 @@ try:
     from geometry_msgs.msg import Point32, PoseArray
     import sensor_msgs
     import sys
-    import trotbot
+    import gennav
 
 except Exception as e:
     print ("Import Error in: " + os.path.abspath(__file__)) 

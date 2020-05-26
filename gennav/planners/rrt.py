@@ -4,23 +4,23 @@ from shapely.geometry import Polygon, Point, LineString
 from descartes import PolygonPatch
 import matplotlib.pyplot as plt
 
-from utils_scan import adjustable_random_sampler as sampler
-from utils_scan import scan_obstacle_checker , make_obstacles_scan , check_intersection_scan
+
+from .utils import scan_obstacle_checker , make_obstacles_scan , check_intersection_scan
+from .samplers.samplers import uniform_adjustable_random_sampler as sampler
 
 
-class _Node():
+class Node():
     """Node for RRT.
-
+    
+    Args:
+        x (float): X co-ordinate of the node
+        y (float): Y co-ordinate of the node
+        
     Attributes:
-        x: x-coordinate of the node.
-        y: y-coordinate of the node.
-        parent: parent node of current node.
+        parent (Node): Parent node of current node.
+        
     """
-
     def __init__(self, x, y):
-        """
-        Init node with x and y coordinates.
-        """
         self.x = x
         self.y = y
         self.parent = None
@@ -36,7 +36,8 @@ class _Node():
     def to_tuple(self):
         return self.x, self.y   
 
-class _RRT():
+
+class RRT():
     """RRT Planner Class.
 
     Attributes:
@@ -125,7 +126,6 @@ class _RRT():
         else:
             goal_node.parent = start
             node_list = [start, goal_node]
-
 
         # Construct path by traversing backwards through the tree
         path = []

@@ -1,12 +1,6 @@
-#! /usr/bin/env python
-"""
-Path planning Code of RRT* with
-author: Ojit Mehta(@ojitmehta123)
-"""
 import numpy as np
 import sys
 import os
-
 
 from utils_scan import scan_obstacle_checker, make_obstacles_scan, check_intersection_scan
 from utils_scan import adjustable_random_sampler as sampler
