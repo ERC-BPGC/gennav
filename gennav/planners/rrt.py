@@ -4,9 +4,8 @@ from shapely.geometry import Polygon, Point, LineString
 from descartes import PolygonPatch
 import matplotlib.pyplot as plt
 
-
-from .utils import scan_obstacle_checker , make_obstacles_scan , check_intersection_scan
-from .samplers.samplers import uniform_adjustable_random_sampler as sampler
+from gennav.utils.planner_utils import check_intersection
+from gennav.planners.samplers.samplers import uniform_adjustable_random_sampler as sampler
 
 
 class Node():
