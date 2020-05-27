@@ -1,3 +1,5 @@
+import random
+
 def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
     """Randomly sample point in area while sampling goal point 
         at a specified rate.
