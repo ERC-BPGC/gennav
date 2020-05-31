@@ -56,7 +56,7 @@ class RRT():
         self.goal_sample_rate = goal_sample_rate
 
 
-    def __call__(self, start_point, goal_point, obstacle_list, animation=False):
+    def plan(self, start_point, goal_point, obstacle_list, animation=False):
         """Plans path from start to goal avoiding obstacles.
 
         Args:

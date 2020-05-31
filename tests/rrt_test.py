@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
         # Instatiate rrt planner object
         my_tree = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
-        path, node_list = my_tree((1, 1), (10, 10), obstacle_list)
+        path, node_list = my_tree.plan((1, 1), (10, 10), obstacle_list)
 
         RRT.visualize_tree(node_list, obstacle_list)
         optimized_path = path_optimizer(path, obstacle_list)
