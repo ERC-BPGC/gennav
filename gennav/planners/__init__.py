@@ -1,3 +1,3 @@
 from gennav.planners.rrt import RRT
-# from gennav.planners.rrt_star import RRTStar
+from gennav.planners.rrtstar import RRTSTAR
 

@@ -4,7 +4,7 @@ from shapely.geometry import Polygon, Point, LineString
 from descartes import PolygonPatch
 import matplotlib.pyplot as plt
 
-from gennav.planners.rrt import RRT
+from gennav.planners.rrtstar import RRTSTAR, random_sample_area, Node
 from gennav.planners.samplers import uniform_adjustable_random_sampler as sampler
 from gennav.utils.planner import visualize_path
 from gennav.utils.planner import los_optimizer as path_optimizer

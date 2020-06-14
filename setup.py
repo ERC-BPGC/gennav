@@ -118,7 +118,7 @@ setup(
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
-    tests_require=['pytest', 'mock'],
+    # tests_require=['pytest', 'mock'],
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
