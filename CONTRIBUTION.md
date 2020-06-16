@@ -2,7 +2,7 @@
 
 Follow this guide to start contributing to gennav
 
-## Methods of Contributing
+## Ways of Contributing
 
 ### 1. Openning new issues
 
