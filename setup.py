@@ -99,6 +99,7 @@ class UploadCommand(Command):
 
         sys.exit()
 
+EXCLUDES=["tests", "*.tests", "*.tests.*", "tests.*"]
 
 # Where the magic happens:
 setup(
@@ -111,14 +112,14 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    packages=find_packages(exclude=EXCLUDES),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
-    # tests_require=['pytest', 'mock'],
+    tests_require=['pytest', 'mock'],
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,

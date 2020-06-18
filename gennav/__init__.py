@@ -2,7 +2,7 @@
 from gennav.planners.rrt import RRT
 from gennav.planners.rrtstar import RRTSTAR
 
-from gennav.utils.planner_utils import (
+from gennav.utils.planner import (
     check_intersection,
     los_optimizer,
     visualize_path,

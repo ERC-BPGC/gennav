@@ -1,4 +1,4 @@
-from gennav.utils.planner_utils import (
+from gennav.utils.planner import (
     check_intersection,
     los_optimizer,
     visualize_path,

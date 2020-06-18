@@ -4,12 +4,9 @@ import math
 import shapely
 
 import matplotlib.pyplot as plt
-from tf import transformations
+import transformations
 from descartes import PolygonPatch
 from shapely.geometry import Polygon, Point, LineString
-
-# Some parameters
-REACH_DIST = 0.01
 
 # Usefull named tuple to use for storing Orientation
 Orientation = collections.namedtuple('Orientation', ['roll', 'pitch', 'yaw'])

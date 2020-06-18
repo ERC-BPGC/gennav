@@ -46,6 +46,19 @@ repo by following the steps giving in the configuration section.
 
 This will push the changes to the forked remote repo. Once this is done, you can open 'Pull Request' (PR) to the repo which will then be reviwed and merged after making some changes (if any)
 
+
+If you add any new code in the package, use [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) to write the documentation.
+
+We are using pytest for testing the modules in the package. So, while writing the tests follow these rules:
+1. Make sure that your file name matches the pattern: test_*.py or *_test.py.
+2. Make sure that your function name starts with the test prefix.
+
+You can find more about pytest [here](https://docs.pytest.org/en/latest/goodpractices.html).
+
+
+Before sending the Pull Request make sure you have commented out the plotting functions in the tests so that builds can pass on travis-ci. 
+
+
 ## Configuring
 
 * Fork the repository to your github account by pressing the 'Fork' button on the top  	 right corner of the screen when you open the repo
@@ -58,7 +71,12 @@ This will push the changes to the forked remote repo. Once this is done, you can
 
 * Set the remotes :
 
-	```
+	```bash
 	git remote add origin github.com/#github_username/gennav.git
 	git remote add upstream github.com/ERC-BPGC/gennav.git
+	```
+
+* Updating the forks:
+	```bash
+	git fetch upstream
 	```
