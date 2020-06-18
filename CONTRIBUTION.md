@@ -55,6 +55,10 @@ We are using pytest for testing the modules in the package. So, while writing th
 
 You can find more about pytest [here](https://docs.pytest.org/en/latest/goodpractices.html).
 
+
+Before sending the Pull Request make sure you have commented out the plotting functions in the tests so that builds can pass on travis-ci. 
+
+
 ## Configuring
 
 * Fork the repository to your github account by pressing the 'Fork' button on the top  	 right corner of the screen when you open the repo
