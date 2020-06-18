@@ -1,3 +1,5 @@
+import pytest
+
 import random
 import math
 from shapely.geometry import Polygon, Point, LineString
@@ -8,9 +10,9 @@ from gennav.planners.rrt import RRT
 from gennav.planners.samplers import uniform_adjustable_random_sampler as sampler
 from gennav.utils.planner import visualize_path
 from gennav.utils.planner import los_optimizer as path_optimizer
+from gennav.utils.planner import check_intersection
 
-
-if __name__ == "__main__":
+def test_rrt():
     general_obstacles_list = [
     [   [ (8, 5), (7, 8), (2, 9), (3, 5) ],
         [ (3, 3), (3, 5), (5, 5), (5, 3) ] ],
@@ -29,3 +31,5 @@ if __name__ == "__main__":
         RRT.visualize_tree(node_list, obstacle_list)
         optimized_path = path_optimizer(path, obstacle_list)
         visualize_path(optimized_path, obstacle_list)
+
+        assert check_intersection(optimized_path, obstacle_list) == False 
