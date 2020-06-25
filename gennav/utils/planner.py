@@ -1,20 +1,25 @@
-import random
+# import random
+import sys
+
 import collections
 import math
 import shapely
-
 import matplotlib.pyplot as plt
-import transformations
 from descartes import PolygonPatch
 from shapely.geometry import Polygon, Point, LineString
 
+if sys.version_info[0] == 2:
+    import transformations
+else:
+    from .transformations import euler_from_quaternion
+
 # Usefull named tuple to use for storing Orientation
-Orientation = collections.namedtuple('Orientation', ['roll', 'pitch', 'yaw'])
+Orientation = collections.namedtuple("Orientation", ["roll", "pitch", "yaw"])
 
 
 def check_intersection(points_list, obstacle_list):
     """Check whether line passes through any obstacle.
-    
+
     Args:
         points_list: list of points in the line.
         obstacle_list: list of obstacles as list of points.
@@ -48,12 +53,11 @@ def split_path(path, threshold):
     # for i in range(len(path) - 1):
     #     split_path.append(path[i])
 
-    #     dist = math.sqrt((path[i][0] - path[i + 1][0])**2 
+    #     dist = math.sqrt((path[i][0] - path[i + 1][0])**2
     #                         + (path[i][1] - path[i + 1][1])**2)
     #     if dist > threshold:
     #         number_of_segments = dist // threshold
     #         for j in range(1, number_of_segments):
-                
 
 
 def los_optimizer(path, obstacle_list):
@@ -82,10 +86,12 @@ def los_optimizer(path, obstacle_list):
         # Keep track of whether index has been updated or not
         index_updated = False
 
-        # Loop from last point in path to the current one, checking if 
+        # Loop from last point in path to the current one, checking if
         # any direct connection exists.
-        for lookahead_index in range(len(path) - 1 , current_index, -1):
-            if not check_intersection([path[current_index], path[lookahead_index]], obstacle_list):
+        for lookahead_index in range(len(path) - 1, current_index, -1):
+            if not check_intersection(
+                [path[current_index], path[lookahead_index]], obstacle_list
+            ):
                 # If direct connection exists then add this lookahead point to optimized
                 # path directly and skip to it for next iteration of while loop
                 optimized_path.append(path[lookahead_index])
@@ -94,11 +100,11 @@ def los_optimizer(path, obstacle_list):
                 break
 
         # If index hasnt been updated means that there was no LOS shortening
-        # and the edge between current and next point passes through an obstacle.  
-        if not index_updated:    
-        # In this case we return the path so far  
+        # and the edge between current and next point passes through an obstacle.
+        if not index_updated:
+            # In this case we return the path so far
             return optimized_path
-    
+
     return optimized_path
 
 
@@ -141,7 +147,9 @@ def transform(obj, position, orientation):
     """
 
     obj = shapely.affinity.translate(obj, -position.x, -position.y)
-    obj = shapely.affinity.rotate(obj, angle=math.degrees(orientation.yaw), origin=(0, 0))
+    obj = shapely.affinity.rotate(
+        obj, angle=math.degrees(orientation.yaw), origin=(0, 0)
+    )
     return obj
 
 
@@ -157,9 +165,14 @@ def unwrap_pose(pose):
 
     position = Point(pose.position.x, pose.position.y)
     orientation = Orientation(
-        *transformations.euler_from_quaternion([
-            pose.orientation.x, pose.orientation.y, 
-            pose.orientation.z, pose.orientation.w
-    ]))
+        euler_from_quaternion(
+            [
+                pose.orientation.x,
+                pose.orientation.y,
+                pose.orientation.z,
+                pose.orientation.w,
+            ]
+        )
+    )
 
     return position, orientation

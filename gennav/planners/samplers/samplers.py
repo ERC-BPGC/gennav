@@ -1,5 +1,6 @@
 import random
 
+
 def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
     """Randomly sample point in area while sampling goal point 
         at a specified rate.
@@ -14,8 +15,9 @@ def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
     """
 
     if random.random() > goal_sample_rate:
-        return (random.uniform(sample_area[0], sample_area[1]), 
-                random.uniform(sample_area[0], sample_area[1]))
+        return (
+            random.uniform(sample_area[0], sample_area[1]),
+            random.uniform(sample_area[0], sample_area[1]),
+        )
     else:
         return goal
-
