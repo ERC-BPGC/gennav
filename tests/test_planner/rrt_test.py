@@ -12,15 +12,17 @@ from gennav.utils.planner import visualize_path
 from gennav.utils.planner import los_optimizer as path_optimizer
 from gennav.utils.planner import check_intersection
 
+
 def test_rrt():
     general_obstacles_list = [
-    [   [ (8, 5), (7, 8), (2, 9), (3, 5) ],
-        [ (3, 3), (3, 5), (5, 5), (5, 3) ] ],
-    [   [(2, 10), (7, 10), (7, 1), (6, 1), (6, 6), (4, 6), (4, 9), (2, 9)],
-        [(4, 0), (4, 5), (5, 5), (5, 0)],
-        [(8, 2), (8, 7), (10, 7), (10, 2)] ]
+        [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
+        [
+            [(2, 10), (7, 10), (7, 1), (6, 1), (6, 6), (4, 6), (4, 9), (2, 9)],
+            [(4, 0), (4, 5), (5, 5), (5, 0)],
+            [(8, 2), (8, 7), (10, 7), (10, 2)],
+        ],
     ]
-    
+
     for obstacles in general_obstacles_list:
         obstacle_list = obstacles
 
@@ -32,4 +34,4 @@ def test_rrt():
         optimized_path = path_optimizer(path, obstacle_list)
         # visualize_path(optimized_path, obstacle_list)
 
-        assert check_intersection(optimized_path, obstacle_list) == False 
+        assert check_intersection(optimized_path, obstacle_list) == False

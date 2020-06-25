@@ -8,7 +8,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'gennav'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "gennav"))
 
 
 import io
@@ -19,13 +19,13 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'gennav'
-DESCRIPTION = 'Python Package for Robot Navigation Algorithms'
-URL = 'https://github.com/ERC-BPGC/gennav'
-EMAIL = 'ercbitsgoa19@gmail.com'
-AUTHOR = 'ERC BITS, Goa'
-REQUIRES_PYTHON = '>=2.7.0'
-VERSION = '0.1.0'
+NAME = "gennav"
+DESCRIPTION = "Python Package for Robot Navigation Algorithms"
+URL = "https://github.com/ERC-BPGC/gennav"
+EMAIL = "ercbitsgoa19@gmail.com"
+AUTHOR = "ERC BITS, Goa"
+REQUIRES_PYTHON = ">=2.7.0"
+VERSION = "0.1.0"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -47,8 +47,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 try:
-    with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-        long_description = '\n' + f.read()
+    with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
+        long_description = "\n" + f.read()
 except:
     long_description = DESCRIPTION
 
@@ -56,22 +56,22 @@ except:
 about = {}
 if not VERSION:
     project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
-    with open(os.path.join(here, project_slug, '__version__.py')) as f:
+    with open(os.path.join(here, project_slug, "__version__.py")) as f:
         exec(f.read(), about)
 else:
-    about['__version__'] = VERSION
+    about["__version__"] = VERSION
 
 
 class UploadCommand(Command):
     """Support setup.py upload."""
 
-    description = 'Build and publish the package.'
+    description = "Build and publish the package."
     user_options = []
 
     @staticmethod
     def status(s):
         """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
+        print("\033[1m{0}\033[0m".format(s))
 
     def initialize_options(self):
         pass
@@ -81,33 +81,34 @@ class UploadCommand(Command):
 
     def run(self):
         try:
-            self.status('Removing previous builds…')
-            rmtree(os.path.join(here, 'dist'))
+            self.status("Removing previous builds…")
+            rmtree(os.path.join(here, "dist"))
         except OSError:
-            print ('No Previous Builds found')
+            print("No Previous Builds found")
             pass
 
-        self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+        self.status("Building Source and Wheel (universal) distribution…")
+        os.system("{0} setup.py sdist bdist_wheel --universal".format(sys.executable))
 
-        self.status('Uploading the package to PyPI via Twine…')
-        os.system('twine upload dist/*')
+        self.status("Uploading the package to PyPI via Twine…")
+        os.system("twine upload dist/*")
 
-        self.status('Pushing git tags…')
-        os.system('git tag v{0}'.format(about['__version__']))
-        os.system('git push --tags')
+        self.status("Pushing git tags…")
+        os.system("git tag v{0}".format(about["__version__"]))
+        os.system("git push --tags")
 
         sys.exit()
 
-EXCLUDES=["tests", "*.tests", "*.tests.*", "tests.*"]
+
+EXCLUDES = ["tests", "*.tests", "*.tests.*", "tests.*"]
 
 # Where the magic happens:
 setup(
     name=NAME,
-    version=about['__version__'],
+    version=about["__version__"],
     description=DESCRIPTION,
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     author=AUTHOR,
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
@@ -115,26 +116,23 @@ setup(
     packages=find_packages(exclude=EXCLUDES),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
-
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
-    tests_require=['pytest', 'mock'],
+    tests_require=["pytest", "mock"],
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    license='MIT',
+    license="MIT",
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: PyPy'
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: Implementation :: PyPy",
     ],
     # $ setup.py publish support.
-    cmdclass={
-        'upload': UploadCommand,
-    },
+    cmdclass={"upload": UploadCommand,},
 )

@@ -2,6 +2,41 @@
 
 Follow this guide to start contributing to gennav
 
+
+## Configuring
+
+* Fork the repository to your github account by pressing the 'Fork' button on the top right corner of the screen when you open the repo
+
+* Clone your fork to your computer using :
+	
+	```
+	git clone https://github.com/your-github-username/gennav.git
+	```
+
+* Set the remotes :
+
+	```bash
+	git remote add origin github.com/your-github-username/gennav.git
+	git remote add upstream github.com/ERC-BPGC/gennav.git
+	```
+
+* Updating the forks:
+	```bash
+	git fetch upstream
+	```
+
+* Installing dependencies:
+	```bash
+	pip install -r requirements.txt
+	pip3 install -r requirements.txt
+	pip3 install black 
+	```
+
+* Creating a new branch for your contributions:
+	```bash
+	git checkout -b name-of-your-bugfix-or-feature
+	```
+
 ## Ways of Contributing
 
 ### 1. Openning new issues
@@ -31,18 +66,10 @@ repo by following the steps giving in the configuration section.
 	```
 
 * You can create a new branch where you will make the changes using :
-
 	```
 	git checkout -b #branch_name
 	```
 
-* After making the final changes, you can push the new changes using :
-
-	```
-	git add .
-	git commit - m 'comments'
-	git push origin #branch_name
-	```
 
 This will push the changes to the forked remote repo. Once this is done, you can open 'Pull Request' (PR) to the repo which will then be reviwed and merged after making some changes (if any)
 
@@ -58,25 +85,26 @@ You can find more about pytest [here](https://docs.pytest.org/en/latest/goodprac
 
 Before sending the Pull Request make sure you have commented out the plotting functions in the tests so that builds can pass on travis-ci. 
 
+* To perform local tests we are using [tox](https://tox.readthedocs.io/en/latest/). This tool can be used by:
+	```bash
+	tox	
+	```
+	Use the above command in the root folder of the package. 
 
-## Configuring
 
-* Fork the repository to your github account by pressing the 'Fork' button on the top  	 right corner of the screen when you open the repo
+* After making the final changes, you can push the new changes using :
 
-* Clone your fork to your computer using :
+	* Format the code:
+		```bash
+		black .
+		```
+
+	* Push the changes:
+		```bash
+		git add .
+		git commit - m 'comments'
+		git push origin #branch_name
+		```
+
+
 	
-	```
-	git clone https://github.com/#github_username/gennav.git
-	```
-
-* Set the remotes :
-
-	```bash
-	git remote add origin github.com/#github_username/gennav.git
-	git remote add upstream github.com/ERC-BPGC/gennav.git
-	```
-
-* Updating the forks:
-	```bash
-	git fetch upstream
-	```
