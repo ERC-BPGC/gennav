@@ -11,18 +11,18 @@ def astar(graph, start, end, heuristic={}):
     """Performs A-star search to find the shortest path from start to end
     
         Args:
-            graph: Dictionary representing the graph,
+            graph(dict): Dictionary representing the graph,
                     where keys are the nodes and the
                     value is a list of all neighbouring nodes
-            start: Tuple representing key corresponding to the start point
-            end: Tuple representing key corresponding to the end point
-            heuristic: Dictionary containing the heuristic values
+            start(tuple): Tuple representing key corresponding to the start point
+            end(tuple): Tuple representing key corresponding to the end point
+            heuristic(dict): Dictionary containing the heuristic values
                      for all the nodes, if not specified the default 
                      heuristic is euclidean distance 
         Returns:
-            A list of points representing the path determined from
-            start to goal
-            An list containing just the start point means path could not be planned.
+            path(list):A list of points representing the path determined from
+                    start to goal.An list containing just the start point means
+                     path could not be planned.
     """
     open_ = PriorityQueue()
     closed = Queue()
