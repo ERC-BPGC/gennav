@@ -52,7 +52,10 @@ def astar(graph, start, end, heuristic={}):
         # checks and updates the total cost for all the neighbours
         for node in neighbours:
             # calculates weight cost
-            g = math.sqrt((node[0] - current_node[1][0]) ** 2 + (node[1] - current_node[1][0]) ** 2)
+            g = math.sqrt(
+                (node[0] - current_node[1][0]) ** 2
+                + (node[1] - current_node[1][0]) ** 2
+            )
             # calculates heuristic for the node if not provided by the user
             if len(heuristic) == 0:
                 h = math.sqrt((node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2)
