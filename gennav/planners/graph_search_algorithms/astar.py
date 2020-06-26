@@ -7,15 +7,13 @@ except ImportError:
     from Queue import PriorityQueue, Queue
 
 
-def astar(graph, weight, start, end, heuristic={}):
+def astar(graph, start, end, heuristic={}):
     """Performs A-star search to find the shortest path from start to end
     
         Args:
             graph: Dictionary representing the graph,
                     where keys are the nodes and the
                     value is a list of all neighbouring nodes
-            weight: Dictionary storing the corresponding weights
-                    all the nodes and neighbours in the graph
             start: Tuple representing key corresponding to the start point
             end: Tuple representing key corresponding to the end point
             heuristic: Dictionary containing the heuristic values
@@ -54,7 +52,7 @@ def astar(graph, weight, start, end, heuristic={}):
         # checks and updates the total cost for all the neighbours
         for node in neighbours:
             # calculates weight cost
-            g = weight[current_node[1]][graph[current_node[1]].index(node)]
+            g = math.sqrt((node[0] - current_node[1][0]) ** 2 + (node[1] - current_node[1][0]) ** 2)
             # calculates heuristic for the node if not provided by the user
             if len(heuristic) == 0:
                 h = math.sqrt((node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2)
