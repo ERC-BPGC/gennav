@@ -11,5 +11,4 @@ graph = {
 }
 start = (0, 0)
 end = (3, 2)
-path = []
 path = astar(graph, start, end)
