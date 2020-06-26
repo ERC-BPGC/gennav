@@ -1,6 +1,7 @@
 # Planners
 from gennav.planners.rrt import RRT
 from gennav.planners.rrtstar import RRTSTAR
+from gennav.planners.graph_search_algorithms.astar import astar
 
 from gennav.utils.planner import (
     check_intersection,
