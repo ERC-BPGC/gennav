@@ -16,8 +16,8 @@ Follow this guide to start contributing to gennav
 * Set the remotes :
 
 	```bash
-	git remote add origin github.com/your-github-username/gennav.git
-	git remote add upstream github.com/ERC-BPGC/gennav.git
+	git remote add origin https://www.github.com/your-github-username/gennav.git
+	git remote add upstream https://www.github.com/ERC-BPGC/gennav.git
 	```
 
 * Updating the forks:
