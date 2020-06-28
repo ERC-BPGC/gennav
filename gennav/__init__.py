@@ -1,4 +1,3 @@
-# Planners
 from gennav.planners.rrt import RRT  # noqa: F401
 from gennav.planners.rrtstar import RRTSTAR  # noqa: F401
 from gennav.planners.samplers.samplers import (  # noqa: F401
