@@ -170,8 +170,8 @@ True
 
 from __future__ import division
 
-import warnings
 import math
+import warnings
 
 import numpy
 

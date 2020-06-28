@@ -1,1 +1,3 @@
-from gennav.planners.samplers.samplers import uniform_adjustable_random_sampler
+from gennav.planners.samplers.samplers import (  # noqa: F401
+    uniform_adjustable_random_sampler,
+)

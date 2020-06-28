@@ -2,12 +2,11 @@
 import os
 
 try:
-    from gennav.core import Planner, ObstacleChecker
-    import random, numpy as np
+    from gennav.core import ObstacleChecker
+    import numpy as np
     import math
     import cmath
-    from shapely.geometry import Polygon, Point, LineString
-    from descartes import PolygonPatch
+    from shapely.geometry import LineString
     import matplotlib.pyplot as plt
 
 
@@ -63,7 +62,7 @@ class CheckIndividualPoints(ObstacleChecker):
         return False
 
     def path_collide(self, path):
-        """ 
+        """
         """
         path_coords = [(p.position.x, p.position.y) for p in path.poses]
         line_path = LineString(path_coords)
@@ -89,7 +88,7 @@ class CheckIndividualPoints(ObstacleChecker):
         # Check for Areas from where Robot can escape
         escape_ind = abs(pt_scan - pt_scan_prev) > self._bot_size
 
-        self._escape_ind = (np.argwhere(escape_ind[0] == True)).reshape(-1)
+        self._escape_ind = (np.argwhere(escape_ind[0] is True)).reshape(-1)
 
         for i in range(len(self._escape_ind)):
 
@@ -104,7 +103,7 @@ class CheckIndividualPoints(ObstacleChecker):
                 self._line_obstacle_ind.append([prev, ind_of_int])
 
     def _make_obstacles(self):
-        """ 
+        """
         Making Line obstacles from indexes
         """
 
