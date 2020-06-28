@@ -1,16 +1,7 @@
-import pytest
-
-import random
-import math
-from shapely.geometry import Polygon, Point, LineString
-from descartes import PolygonPatch
-import matplotlib.pyplot as plt
-
 from gennav.planners.rrt import RRT
 from gennav.planners.samplers import uniform_adjustable_random_sampler as sampler
-from gennav.utils.planner import visualize_path
-from gennav.utils.planner import los_optimizer as path_optimizer
 from gennav.utils.planner import check_intersection
+from gennav.utils.planner import los_optimizer as path_optimizer
 
 
 def test_rrt():
@@ -32,6 +23,7 @@ def test_rrt():
 
         # RRT.visualize_tree(node_list, obstacle_list)
         optimized_path = path_optimizer(path, obstacle_list)
+        # from gennav.utils.planner import visualize_path
         # visualize_path(optimized_path, obstacle_list)
 
-        assert check_intersection(optimized_path, obstacle_list) == False
+        assert check_intersection(optimized_path, obstacle_list) is False

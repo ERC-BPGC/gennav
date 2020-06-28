@@ -1,8 +1,8 @@
-import random
 import math
-from shapely.geometry import Polygon, Point, LineString
-from descartes import PolygonPatch
+
 import matplotlib.pyplot as plt
+from descartes import PolygonPatch
+from shapely.geometry import Point, Polygon
 
 from gennav.utils.planner import check_intersection
 
@@ -156,7 +156,7 @@ class RRT:
             last_node = node.parent
         path.append(start.to_tuple())
 
-        if animation == True:
+        if animation is True:
             RRT.visualize_tree(node_list, obstacle_list)
 
         return list(reversed(path)), node_list
@@ -164,7 +164,7 @@ class RRT:
     @staticmethod
     def visualize_tree(node_list, obstacle_list, rnd_point=None):
         """Draw the tree along with randomly sampled point.
-        
+
             Args:
                 node_list: list of nodes in the tree.
                 obstacle_list: list of obstactles.

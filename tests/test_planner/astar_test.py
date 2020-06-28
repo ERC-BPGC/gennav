@@ -1,5 +1,4 @@
 from gennav.planners.graph_search_algorithms.astar import astar
-import math
 
 
 def test_astar():
@@ -13,4 +12,4 @@ def test_astar():
     }
     start = (0, 0)
     end = (3, 2)
-    path = astar(graph, start, end)
+    _ = astar(graph, start, end)

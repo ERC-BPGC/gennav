@@ -1,4 +1,3 @@
-import os
 import math
 
 try:
@@ -9,7 +8,7 @@ except ImportError:
 
 def astar(graph, start, end, heuristic={}):
     """Performs A-star search to find the shortest path from start to end
-    
+
         Args:
             graph(dict): Dictionary representing the graph,
                     where keys are the nodes and the
@@ -17,8 +16,8 @@ def astar(graph, start, end, heuristic={}):
             start(tuple): Tuple representing key corresponding to the start point
             end(tuple): Tuple representing key corresponding to the end point
             heuristic(dict): Dictionary containing the heuristic values
-                     for all the nodes, if not specified the default 
-                     heuristic is euclidean distance 
+                     for all the nodes, if not specified the default
+                     heuristic is euclidean distance
         Returns:
             path(list):A list of points representing the path determined from
                     start to goal.An list containing just the start point means
