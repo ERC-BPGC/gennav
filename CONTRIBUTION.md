@@ -28,7 +28,7 @@ Follow this guide to start contributing to gennav
 * Installing dependencies:
 	```bash
 	python2 -m pip install -r requirements.txt
-	pytohn3 -m pip install -r requirements.txt
+	python3 -m pip install -r requirements.txt
 	python3 -m pip install black 
 	```
 
