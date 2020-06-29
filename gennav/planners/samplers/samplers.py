@@ -21,3 +21,16 @@ def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
         )
     else:
         return goal
+
+
+def uniform_random_sampler(sample_area):
+    """Randomly sample point in sample area
+        Args:
+            sample_area: area to sample point in (min and max)
+        Return:
+            Randomly selected point as a tuple.
+    """
+    return (
+        random.uniform(sample_area[0], sample_area[1]),
+        random.uniform(sample_area[0], sample_area[1]),
+    )
