@@ -47,7 +47,6 @@ functions to decompose transformation matrices.
 
 Requirements
 ------------
-
 * `Python 2.6 <http://www.python.org>`__
 * `Numpy 1.3 <http://numpy.scipy.org>`__
 * `transformations.c 20090418 <http://www.lfd.uci.edu/~gohlke/>`__
@@ -55,11 +54,10 @@ Requirements
 
 Notes
 -----
-
 Matrices (M) can be inverted using numpy.linalg.inv(M), concatenated using
 numpy.dot(M0, M1), or used to transform homogeneous coordinates (v) using
-numpy.dot(M, v) for shape (4, \*) "point of arrays", respectively
-numpy.dot(v, M.T) for shape (\*, 4) "array of points".
+numpy.dot(M, v) for shape (4, ) "point of arrays", respectively
+numpy.dot(v, M.T) for shape (, 4) "array of points".
 
 Calculations are carried out with numpy.float64 precision.
 
@@ -94,7 +92,6 @@ be specified using a 4 character string or encoded 4-tuple:
 
 References
 ----------
-
 (1)  Matrices and transformations. Ronald Goldman.
      In "Graphics Gems I", pp 472-475. Morgan Kaufmann, 1990.
 (2)  More matrices and transformations: shear and pseudo-perspective.
@@ -123,7 +120,6 @@ References
 
 Examples
 --------
-
 >>> alpha, beta, gamma = 0.123, -1.234, 2.345
 >>> origin, xaxis, yaxis, zaxis = (0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)
 >>> I = identity_matrix()
@@ -681,17 +677,17 @@ def shear_from_matrix(matrix):
     M = numpy.array(matrix, dtype=numpy.float64, copy=False)
     M33 = M[:3, :3]
     # normal: cross independent eigenvectors corresponding to the eigenvalue 1
-    l, V = numpy.linalg.eig(M33)
-    i = numpy.where(abs(numpy.real(l) - 1.0) < 1e-4)[0]
+    evals, evect = numpy.linalg.eig(M33)
+    i = numpy.where(abs(numpy.real(evals) - 1.0) < 1e-4)[0]
     if len(i) < 2:
-        raise ValueError("No two linear independent eigenvectors found {}".format(l))
-    V = numpy.real(V[:, i]).squeeze().T
+        raise ValueError("No two linear independent eigenvectors found {}".format(evals))
+    evact = numpy.real(evect[:, i]).squeeze().T
     lenorm = -1.0
     for i0, i1 in ((0, 1), (0, 2), (1, 2)):
-        n = numpy.cross(V[i0], V[i1])
-        l = vector_norm(n)
-        if l > lenorm:
-            lenorm = l
+        n = numpy.cross(evect[i0], evect[i1])
+        n_norm = vector_norm(n)
+        if n_norm > lenorm:
+            lenorm = n_norm
             normal = n
     normal /= lenorm
     # direction and angle
@@ -700,11 +696,11 @@ def shear_from_matrix(matrix):
     direction /= angle
     angle = math.atan(angle)
     # point: eigenvector corresponding to eigenvalue 1
-    l, V = numpy.linalg.eig(M)
-    i = numpy.where(abs(numpy.real(l) - 1.0) < 1e-8)[0]
+    evals, evact = numpy.linalg.eig(M)
+    i = numpy.where(abs(numpy.real(evals) - 1.0) < 1e-8)[0]
     if not len(i):
         raise ValueError("no eigenvector corresponding to eigenvalue 1")
-    point = numpy.real(V[:, i[-1]]).squeeze()
+    point = numpy.real(evact[:, i[-1]]).squeeze()
     point /= point[3]
     return angle, direction, point, normal
 
@@ -882,7 +878,7 @@ def orthogonalization_matrix(lengths, angles):
 def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
     """Return matrix to transform given vector set into second vector set.
 
-    v0 and v1 are shape (3, \*) or (4, \*) arrays of at least 3 vectors.
+    v0 and v1 are shape (3, ) or (4, ) arrays of at least 3 vectors.
 
     If usesvd is True, the weighted sum of squared deviations (RMSD) is
     minimized according to the algorithm by W. Kabsch [8]. Otherwise the
@@ -1307,7 +1303,7 @@ def quaternion_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
     True
     >>> q = quaternion_slerp(q0, q1, 0.5)
     >>> angle = math.acos(numpy.dot(q0, q))
-    >>> numpy.allclose(2.0, math.acos(numpy.dot(q0, q1)) / angle) or \
+    >>> numpy.allclose(2.0, math.acos(numpy.dot(q0, q1)) / angle) or
         numpy.allclose(2.0, math.acos(-numpy.dot(q0, q1)) / angle)
     True
 
@@ -1458,7 +1454,10 @@ class Arcball(object):
 
     def setconstrain(self, constrain):
         """Set state of constrain to axis mode."""
-        self._constrain = constrain == True
+        if constrain is True:
+            self._constrain = True
+        else:
+            self._constrain = False
 
     def getconstrain(self):
         """Return state of constrain to axis mode."""

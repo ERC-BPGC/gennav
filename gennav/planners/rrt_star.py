@@ -67,7 +67,7 @@ class RRTStar(object):
         max_iter=500,
         connect_circle_dist=10.0,
         search_until_max_iter=True,
-        initial_exploration=20,
+        initial_exploration=20
     ):
         """
         start: Start Point. in our case remains(0 , 0) unless specified
