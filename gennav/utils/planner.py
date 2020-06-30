@@ -3,9 +3,11 @@ import collections
 import math
 
 import matplotlib.pyplot as plt
+
 import shapely
 from descartes import PolygonPatch
 from shapely.geometry import LineString, Point, Polygon
+
 from .transformations import euler_from_quaternion
 
 # Usefull named tuple to use for storing Orientation
