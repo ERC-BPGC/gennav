@@ -683,7 +683,7 @@ def shear_from_matrix(matrix):
         raise ValueError(
             "No two linear independent eigenvectors found {}".format(evals)
         )
-    evact = numpy.real(evect[:, i]).squeeze().T
+    evect = numpy.real(evect[:, i]).squeeze().T
     lenorm = -1.0
     for i0, i1 in ((0, 1), (0, 2), (1, 2)):
         n = numpy.cross(evect[i0], evect[i1])
