@@ -680,7 +680,9 @@ def shear_from_matrix(matrix):
     evals, evect = numpy.linalg.eig(M33)
     i = numpy.where(abs(numpy.real(evals) - 1.0) < 1e-4)[0]
     if len(i) < 2:
-        raise ValueError("No two linear independent eigenvectors found {}".format(evals))
+        raise ValueError(
+            "No two linear independent eigenvectors found {}".format(evals)
+        )
     evact = numpy.real(evect[:, i]).squeeze().T
     lenorm = -1.0
     for i0, i1 in ((0, 1), (0, 2), (1, 2)):

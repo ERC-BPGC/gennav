@@ -3,7 +3,6 @@ import collections
 import math
 
 import matplotlib.pyplot as plt
-
 import shapely
 from descartes import PolygonPatch
 from shapely.geometry import LineString, Point, Polygon
