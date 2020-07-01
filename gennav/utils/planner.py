@@ -1,17 +1,13 @@
 # import random
 import collections
 import math
-import sys
 
 import matplotlib.pyplot as plt
 import shapely
 from descartes import PolygonPatch
 from shapely.geometry import LineString, Point, Polygon
 
-if sys.version_info[0] == 2:
-    import transformations
-else:
-    from .transformations import euler_from_quaternion
+from .transformations import euler_from_quaternion
 
 # Usefull named tuple to use for storing Orientation
 Orientation = collections.namedtuple("Orientation", ["roll", "pitch", "yaw"])
