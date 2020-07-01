@@ -215,7 +215,7 @@ class RRTStar(object):
             # If costs is empty continue
             try:
                 min_cost = min(costs)
-            except:
+            except IndexError:
                 continue
 
             # Calculating the minimum cost and selecting the node for which it occurs as parent child
