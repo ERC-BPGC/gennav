@@ -698,11 +698,11 @@ def shear_from_matrix(matrix):
     direction /= angle
     angle = math.atan(angle)
     # point: eigenvector corresponding to eigenvalue 1
-    evals, evact = numpy.linalg.eig(M)
+    evals, evect = numpy.linalg.eig(M)
     i = numpy.where(abs(numpy.real(evals) - 1.0) < 1e-8)[0]
     if not len(i):
         raise ValueError("no eigenvector corresponding to eigenvalue 1")
-    point = numpy.real(evact[:, i[-1]]).squeeze()
+    point = numpy.real(evect[:, i[-1]]).squeeze()
     point /= point[3]
     return angle, direction, point, normal
 
