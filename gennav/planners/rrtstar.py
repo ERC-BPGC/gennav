@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 
-# import rospy
-# from geometry_msgs.msg import Pose
-
 import numpy as np
-
-# from collections import deque
-
-# from .samplers import uniform_adjustable_random_sampler as sampler
-
-# import time
 
 
 class random_sample_area:
@@ -58,7 +49,7 @@ class RRTSTAR:
 
     def generate_random_node(self):
         """
-        Generates random node in the given sampling area for RRTstar 
+        Generates random node in the given sampling area for RRTstar
         """
         if np.random.random_sample() > self.goal_sample_rate:
             x = np.random.uniform(self.sample_space.x_min, self.sample_space.x_max)
@@ -214,8 +205,8 @@ class RRTSTAR:
         """
         Plans the path
         """
-        self.start_node = start_node
-        self.goal_node = goal_node
+        self.start_node = start_pose
+        self.goal_node = goal_pose
 
         self.nodes = [self.start_node]
 
@@ -237,7 +228,7 @@ class RRTSTAR:
         # Expansion done
 
         last_node = self.best_last_node()
-        if last_node == None:  # returns empty path
+        if last_node is None:  # returns empty path
             return None
 
         path = self.get_path(last_node)

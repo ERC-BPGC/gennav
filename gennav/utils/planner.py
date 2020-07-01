@@ -1,12 +1,12 @@
 # import random
-import sys
-
 import collections
 import math
-import shapely
+import sys
+
 import matplotlib.pyplot as plt
+import shapely
 from descartes import PolygonPatch
-from shapely.geometry import Polygon, Point, LineString
+from shapely.geometry import LineString, Point, Polygon
 
 if sys.version_info[0] == 2:
     import transformations
@@ -25,7 +25,7 @@ def check_intersection(points_list, obstacle_list):
         obstacle_list: list of obstacles as list of points.
     Returns:
         boolean specifying whether or not the line intersects
-        and of the obstacles. 
+        and of the obstacles.
     """
     direct_line = LineString(points_list)
     for obstacle in obstacle_list:
@@ -136,7 +136,7 @@ def visualize_path(path, obstacle_list):
 
 def transform(obj, position, orientation):
     """Tranform geometric object (shape, line, point etc)
-        w.r.t given position and orientation in cartesian 
+        w.r.t given position and orientation in cartesian
         system of coordinates.
         Args:
             obj: shapely.geometry type object to be transformed.
@@ -159,7 +159,7 @@ def unwrap_pose(pose):
         Args:
             pose: geometry_msgs/Pose
         Returns:
-            position as Point and orientations as 
+            position as Point and orientations as
             Orientation objects
     """
 

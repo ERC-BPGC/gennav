@@ -16,8 +16,8 @@ Follow this guide to start contributing to gennav
 * Set the remotes :
 
 	```bash
-	git remote add origin github.com/your-github-username/gennav.git
-	git remote add upstream github.com/ERC-BPGC/gennav.git
+	git remote add origin https://www.github.com/your-github-username/gennav.git
+	git remote add upstream https://www.github.com/ERC-BPGC/gennav.git
 	```
 
 * Updating the forks:
@@ -27,9 +27,9 @@ Follow this guide to start contributing to gennav
 
 * Installing dependencies:
 	```bash
-	pip install -r requirements.txt
-	pip3 install -r requirements.txt
-	pip3 install black 
+	python2 -m pip install -r requirements.txt
+	pytohn3 -m pip install -r requirements.txt
+	python3 -m pip install black 
 	```
 
 * Creating a new branch for your contributions:
@@ -76,6 +76,14 @@ This will push the changes to the forked remote repo. Once this is done, you can
 
 If you add any new code in the package, use [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) to write the documentation.
 
+
+* To format code use the following:
+	```bash
+	isort -rc .
+	black .
+	flake8 .
+	```
+
 We are using pytest for testing the modules in the package. So, while writing the tests follow these rules:
 1. Make sure that your file name matches the pattern: test_*.py or *_test.py.
 2. Make sure that your function name starts with the test prefix.
@@ -85,26 +93,15 @@ You can find more about pytest [here](https://docs.pytest.org/en/latest/goodprac
 
 Before sending the Pull Request make sure you have commented out the plotting functions in the tests so that builds can pass on travis-ci. 
 
-* To perform local tests we are using [tox](https://tox.readthedocs.io/en/latest/). This tool can be used by:
+* To perform local tests we are using [tox](https://tox.readthedocs.io/en/latest/). This tool can be used by running this in the root of the package:
 	```bash
 	tox	
 	```
-	Use the above command in the root folder of the package. 
 
 
 * After making the final changes, you can push the new changes using :
-
-	* Format the code:
-		```bash
-		black .
-		```
-
-	* Push the changes:
-		```bash
-		git add .
-		git commit - m 'comments'
-		git push origin #branch_name
-		```
-
-
-	
+	```bash
+	git add .
+	git commit - m 'comments'
+	git push origin #branch_name
+	```

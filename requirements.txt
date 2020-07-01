@@ -1,4 +1,6 @@
-pip
+tox
+flake8
+isort
 pytest
 descartes
 matplotlib

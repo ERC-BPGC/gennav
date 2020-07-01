@@ -1,19 +1,14 @@
-import numpy as np
-import sys
-import os
-
-from utils_scan import (
-    scan_obstacle_checker,
-    make_obstacles_scan,
-    check_intersection_scan,
-)
-from utils_scan import adjustable_random_sampler as sampler
-from descartes import PolygonPatch
-from shapely.geometry import Polygon, Point, LineString
-import random
 import math
-import time
+
 import matplotlib.pyplot as plt
+import numpy as np
+
+from utils_scan import adjustable_random_sampler as sampler
+from utils_scan import (
+    check_intersection_scan,
+    make_obstacles_scan,
+    scan_obstacle_checker,
+)
 
 
 def propagate_cost_to_leaves(node_list, parent_node):
@@ -41,9 +36,9 @@ class Node(object):
     Coordinate representation in node form.
     x,y --> Coordinates
     Parent node is the node connected to the present node
-    path_x --> X coordinates of the path to this node 
+    path_x --> X coordinates of the path to this node
     path_y --> Y coordinates of the path to this node
-    Cost --> The cost suffered to get to this node.  
+    Cost --> The cost suffered to get to this node.
     """
 
     def __init__(self, x, y):
@@ -166,7 +161,7 @@ class RRTStar(object):
                 py = []  # Y-coordinate path
 
                 # Keep on appending path until reaches start
-                while present_node.parent != None:
+                while present_node.parent is not None:
                     px.append(present_node.x)
                     py.append(present_node.y)
                     present_node = present_node.parent
@@ -273,7 +268,7 @@ class RRTStar(object):
                 present_node = new_node
                 px = []
                 py = []
-                while present_node.parent != None:
+                while present_node.parent is not None:
                     px.append(present_node.x)
                     py.append(present_node.y)
                     present_node = present_node.parent
