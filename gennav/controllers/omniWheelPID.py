@@ -16,7 +16,7 @@ class OmniWheelPID(Controller):
     """
 
     def __init__(self, maxX=0.25, maxY=0.25, xgains=PIDGains(1, 0, 0), ygains=PIDGains(1, 0, 0)):
-        super().__init__()
+        super(OmniWheelPID, self).__init__()
         self.maxX, self.maxY = maxX, maxY
         self.xgains = xgains
         self.ygains = ygains
@@ -35,6 +35,7 @@ class OmniWheelPID(Controller):
         """
         errorx = target.x - present.x
         errory = target.y - present.y
+
 
         velx = (
             self.xgains.kp * errorx
@@ -57,8 +58,8 @@ class OmniWheelPID(Controller):
         self.xintegral += errorx
 
         self.ydiff = errory - self.ydiff
-        self.ygains += errorx
-
+        self.yintegral += errory
+        
         return self.velocity
 
     def constrain(self, vel, dir):
@@ -76,10 +77,8 @@ class OmniWheelPID(Controller):
             raise Exception("Non recognised parameter {} passed.".format(dir))
 
         if vel > velParam:
-            vel = velParam
+            return velParam
         elif vel < -velParam:
-            vel = -velParam
+            return -velParam
         else:
-            vel = velParam
-
-        return vel
+            return vel
