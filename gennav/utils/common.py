@@ -17,7 +17,7 @@ class Point:
 
         self.x = x
         self.y = y
-        self.z = x
+        self.z = z
 
     def __str__(self):
         return "Point :\n\tx : {}\n\ty : {}\n\tz : {}".format(self.x, self.y, self.z)
