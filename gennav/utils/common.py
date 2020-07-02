@@ -88,7 +88,7 @@ class RobotState:
             orientation : class utils.common.OrientationRPY (default = utils.common.OrientationRPY)
     """
 
-    def __init__(self, position = Point(), orientation = OrientationRPY()):
+    def __init__(self, position=Point(), orientation=OrientationRPY()):
 
         self.position = position
         self.orientation = orientation
@@ -212,7 +212,7 @@ class Velocity:
             angular : class utils.common.Vector3D (default = utils.common.Vector3D)
     """
 
-    def __init__(self, linear = Vector3D(), angular = Vector3D()):
+    def __init__(self, linear=Vector3D(), angular=Vector3D()):
         self.linear = linear
         self.angular = angular
 
@@ -256,4 +256,3 @@ class PIDGains:
 
     def __repr__(self):
         return "utils.common.PIDGains({}, {}, {})".format(self.kp, self.ki, self.kd)
-
