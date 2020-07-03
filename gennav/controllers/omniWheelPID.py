@@ -15,7 +15,9 @@ class OmniWheelPID(Controller):
             vel : (class utils.common.Velocity) with the required velocity commands
     """
 
-    def __init__(self, maxX=0.25, maxY=0.25, xgains=PIDGains(1, 0, 0), ygains=PIDGains(1, 0, 0)):
+    def __init__(
+        self, maxX=0.25, maxY=0.25, xgains=PIDGains(1, 0, 0), ygains=PIDGains(1, 0, 0)
+    ):
         super(OmniWheelPID, self).__init__()
         self.maxX, self.maxY = maxX, maxY
         self.xgains = xgains
@@ -24,7 +26,6 @@ class OmniWheelPID(Controller):
         # Initialise variables
         self.velocity = Velocity()
         self.xdiff, self.ydiff, self.xintegral, self.yintegral = 0, 0, 0, 0
-        
 
     def move_bot(self, present, target):
         """
@@ -35,7 +36,6 @@ class OmniWheelPID(Controller):
         """
         errorx = target.x - present.x
         errory = target.y - present.y
-
 
         velx = (
             self.xgains.kp * errorx
@@ -59,7 +59,7 @@ class OmniWheelPID(Controller):
 
         self.ydiff = errory - self.ydiff
         self.yintegral += errory
-        
+
         return self.velocity
 
     def constrain(self, vel, dir):
@@ -82,3 +82,18 @@ class OmniWheelPID(Controller):
             return -velParam
         else:
             return vel
+
+    def parameters(self):
+        return dict(
+            {
+                "xgains": self.xgains,
+                "ygains": self.ygains,
+                "maxX": self.maxX,
+                "maxY": self.maxy,
+                "xerrors": [self.xdiff, self.xintegral],
+                "yerrors": [self.ydiff, self.yintegral],
+            }
+        )
+
+    def restart(self):
+        self.xdiff, self.xintegral, self.ydiff, self.yintegral = 0, 0, 0, 0
