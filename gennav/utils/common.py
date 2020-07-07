@@ -249,7 +249,7 @@ class PIDGains:
     def __init__(self, kp=0, ki=0, kd=0):
         self.kp = kp
         self.ki = ki
-        self.kd = kp
+        self.kd = kd
 
     def __str__(self):
         return "PID :\nkp : {}\nki : {}\nkd : {}".format(self.kp, self.ki, self.kd)

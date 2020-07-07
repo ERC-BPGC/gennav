@@ -89,7 +89,7 @@ class OmniWheelPID(Controller):
                 "xgains": self.xgains,
                 "ygains": self.ygains,
                 "maxX": self.maxX,
-                "maxY": self.maxy,
+                "maxY": self.maxY,
                 "xerrors": [self.xdiff, self.xintegral],
                 "yerrors": [self.ydiff, self.yintegral],
             }
