@@ -30,14 +30,16 @@ def test_prm_astar():
         min_dist = float("inf")
         for node in graph.keys():
             dist = math.sqrt((node[0] - start[0]) ** 2 + (node[1] - start[1]) ** 2)
-            if dist < min_dist:
+            if dist < min_dist and (
+                not check_intersection([node, start], obstacle_list)
+            ):
                 min_dist = dist
                 s = node
 
         min_dist = float("inf")
         for node in graph.keys():
             dist = math.sqrt((node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2)
-            if dist < min_dist:
+            if dist < min_dist and (not check_intersection([node, end], obstacle_list)):
                 min_dist = dist
                 e = node
         path = astar(graph, s, e)
@@ -62,6 +64,6 @@ def test_prm():
         obstacle_list = obstacles
 
         # Instatiate prm constructer object
-        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=50)
+        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=100)
         graph = my_tree.construct(obstacle_list)  # noqa: F841
         # PRM.visualize_graph(graph,obstacle_list)
