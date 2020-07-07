@@ -21,7 +21,7 @@ def test_prm_astar():
         obstacle_list = obstacles
 
         # Instatiate prm constructer object
-        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=50)
+        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=20)
         graph = my_tree.construct(obstacle_list)
         # PRM.visualize_graph(graph,obstacle_list)
         start = (0, 0)
@@ -43,11 +43,12 @@ def test_prm_astar():
                 min_dist = dist
                 e = node
         path = astar(graph, s, e)
-        optimized_path = path_optimizer(path, obstacle_list)
-        # from gennav.utils.planner import visualize_path
-        # visualize_path(optimized_path, obstacle_list)
-
-        assert check_intersection(optimized_path, obstacle_list) is False
+        if len(path) > 1:
+            optimized_path = path_optimizer(path, obstacle_list)
+            # from gennav.utils.planner import visualize_path
+            # visualize_path(optimized_path, obstacle_list)
+            if len(optimized_path) > 1:
+                assert check_intersection(optimized_path, obstacle_list) is False
 
 
 def test_prm():
@@ -64,6 +65,6 @@ def test_prm():
         obstacle_list = obstacles
 
         # Instatiate prm constructer object
-        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=100)
+        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=50)
         graph = my_tree.construct(obstacle_list)  # noqa: F841
         # PRM.visualize_graph(graph,obstacle_list)
