@@ -1,10 +1,9 @@
 import math
 
-import matplotlib.pyplot as plt
 from descartes import PolygonPatch
-from shapely.geometry import Point, Polygon
-
 from gennav.utils.planner import check_intersection
+from matplotlib import pyplot as plt
+from shapely.geometry import Point, Polygon
 
 
 class PRM:

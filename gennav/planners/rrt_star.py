@@ -1,8 +1,7 @@
 import math
 
-import matplotlib.pyplot as plt
 import numpy as np
-
+from matplotlib import pyplot as plt
 from utils_scan import adjustable_random_sampler as sampler
 from utils_scan import (
     check_intersection_scan,
