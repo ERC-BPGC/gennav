@@ -23,6 +23,9 @@ def astar(graph, start, end, heuristic={}):
                     start to goal.An list containing just the start point means
                      path could not be planned.
     """
+    if not (start in graph and end in graph):
+        path = [start]
+        return path
     open_ = PriorityQueue()
     closed = Queue()
     # calculates heuristic for start if not provided by the user
