@@ -2,9 +2,9 @@
 import collections
 import math
 
-import matplotlib.pyplot as plt
 import shapely
 from descartes import PolygonPatch
+from matplotlib import pyplot as plt
 from shapely.geometry import LineString, Point, Polygon
 
 from .transformations import euler_from_quaternion
