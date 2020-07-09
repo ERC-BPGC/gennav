@@ -102,12 +102,12 @@ def astar(graph, start, end, heuristic={}):
             # checks if the total cost of neighbour needs to be updated
             # if it is presnt in open_ else adds it to open_
             flag = 1
-            for node in open_:
-                if neighbour == node and neighbour.f < node.f:
-                    node = neighbour
+            for new_node in open_:
+                if neighbour == new_node and neighbour.f < new_node.f:
+                    new_node = neighbour
                     flag = 0
                     break
-                elif neighbour == node and neighbour.f > node.f:
+                elif neighbour == new_node and neighbour.f > new_node.f:
                     flag = 0
                     break
             if flag == 1:
