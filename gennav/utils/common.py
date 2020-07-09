@@ -114,6 +114,38 @@ class RobotState:
         )
 
 
+class Node:
+    """Class for representing a Node
+
+    Attributes:
+        x (float): x-coordinate of the node.
+        y (float): y-coordinate of the node.
+        parent (Node): parent node of current node.
+    """
+
+    def __init__(self, x, y):
+        """
+        Init node with x and y coordinates.
+        """
+        self.x = x
+        self.y = y
+        self.parent = None
+
+    def __str__(self):
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+    def __repr__(self):
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
+    @classmethod
+    def from_coordinates(cls, coordinate):
+        """Create Node from tuple with coordinates."""
+        return cls(x=coordinate[0], y=coordinate[1])
+
+    def to_tuple(self):
+        return self.x, self.y
+
+
 class Path:
     """
         A class for storing Path
