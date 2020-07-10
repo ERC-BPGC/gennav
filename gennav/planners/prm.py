@@ -1,6 +1,7 @@
 import math
 
 from descartes import PolygonPatch
+from gennav.planners.graph_search_algorithms.astar import astar
 from gennav.utils.planner import check_intersection
 from matplotlib import pyplot as plt
 from shapely.geometry import Point, Polygon
@@ -72,6 +73,51 @@ class PRM:
             PRM.visualize_graph(graph, obstacle_list)
 
         return graph
+
+    def plan(self, start_point, end_point, obstacle_list):
+        """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
+
+        Args:
+            start_point(tuple): tuple with start point coordinates.
+            end_point(tuple): tuple with end point coordinates.
+            obstacle_list(list): list of obstacles which themselves are list of points
+
+        Returns:
+            path(list):A list of points representing the path determined from
+                    start to goal.An list containing just the start point means
+                     path could not be planned.
+        """
+        # construct graph
+        graph = self.construct(obstacle_list)
+        # find collision free point in graph closest to start_point
+        min_dist = float("inf")
+        for node in graph.keys():
+            dist = math.sqrt(
+                (node[0] - start_point[0]) ** 2 + (node[1] - start_point[1]) ** 2
+            )
+            if dist < min_dist and (
+                not check_intersection([node, start_point], obstacle_list)
+            ):
+                min_dist = dist
+                s = node
+        # find collision free point in graph closest to end_point
+        min_dist = float("inf")
+        for node in graph.keys():
+            dist = math.sqrt(
+                (node[0] - end_point[0]) ** 2 + (node[1] - end_point[1]) ** 2
+            )
+            if dist < min_dist and (
+                not check_intersection([node, end_point], obstacle_list)
+            ):
+                min_dist = dist
+                e = node
+        # add start_point to path
+        path = [start_point]
+        # perform astar search
+        path.extend(astar(graph, s, e))
+        # add end_point to path
+        path.append(end_point)
+        return path
 
     @staticmethod
     def visualize_graph(graph, obstacle_list):

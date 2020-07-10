@@ -1,13 +1,10 @@
-import math
-
-from gennav.planners.graph_search_algorithms.astar import astar
 from gennav.planners.prm import PRM
 from gennav.planners.samplers import uniform_random_sampler as sampler
 from gennav.utils.planner import check_intersection
 from gennav.utils.planner import los_optimizer as path_optimizer
 
 
-def test_prm_astar():
+def test_prm_plan():
     general_obstacles_list = [
         [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
         [
@@ -21,28 +18,10 @@ def test_prm_astar():
         obstacle_list = obstacles
 
         # Instatiate prm constructer object
-        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=20)
-        graph = my_tree.construct(obstacle_list)
-        # PRM.visualize_graph(graph,obstacle_list)
         start = (0, 0)
         end = (12, 10)
-
-        min_dist = float("inf")
-        for node in graph.keys():
-            dist = math.sqrt((node[0] - start[0]) ** 2 + (node[1] - start[1]) ** 2)
-            if dist < min_dist and (
-                not check_intersection([node, start], obstacle_list)
-            ):
-                min_dist = dist
-                s = node
-
-        min_dist = float("inf")
-        for node in graph.keys():
-            dist = math.sqrt((node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2)
-            if dist < min_dist and (not check_intersection([node, end], obstacle_list)):
-                min_dist = dist
-                e = node
-        path = astar(graph, s, e)
+        my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=100)
+        path = my_tree.plan(start, end, obstacle_list)
         if len(path) > 1:
             optimized_path = path_optimizer(path, obstacle_list)
             # from gennav.utils.planner import visualize_path
@@ -51,7 +30,7 @@ def test_prm_astar():
                 assert check_intersection(optimized_path, obstacle_list) is False
 
 
-def test_prm():
+def test_prm_construct():
     general_obstacles_list = [
         [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
         [
