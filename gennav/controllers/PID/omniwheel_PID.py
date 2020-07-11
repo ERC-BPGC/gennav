@@ -1,5 +1,6 @@
-from gennav.core import Controller
-from gennav.utils.common import PIDGains, Velocity
+from ...utils.robot_state import Velocity
+from ..base import Controller
+from .common import PIDGains
 
 
 class OmniWheelPID(Controller):
@@ -9,10 +10,10 @@ class OmniWheelPID(Controller):
         Args:
             maxX : Maximum velocity in the x-direction (default = 0.25)
             maxY : Maximum velocity in the y-direction (default = 0.25)
-            xgains : gennav.common.utils.PIDGains (default = PIDGains(1, 0, 0))
-            ygains : gennav.common.utils.PIDGains (default = PIDGains(1, 0, 0))
+            xgains : PIDGains (default = PIDGains(1, 0, 0))
+            ygains : PIDGains (default = PIDGains(1, 0, 0))
         Returns:
-            vel : (class utils.common.Velocity) with the required velocity commands
+            vel : (class utils.states.Velocity) with the required velocity commands
     """
 
     def __init__(
@@ -27,12 +28,12 @@ class OmniWheelPID(Controller):
         self.velocity = Velocity()
         self.xdiff, self.ydiff, self.xintegral, self.yintegral = 0, 0, 0, 0
 
-    def move_bot(self, present, target):
+    def _move_bot(self, present, target):
         """
             Given present position and target position, returns velocity commands
             Args:
-                present : class utils.common.Point
-                target : class utils.common.Point
+                present : class gennav.utils.geometry.Point
+                target : class gennav.utils.geometry.Point
         """
         errorx = target.x - present.x
         errory = target.y - present.y
@@ -61,6 +62,19 @@ class OmniWheelPID(Controller):
         self.yintegral += errory
 
         return self.velocity
+
+    def compute_vel(self, traj):
+        """ Compute the velocity according to given trajectory.
+
+        Args:
+            traj (gennav.utils.Trajectory): Trajectory to compute velocity for.
+
+        Returns:
+            gennav.utils.states.Velocity: The computed velocity.
+
+        # TODO #31
+        """
+        raise NotImplementedError
 
     def constrain(self, vel, dir):
         """

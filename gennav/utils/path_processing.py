@@ -1,21 +1,27 @@
-from .common import check_intersection
+from .trajectory import Trajectory
 
 
-def los_optimizer(path, obstacle_list):
-    """Line of Sight Path Optimizer.
-        For each point in the path, it checks if there is a direct
-        connection to procceeding points which does not pass through
-        any obstacles. By joining such points, number of uneccessary
-        points in the path are reduced.
-        Args:
-            path: list of tuples containing coordinates for a point in path..
-            obstacle_list: list of obstacles.
-        Returns:
-            Optimized path as a list of tuples containing coordinates.
-            If path is found to be intersecting with any obstacle and
-            there is no lookahead optimization which avoids this, then
-            only the path uptill the intersection is returned.
+def los_optimizer(traj, env):
     """
+    Line of Sight Path Optimizer.
+
+    For each point in the path, it checks if there is a direct
+    connection to procceeding points which does not pass through
+    any obstacles. By joining such points, number of uneccessary
+    points in the path are reduced.
+
+    Args:
+        traj (gennav.utils.Trajectory): trajectory to optimize.
+        env: (gennav.envs.Environment): environment to optimize path in.
+
+    Returns:
+        gennav.utils.Trajectory: Trajectory with otimized path.
+
+        If path is found to be intersecting with any obstacle and
+        there is no lookahead optimization which avoids this, then
+        only the path uptill the intersection is returned.
+    """
+    path = traj.path
 
     # Init optimized path with the start as first point in path.
     optimized_path = [path[0]]
@@ -30,8 +36,8 @@ def los_optimizer(path, obstacle_list):
         # Loop from last point in path to the current one, checking if
         # any direct connection exists.
         for lookahead_index in range(len(path) - 1, current_index, -1):
-            if not check_intersection(
-                [path[current_index], path[lookahead_index]], obstacle_list
+            if env.get_traj_status(
+                Trajectory([path[current_index], path[lookahead_index]])
             ):
                 # If direct connection exists then add this lookahead point to optimized
                 # path directly and skip to it for next iteration of while loop

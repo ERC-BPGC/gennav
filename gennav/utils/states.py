@@ -1,4 +1,4 @@
-from .geometry import Point, OrientationRPY, Vector3D
+from .geometry import OrientationRPY, Point, Vector3D
 
 
 class RobotState:
@@ -66,3 +66,17 @@ class Velocity:
             self.angular.y,
             self.angular.z,
         )
+
+
+class Trajectory:
+    """
+    Representation of robot trajectory as a series of robot states.
+
+    Args:
+        path (:obj:`list` of :obj:`gennav.utils.RobotState`): series of robot states
+        timestamps (:obj:`list` of :obj:`datetime.datetime`, optional): timstamps for each state
+    """
+
+    def __init__(self, path, timestamps=None):
+        self.path = path
+        self.timestamps = timestamps

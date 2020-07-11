@@ -16,4 +16,4 @@ class PIDGains:
         return "PID :\nkp : {}\nki : {}\nkd : {}".format(self.kp, self.ki, self.kd)
 
     def __repr__(self):
-        return "utils.common.PIDGains({}, {}, {})".format(self.kp, self.ki, self.kd)
+        return "PIDGains({}, {}, {})".format(self.kp, self.ki, self.kd)

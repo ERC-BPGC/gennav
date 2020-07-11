@@ -1,7 +1,10 @@
 """
     Various common geometric constructs.
 """
+import math
+
 import numpy as np
+import shapely
 
 
 class Point:
@@ -168,3 +171,58 @@ class Vector3D:
         """
         unit = self.unit()
         return unit.x, unit.y, unit.z
+
+
+def transform(obj, position, orientation):
+    """
+    Tranform geometric object (shape, line, point etc) w.r.t given
+    position and orientation in cartesian system of coordinates.
+
+    Args:
+        obj (shapely.geometry): object to be transformed.
+        point (gennav.utils.geometry.Point): base location.
+        orientation (gennav.utils.geometry.OrientationRPY): base roll pitch and yaw.
+
+    Returns:
+        gennav.utils.RoboState: Transformed robot state.
+    """
+
+    obj = shapely.affinity.translate(obj, -position.x, -position.y)
+    obj = shapely.affinity.rotate(
+        obj, angle=math.degrees(orientation.yaw), origin=(0, 0)
+    )
+    return obj
+
+
+def transform_state(state, point, orientation):
+    """
+    Tranform a robot state w.r.t given position and orientation
+    in cartesian system of coordinates.
+
+    Args:
+        state (gennav.utils.RoboState): state to be transformed.
+        point (gennav.utils.geometry.Point): base location.
+        orientation (gennav.utils.geometry.OrientationRPY): base roll pitch and yaw.
+
+    Returns:
+        gennav.utils.RoboState: Transformed robot state.
+    """
+    obj = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
+    return transform(obj, point, orientation)
+
+
+def transform_traj(traj, point, orientation):
+    """
+    Tranform a trajectory w.r.t given position and orientation
+    in cartesian system of coordinates.
+
+    Args:
+        traj (gennav.utils.Trajectory): state to be transformed.
+        point (gennav.utils.geometry.Point): base location.
+        orientation (gennav.utils.geometry.OrientationRPY): base roll pitch and yaw.
+
+    Returns:
+        gennav.utils.RoboState: Transformed robot state.
+    """
+    obj = shapely.geometry.LineString(traj.path)
+    return transform(obj, point, orientation)

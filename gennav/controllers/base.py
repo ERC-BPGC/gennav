@@ -33,5 +33,6 @@ class Controller(object):
             traj (gennav.utils.Trajectory): Trajectory to compute velocity for.
 
         Returns:
-            gennav.utils.Velocity: The computed velocity.
+            gennav.utils.states.Velocity: The computed velocity.
         """
+        raise NotImplementedError

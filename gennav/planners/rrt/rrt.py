@@ -1,10 +1,9 @@
 import math
 
 from descartes import PolygonPatch
+from gennav.utils.planner import check_intersection
 from matplotlib import pyplot as plt
 from shapely.geometry import Point, Polygon
-
-from gennav.utils.planner import check_intersection
 
 # from gennav.planners.samplers.samplers import uniform_adjustable_random_sampler as sampler
 
@@ -38,6 +37,7 @@ class Node:
         return self.x, self.y
 
 
+# TODO #32
 class RRT:
     """RRT Planner Class.
 

@@ -10,6 +10,8 @@ class Environment(object):
     def get_status(self, state):
         """ Get whether a given state is valid within the environment.
 
+        This method needs to be implemented in the specific env implementation.
+
         Args:
             state (gennav.utils.RoboState): State to be checked
 
@@ -18,8 +20,10 @@ class Environment(object):
         """
         raise NotImplementedError
 
-    def get_trajectory_status(self, traj):
+    def get_traj_status(self, traj):
         """ Get whether a given trajectory is valid within the environment.
+
+        This method needs to be implemented in the specific env implementation.
 
         Args:
             state (gennav.utils.Trajectory): Trajectory to be checked
@@ -31,6 +35,8 @@ class Environment(object):
 
     def update(self, *args, **kwargs):
         """ Update the environment.
+
+        This method needs to be implemented in the specific env implementation.
 
         Args:
             *args: Variable length argument list.
