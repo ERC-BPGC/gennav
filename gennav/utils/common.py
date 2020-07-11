@@ -25,7 +25,7 @@ class RobotState:
         )
 
     def __repr__(self):
-        return "utils.common.RobotState(position=Point({}, {}, {}), orientation=OrientationRPY({}, {}, {}))".format(
+        return "gennav.utils.RobotState(position=Point({}, {}, {}), orientation=OrientationRPY({}, {}, {}))".format(
             self.position.x,
             self.position.y,
             self.position.z,
@@ -58,7 +58,7 @@ class Velocity:
         )
 
     def __repr__(self):
-        return "utils.common.Velocity(linear=utils.common.Vector3D({}, {}, {}), angular=utils.common.Vector3D({}, {}, {}))".format(
+        return "gennav.utils.common.Velocity(linear=utils.common.Vector3D({}, {}, {}), angular=utils.common.Vector3D({}, {}, {}))".format(
             self.linear.x,
             self.linear.y,
             self.linear.z,
@@ -80,3 +80,18 @@ class Trajectory:
     def __init__(self, path, timestamps=None):
         self.path = path
         self.timestamps = timestamps
+
+
+class Node:
+    """
+    Node class used in trees and graph representations.
+
+    Args:
+        state (gennav.utils.RobotState): State to be encoded in node.
+        parent (:obj:`Node`, optional): parent node
+
+    """
+
+    def __init__(self, state, parent=None):
+        self.state = state
+        self.parent = parent
