@@ -2,12 +2,13 @@
 import os
 
 try:
-    from gennav.core import ObstacleChecker
-    import numpy as np
-    import math
     import cmath
+    import math
+
+    import numpy as np
+    from gennav.core import ObstacleChecker
+    from matplotlib import pyplot as plt
     from shapely.geometry import LineString
-    import matplotlib.pyplot as plt
 
 
 except Exception as e:
