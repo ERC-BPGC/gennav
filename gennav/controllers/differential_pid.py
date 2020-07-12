@@ -8,8 +8,8 @@ class DifferentialPID(Controller):
         Controller class for an OmniWheel drive robot.
         It inherits from the main Controller class.
         Args:
-            maxX : Maximum velocity in the x-direction (default = 0.25)
-            maxY : Maximum velocity in the y-direction (default = 0.25)
+            maxVel : Maximum velocity for translation(default = 0.25)
+            maxAng : Maximum velocity for rotation(default = pi/2)
             vel_gains : PIDGains (default = PIDGains(1, 0, 0))
             angle_gains : PIDGains (default = PIDGains(1, 0, 0))
         Returns:
