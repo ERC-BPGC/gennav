@@ -1,9 +1,23 @@
 import math
 
-try:
-    from queue import PriorityQueue, Queue
-except ImportError:
-    from Queue import PriorityQueue, Queue
+
+class Node:
+
+    # Initialize the class
+    def __init__(self, node, parent):
+        self.node = node
+        self.parent = parent
+        self.g = 0  # Distance to start node
+        self.h = 0  # Distance to goal node
+        self.f = 0  # Total cost
+
+    # Sort nodes
+    def __lt__(self, other):
+        return self.f < other.f
+
+    # Compare nodes
+    def __eq__(self, other):
+        return self.node == other.node
 
 
 def astar(graph, start, end, heuristic={}):
@@ -23,56 +37,81 @@ def astar(graph, start, end, heuristic={}):
                     start to goal.An list containing just the start point means
                      path could not be planned.
     """
-    open_ = PriorityQueue()
-    closed = Queue()
-    # calculates heuristic for start if not provided by the user
+    if not (start in graph and end in graph):
+        path = [start]
+        return path
+    open_ = []
+    closed = []
+    # calcula]tes heuristic for start if not provided by the user
     # pushes the start point in the open_ Priority Queue
+
+    start_node = Node(start, None)
     if len(heuristic) == 0:
-        open_.put(
-            (math.sqrt((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2), start)
-        )
+        start_node.h = math.sqrt((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2)
     else:
-        open_.put((heuristic[start], start))
+        start_node.h = heuristic[start]
+    start_node.g = 0
+    start_node.f = start_node.g + start_node.h
+    open_.append(start_node)
     # performs astar search to find the shortest path
-    while len(open_.queue) > 0:
-        current_node = open_.get()
-        closed.put((current_node))
+    while len(open_) > 0:
+        open_.sort()
+        current_node = open_.pop(0)
+        closed.append(current_node)
         # checks if the goal has been reached
-        if current_node[1] == end:
+        if current_node.node == end:
             path = []
-            while len(closed.queue) > 0:
-                current_node = closed.get()
-                path.append(current_node[1])
-            return path
+            # forms path from closed list
+            while current_node.parent is not None:
+                for node in closed:
+                    if node.node == current_node.parent:
+                        path.append(current_node.node)
+                        current_node = node
+                        break
+            path.append(start)
+            # returns reversed path
+            return path[::-1]
         # continues to search for the goal
         # makes a list of all neighbours of the current_node
-        neighbours = graph[current_node[1]]
+        neighbours = graph[current_node.node]
         # adds them to open_ if they are already present in open_
         # checks and updates the total cost for all the neighbours
         for node in neighbours:
+            # creates neighbour which can be pushed to open_ if required
+            neighbour = Node(node, current_node.node)
+            # checks if neighbour is in closed
+            if neighbour in closed:
+                continue
             # calculates weight cost
-            g = math.sqrt(
-                (node[0] - current_node[1][0]) ** 2
-                + (node[1] - current_node[1][0]) ** 2
+            neighbour.g = (
+                math.sqrt(
+                    (node[0] - current_node.node[0]) ** 2
+                    + (node[1] - current_node.node[1]) ** 2
+                )
+                + current_node.g
             )
             # calculates heuristic for the node if not provided by the user
             if len(heuristic) == 0:
-                h = math.sqrt((node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2)
+                neighbour.h = math.sqrt(
+                    (node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2
+                )
             else:
-                h = heuristic[current_node[1]][graph[current_node[1]].index(node)]
+                neighbour.h = heuristic[node]
             # calculates total cost
-            f = g + h
-            # creates neighbour which can be pushed to open_ if required
-            neighbour = (f, node)
-            # checks if neighbour is in closed
-            if neighbour in closed.queue:
-                continue
+            neighbour.f = neighbour.g + neighbour.h
             # checks if the total cost of neighbour needs to be updated
             # if it is presnt in open_ else adds it to open_
-            for node in open_.queue:
-                if neighbour == node and neighbour[0] > node[0]:
+            flag = 1
+            for new_node in open_:
+                if neighbour == new_node and neighbour.f < new_node.f:
+                    new_node = neighbour
+                    flag = 0
                     break
-            open_.put(neighbour)
+                elif neighbour == new_node and neighbour.f > new_node.f:
+                    flag = 0
+                    break
+            if flag == 1:
+                open_.append(neighbour)
     # if path doesn't exsist it returns just the start point as the path
     path = [start]
     return path

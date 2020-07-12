@@ -28,7 +28,7 @@ Follow this guide to start contributing to gennav
 * Installing dependencies:
 	```bash
 	python2 -m pip install -r requirements.txt
-	pytohn3 -m pip install -r requirements.txt
+	python3 -m pip install -r requirements.txt
 	python3 -m pip install black 
 	```
 
@@ -79,7 +79,7 @@ If you add any new code in the package, use [Google Style](https://sphinxcontrib
 
 * To format code use the following:
 	```bash
-	isort -rc .
+	isort .
 	black .
 	flake8 .
 	```
@@ -102,6 +102,6 @@ Before sending the Pull Request make sure you have commented out the plotting fu
 * After making the final changes, you can push the new changes using :
 	```bash
 	git add .
-	git commit - m 'comments'
+	git commit -m 'comments'
 	git push origin #branch_name
 	```
