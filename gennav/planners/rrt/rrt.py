@@ -37,6 +37,7 @@ class Node:
         return self.x, self.y
 
 
+# TODO #32
 class RRT:
     """RRT Planner Class.
 
