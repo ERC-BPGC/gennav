@@ -1,43 +1,15 @@
 import math
 
-from descartes import PolygonPatch
-from gennav.utils.planner import check_intersection
 from matplotlib import pyplot as plt
+
+from descartes import PolygonPatch
+from gennav.utils.common import Node
+from gennav.utils.planner import check_intersection
 from shapely.geometry import Point, Polygon
 
 # from gennav.planners.samplers.samplers import uniform_adjustable_random_sampler as sampler
 
 
-class Node:
-    """Node for RRT.
-
-    Attributes:
-        x (float): x-coordinate of the node.
-        y (float): y-coordinate of the node.
-        parent (Node): parent node of current node.
-    """
-
-    def __init__(self, x, y):
-        """
-        Init node with x and y coordinates.
-        """
-        self.x = x
-        self.y = y
-        self.parent = None
-
-    def __str__(self):
-        return "(" + str(self.x) + "," + str(self.y) + ")"
-
-    @classmethod
-    def from_coordinates(cls, coordinate):
-        """Create Node from tuple with coordinates."""
-        return cls(x=coordinate[0], y=coordinate[1])
-
-    def to_tuple(self):
-        return self.x, self.y
-
-
-# TODO #32
 class RRT:
     """RRT Planner Class.
 
@@ -60,15 +32,15 @@ class RRT:
         """Plans path from start to goal avoiding obstacles.
 
         Args:
-            start_point: tuple with start point coordinates.
-            end_point: tuple with end point coordinates.
+            start_point: Point with start point coordinates.
+            end_point: Point with end point coordinates.
             obstacle_list: list of obstacles which themselves are list of points
             animation: flag for showing planning visualization (default False)
 
         Returns:
             A list of points representing the path determined from
             start to goal while avoiding obstacles.
-            An list containing just the start point means path could not be planned.
+            A list containing just the start point means path could not be planned.
         """
 
         # Initialize start and goal nodes
@@ -79,8 +51,12 @@ class RRT:
         node_list = [start]
 
         # Calculate distances between start and goal
-        del_x, del_y = start.x - goal_node.x, start.y - goal_node.y
-        distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2)
+        del_x, del_y, del_z = (
+            start.position.x - goal_node.position.x,
+            start.position.y - goal_node.position.y,
+            start.position.z - goal_node.position.z,
+        )
+        distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2 + del_z ** 2)
 
         # Loop to keep expanding the tree towards goal if there is no direct connection
         if check_intersection([start_point, goal_point], obstacle_list):
@@ -91,8 +67,11 @@ class RRT:
                 )
 
                 # Find nearest node to the sampled point
+
                 distance_list = [
-                    (node.x - rnd_point[0]) ** 2 + (node.y - rnd_point[1]) ** 2
+                    (node.position.x - rnd_point.x) ** 2
+                    + (node.position.y - rnd_point.y) ** 2
+                    + (node.position.z - rnd_point.z) ** 2
                     for node in node_list
                 ]
 
@@ -108,22 +87,31 @@ class RRT:
                 nearest_node = node_list[nearest_node_index]
 
                 # Create new point in the direction of sampled point
+
                 theta = math.atan2(
-                    rnd_point[1] - nearest_node.y, rnd_point[0] - nearest_node.x
+                    rnd_point.y - nearest_node.position.y, rnd_point.x - nearest_node.x
                 )
-                new_point = (
-                    nearest_node.x + self.expand_dis * math.cos(theta),
-                    nearest_node.y + self.expand_dis * math.sin(theta),
+
+                new_point = Point()
+
+                new_point.x = (
+                    nearest_node.position.x + self.expand_dis * math.cos(theta)
                 )
+                new_point.y = (
+                    nearest_node.position.y + self.expand_dis * math.sin(theta)
+                )
+                new_point.z = nearest_node.position.z
 
                 # Check whether new point is inside an obstacles
                 for obstacle in obstacle_list:
-                    if Point(new_point).within(Polygon(obstacle)):
-                        new_point = float("nan"), float("nan")
+                    if new_point.within(Polygon(obstacle)):
+                        new_point.x = float("nan")
+                        new_point.y = float("nan")
+                        new_point.z = float("nan")
                         continue
 
                 # Expand tree
-                if math.isnan(new_point[0]):
+                if math.isnan(new_point.x):
                     continue
                 else:
                     new_node = Node.from_coordinates(new_point)
@@ -131,11 +119,15 @@ class RRT:
                     node_list.append(new_node)
 
                 # Check if goal has been reached or if there is direct connection to goal
-                del_x, del_y = new_node.x - goal_node.x, new_node.y - goal_node.y
-                distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2)
+                del_x, del_y, del_z = (
+                    new_node.position.x - goal_node.position.x,
+                    new_node.position.y - goal_node.position.y,
+                    new_node.position.z - goal_node.position.z,
+                )
+                distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2 + del_z ** 2)
 
                 if distance_to_goal < self.expand_dis or not check_intersection(
-                    [new_node.to_tuple(), goal_node.to_tuple()], obstacle_list
+                    [new_node, goal_node], obstacle_list
                 ):
                     goal_node.parent = node_list[-1]
                     node_list.append(goal_node)
@@ -152,9 +144,9 @@ class RRT:
 
         while node_list[node_list.index(last_node)].parent is not None:
             node = node_list[node_list.index(last_node)]
-            path.append(node.to_tuple())
+            path.append(node)
             last_node = node.parent
-        path.append(start.to_tuple())
+        path.append(start)
 
         if animation is True:
             RRT.visualize_tree(node_list, obstacle_list)
@@ -179,14 +171,14 @@ class RRT:
 
         # Plot randomly sampled point
         if rnd_point is not None:
-            plt.plot(rnd_point[0], rnd_point[1], "^k")
+            plt.plot(rnd_point.x, rnd_point.y, "^k")
 
         # Plot each edge of the tree
         for node in node_list:
             if node.parent is not None:
                 plt.plot(
-                    [node.x, node_list[node_list.index(node.parent)].x],
-                    [node.y, node_list[node_list.index(node.parent)].y],
+                    [node.position.x, node_list[node_list.index(node.parent)].x],
+                    [node.position.y, node_list[node_list.index(node.parent)].y],
                     "-g",
                 )
 
