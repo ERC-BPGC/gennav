@@ -5,7 +5,7 @@ from ..base import Controller
 from .common import PIDGains
 
 
-class DifferentialPID(Controller):
+class DiffPID(Controller):
     """
         Controller class for an OmniWheel drive robot.
         It inherits from the main Controller class.
