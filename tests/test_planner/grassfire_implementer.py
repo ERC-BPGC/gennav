@@ -6,7 +6,7 @@ reference:referance: https://nrsyed.com/2017/12/30/animating-the-grassfire-path-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from grassfire import Grassfire
+from gennav.planners.graph_search_algorithms.grassfire import Grassfire
 
 # Initialize grid rows, columns, and obstacle probability.
 rows = 8
