@@ -1,4 +1,4 @@
-from gennav.planners.rrt import RRT
+from gennav.planners.rrt.rrt import RRT
 from gennav.planners.samplers import uniform_adjustable_random_sampler as sampler
 from gennav.utils.planner import check_intersection
 from gennav.utils.planner import los_optimizer as path_optimizer
