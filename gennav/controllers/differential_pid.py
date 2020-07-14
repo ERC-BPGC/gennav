@@ -25,7 +25,7 @@ class DiffPID(Controller):
         vel_gains=PIDGains(1, 0, 0),
         angle_gains=PIDGains(1, 0, 0),
     ):
-        super(DifferentialPID, self).__init__()
+        super(DiffPID, self).__init__()
         self.maxVel, self.maxAng = maxVel, maxAng
         self.vel_gains = vel_gains
         self.angle_gains = angle_gains
