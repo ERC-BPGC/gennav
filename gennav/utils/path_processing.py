@@ -1,5 +1,6 @@
-from .trajectory import Trajectory
-
+from gennav.utils.common import Trajectory, RobotState
+from gennav.utils.geometry import Point, OrientationRPY
+import numpy as np
 
 def los_optimizer(traj, env):
     """
@@ -55,27 +56,78 @@ def los_optimizer(traj, env):
     return optimized_path
 
 
-def split_path(path, threshold):
+def split_path(traj, threshold):
     """Split straight line portions of the path into equal parts
         if larger than a threshold.
         For each line segment in the path, if the segment is above
         a threshold, points are inserted in equal distance, splitting
         it up into multiple segments.
         Args:
-            path: list of tuples containing coordinates for a point in path..
+            traj: (gennav.utils.common.Trajectory): the trajectory to be split up
             threshold: length above which segments should be split up.
         Returns:
-            Split path as a list of tuples containing coordinates.
+            gennav.utils.common.Trajectory : split up trajectory
     """
-    # TODO: Fix this code
+    path = traj.path
+    i = 0
+    while i <= len(path) - 1:
+        vec1 = np.array([path[i].position.x, path[i].position.y, path[i].position.z])
+        vec2 = np.array([path[i+1].position.x, path[i+1].position.y, path[i+1].position.z])
+        if np.linalg.norm(vec2-vec1) > threshold:
+            vec3 = vec1 + ((vec2 - vec1) * (threshold / np.linalg.norm(vec2 - vec1)))
+            state = RobotState()
+            state.position = Point(vec3[0], vec3[1], vec3[2])
+            state.orientation = path[i].orientation
+            path.insert(i+1, state)
+        i += 1
 
-    # split_path = []
+    traj.path = path
 
-    # for i in range(len(path) - 1):
-    #     split_path.append(path[i])
+    return traj
 
-    #     dist = math.sqrt((path[i][0] - path[i + 1][0])**2
-    #                         + (path[i][1] - path[i + 1][1])**2)
-    #     if dist > threshold:
-    #         number_of_segments = dist // threshold
-    #         for j in range(1, number_of_segments):
+    def polygonFit(traj,env,deg=3, threshold=1, ret_vel_profile = False):
+        """
+            Fits a polyonomial of given degree to the trajectory taking into account 
+            Args:
+                traj (gennav.utils.common.Trajectory) : the trajectory to optimise
+                env (gennav.utils.Environment) : to environment for collision checking
+                deg (int default = 3) : the degree of polynomial to be fit into
+                threshold(float default = 1) : threshold to break the control points
+                ret_vel_profile (bool default=False) : returns a velocity profle according to the
+                    timestamps in the trajcetory
+            Returns:
+                new trajectory (gennav.utils.common.trajectory)
+        """
+
+        X = [p.position.x for p in traj.path]
+        y = [p.position.y for p in traj.path]
+
+        poly = np.polynomial.polynomial.Polynomial.fit(X, y, deg)
+        polyDer = poly.deriv(1)
+        x = list(np.arange(X[0], X[-1], threshold))
+        y = []
+        yaws = []
+        for x_ in x:
+            y.append(poly(x_))
+            yaws.append(polyDer(x_))
+        rs = [RobotState(position=Point(x[i], y[i], 0), orientation=OrientationRPY(0, 0, yaws[i])) for i in range(len(x))]
+        traj_new = Trajectory(path=rs)
+
+        # TODO: Velocity Profile
+        # Velocity Profile : Velocity profile might depend upon the controller
+        # TODO: Collision checking and correction
+        # Look at some good algos that can incorporate collision checking
+        
+        return traj_new
+
+        
+
+        
+
+        
+
+
+
+    
+        
+

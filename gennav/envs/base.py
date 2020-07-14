@@ -13,7 +13,7 @@ class Environment(object):
         This method needs to be implemented in the specific env implementation.
 
         Args:
-            state (gennav.utils.RoboState): State to be checked
+            state (gennav.utils.RobotState): State to be checked
 
         Returns:
             bool: True if state is valid otherwise False
