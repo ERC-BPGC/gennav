@@ -5,6 +5,7 @@ from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
+
 # from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
 
 env = Environment()
@@ -12,7 +13,6 @@ env = Environment()
 
 class RRT(Planner):
     """RRT Planner Class.
-
     Attributes:
         sample_area: area for sampling random points (min,max)
         sampler: function to sample random points in sample_area
@@ -31,7 +31,6 @@ class RRT(Planner):
 
     def plan(self, start_point, goal_point, env):
         """Plans path from start to goal avoiding obstacles.
-
         Args:
             start_point: Point (from gennav.utils.geometry) with start point coordinates.
             end_point: Point (from gennav.utils.geometry) with end point coordinates.
@@ -64,7 +63,9 @@ class RRT(Planner):
         if not env.get_traj_status(traj):
             while True:
                 # Sample random point in specified area
-                rnd_point = self.sampler(self.sample_area, goal_point, self.goal_sample_rate)
+                rnd_point = self.sampler(
+                    self.sample_area, goal_point, self.goal_sample_rate
+                )
 
                 # Find nearest node to the sampled point
 
