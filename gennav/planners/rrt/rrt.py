@@ -1,13 +1,11 @@
 import math
 
-from gennav.envs import Environment, ScanEnv
+from gennav.envs import ScanEnv
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
 from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
-
-env = Environment()
 
 
 class RRT(Planner):
