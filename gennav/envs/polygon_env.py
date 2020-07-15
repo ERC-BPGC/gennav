@@ -26,11 +26,12 @@ class PolygonEnv(Environment):
             Returns:
                 bool : True if collision is detected
         """
+        collision = False
         for obst in obstacles:
             if LineString(points).intersects(Polygon(obst)):
-                return True
-        else:
-            return False
+                collision = True
+                break
+        return collision
 
     def get_status(self, state):
         """Get whether a given state is valid within the given environment
@@ -44,11 +45,12 @@ class PolygonEnv(Environment):
             bool : True if the state is valid, False otherwise
         """
         position = Point(state.position.x, state.position.y, state.position.z)
+        valid = True
         for obst in self.obstacle_list:
             if position.within(Polygon(obst)):
-                return False
-        else:
-            return True
+                valid = False
+                break
+        return valid
 
     def get_traj_status(self, traj):
         """Get whether a given trajectory is valid within the given environment
