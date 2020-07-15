@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
-from shapely.geometry import Polygon, PolygonPatch
+from shapely.geometry import Polygon
+from descartes import PolygonPatch
 
 
 def visualize_path(traj, env):
@@ -16,7 +17,7 @@ def visualize_path(traj, env):
     plt.clf()
 
     # Plot each point in the path
-    plt.plot([x for (x, _) in path], [y for (_, y) in path])
+    plt.plot([p.position.x for p in path], [p.position.y for p in path], color="red")
 
     # Draw the obstacles in the environment
     for obstacle in obstacle_list:
