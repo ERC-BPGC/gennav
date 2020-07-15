@@ -1,4 +1,4 @@
-from .trajectory import Trajectory
+from gennav.utils.common import Trajectory
 
 
 def los_optimizer(traj, env):
@@ -53,29 +53,3 @@ def los_optimizer(traj, env):
             return optimized_path
 
     return optimized_path
-
-
-def split_path(path, threshold):
-    """Split straight line portions of the path into equal parts
-        if larger than a threshold.
-        For each line segment in the path, if the segment is above
-        a threshold, points are inserted in equal distance, splitting
-        it up into multiple segments.
-        Args:
-            path: list of tuples containing coordinates for a point in path..
-            threshold: length above which segments should be split up.
-        Returns:
-            Split path as a list of tuples containing coordinates.
-    """
-    # TODO: Fix this code
-
-    # split_path = []
-
-    # for i in range(len(path) - 1):
-    #     split_path.append(path[i])
-
-    #     dist = math.sqrt((path[i][0] - path[i + 1][0])**2
-    #                         + (path[i][1] - path[i + 1][1])**2)
-    #     if dist > threshold:
-    #         number_of_segments = dist // threshold
-    #         for j in range(1, number_of_segments):

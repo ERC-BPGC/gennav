@@ -31,7 +31,7 @@ class Node:
         )
 
 
-class RRTSTAR:
+class RRTStar:
     def __init__(
         self,
         collision_check_function,
