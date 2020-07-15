@@ -1,5 +1,6 @@
 from gennav.envs import Environment, PolygonEnv
 from gennav.planners.rrt.rrt import RRT
+from gennav.utils import Trajectory, RobotState
 from gennav.utils.path_processing import los_optimizer as path_optimizer
 from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
 
@@ -25,6 +26,12 @@ def test_rrt():
         path, node_list = my_tree.plan((1, 1), (10, 10), poly)
 
         # RRT.visualize_tree(node_list, obstacle_list)
+        
+        # Convert path (list of Nodes) to Tajectory (list of RobotStates) 
+        for node in path:
+            node = RobotState(position=node.state.position)
+        path = Trajectory(path)
+        
         optimized_path = path_optimizer(path, poly)
         # from gennav.envs.common import visualize_path
         # visualize_path(optimized_path, poly)
