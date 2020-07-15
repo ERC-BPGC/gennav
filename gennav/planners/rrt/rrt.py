@@ -23,7 +23,7 @@ class RRT(Planner):
     def __init__(self, sample_area, sampler, expand_dis=0.1, goal_sample_rate=0.15):
         """Init RRT Parameters."""
 
-        RRT.__init__(self)
+        # RRT.__init__(self)
         self.sample_area = sample_area
         self.sampler = sampler
         self.expand_dis = expand_dis
