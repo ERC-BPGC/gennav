@@ -1,4 +1,4 @@
-from shapely.geometry import OrientationRPY, Point, Vector3D
+from .geometry import OrientationRPY, Point, Vector3D
 
 
 class RobotState:
