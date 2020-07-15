@@ -5,9 +5,9 @@ from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
-from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
+# from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
 
-env_ = Environment()
+env = Environment()
 
 
 class RRT(Planner):
@@ -15,15 +15,17 @@ class RRT(Planner):
 
     Attributes:
         sample_area: area for sampling random points (min,max)
-        # sampler: function to sample random points in sample_area
+        sampler: function to sample random points in sample_area
         expand_dis: distance to expand tree by at each step
         goal_sample_rate: rate at which to sample goal during random sampling
     """
 
-    def __init__(self, sample_area, expand_dis=0.1, goal_sample_rate=0.15):
+    def __init__(self, sample_area, sampler, expand_dis=0.1, goal_sample_rate=0.15):
         """Init RRT Parameters."""
 
+        RRT.__init__(self)
         self.sample_area = sample_area
+        self.sampler = sampler
         self.expand_dis = expand_dis
         self.goal_sample_rate = goal_sample_rate
 
@@ -59,10 +61,10 @@ class RRT(Planner):
         traj = Trajectory(
             [RobotState(position=start_point), RobotState(position=goal_point)]
         )
-        if not env_.get_traj_status(traj):
+        if not env.get_traj_status(traj):
             while True:
                 # Sample random point in specified area
-                rnd_point = sampler(self.sample_area, goal_point, self.goal_sample_rate)
+                rnd_point = self.sampler(self.sample_area, goal_point, self.goal_sample_rate)
 
                 # Find nearest node to the sampled point
 
@@ -101,7 +103,7 @@ class RRT(Planner):
                 )
 
                 # Check whether new point is inside an obstacles
-                if not env_.get_status(RobotState(position=new_point)):
+                if not env.get_status(RobotState(position=new_point)):
                     new_point.x = float("nan")
                     new_point.y = float("nan")
                     continue
@@ -125,7 +127,7 @@ class RRT(Planner):
                 traj = Trajectory(
                     [RobotState(position=new_point), RobotState(position=goal_point)]
                 )
-                if distance_to_goal < self.expand_dis or env_.get_traj_status(traj):
+                if distance_to_goal < self.expand_dis or env.get_traj_status(traj):
                     goal_node.parent = node_list[-1]
                     node_list.append(goal_node)
                     print("Goal reached!")
