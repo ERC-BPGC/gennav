@@ -1,6 +1,6 @@
+from descartes import PolygonPatch
 from matplotlib import pyplot as plt
 from shapely.geometry import Polygon
-from descartes import PolygonPatch
 
 
 def visualize_path(traj, env):

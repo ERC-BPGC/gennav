@@ -1,6 +1,5 @@
-from gennav.utils.common import Trajectory, RobotState
-from gennav.utils.geometry import Point, OrientationRPY
-import numpy as np
+from gennav.utils.common import Trajectory
+
 
 def los_optimizer(traj, env):
     """
@@ -54,16 +53,3 @@ def los_optimizer(traj, env):
             return optimized_path
 
     return optimized_path
-
-
-        
-
-        
-
-        
-
-
-
-    
-        
-

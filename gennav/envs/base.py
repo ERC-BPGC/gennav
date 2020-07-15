@@ -45,7 +45,7 @@ class Environment(object):
         """
         raise NotImplementedError
 
-    def nearest_obstacle_distance(self,state,*args, **kwargs):
+    def nearest_obstacle_distance(self, state, *args, **kwargs):
         """ Get the distacne to nearest obstacle.
 
         This method needs to be implemented in the specific env implementation
