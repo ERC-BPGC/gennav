@@ -1,16 +1,16 @@
 import math
 
-from matplotlib import pyplot as plt
-
-from descartes import PolygonPatch
+from gennav.envs import Environment, ScanEnv
+from gennav.planners import Planner
+from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
-from gennav.utils.planner import check_intersection
-from shapely.geometry import Point, Polygon
+from gennav.utils.geometry import Point
+from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
 
-# from gennav.planners.samplers.samplers import uniform_adjustable_random_sampler as sampler
+env = Environment()
 
 
-class RRT:
+class RRT(Planner):
     """RRT Planner Class.
 
     Attributes:
@@ -20,27 +20,25 @@ class RRT:
         goal_sample_rate: rate at which to sample goal during random sampling
     """
 
-    def __init__(self, sample_area, sampler, expand_dis=0.1, goal_sample_rate=0.15):
+    def __init__(self, sample_area, expand_dis=0.1, goal_sample_rate=0.15):
         """Init RRT Parameters."""
 
+        RRT.__init__(self)
         self.sample_area = sample_area
-        self.sampler = sampler
         self.expand_dis = expand_dis
         self.goal_sample_rate = goal_sample_rate
 
-    def plan(self, start_point, goal_point, obstacle_list, animation=False):
+    def plan(self, start_point, goal_point, env):
         """Plans path from start to goal avoiding obstacles.
 
         Args:
-            start_point: Point with start point coordinates.
-            end_point: Point with end point coordinates.
-            obstacle_list: list of obstacles which themselves are list of points
-            animation: flag for showing planning visualization (default False)
-
+            start_point: Point (from gennav.utils.geometry) with start point coordinates.
+            end_point: Point (from gennav.utils.geometry) with end point coordinates.
+            env: Base class for an envrionment.
         Returns:
-            A list of points representing the path determined from
+            A list of points (Point from gennav.utils.geometry) representing the path determined from
             start to goal while avoiding obstacles.
-            A list containing just the start point means path could not be planned.
+            A list containing just the start point (Point from gennav.utils.geometry) means path could not be planned.
         """
 
         # Initialize start and goal nodes
@@ -59,12 +57,13 @@ class RRT:
         distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2 + del_z ** 2)
 
         # Loop to keep expanding the tree towards goal if there is no direct connection
-        if check_intersection([start_point, goal_point], obstacle_list):
+        traj = Trajectory(
+            [RobotState(position=start_point), RobotState(position=goal_point)]
+        )
+        if not ScanEnv.get_traj_status(traj):
             while True:
                 # Sample random point in specified area
-                rnd_point = self.sampler(
-                    self.sample_area, goal_point, self.goal_sample_rate
-                )
+                rnd_point = sampler(self.sample_area, goal_point, self.goal_sample_rate)
 
                 # Find nearest node to the sampled point
 
@@ -94,21 +93,18 @@ class RRT:
 
                 new_point = Point()
 
-                new_point.x = (
-                    nearest_node.position.x + self.expand_dis * math.cos(theta)
+                new_point.x = nearest_node.position.x + self.expand_dis * math.cos(
+                    theta
                 )
                 new_point.y = (
-                    nearest_node.position.y + self.expand_dis * math.sin(theta)
+                    nearest_node.position.y + self.expand_dis * math.sin(theta),
                 )
-                new_point.z = nearest_node.position.z
 
                 # Check whether new point is inside an obstacles
-                for obstacle in obstacle_list:
-                    if new_point.within(Polygon(obstacle)):
-                        new_point.x = float("nan")
-                        new_point.y = float("nan")
-                        new_point.z = float("nan")
-                        continue
+                if not ScanEnv.get_status(RobotState(position=new_point)):
+                    new_point.x = float("nan")
+                    new_point.y = float("nan")
+                    continue
 
                 # Expand tree
                 if math.isnan(new_point.x):
@@ -126,9 +122,10 @@ class RRT:
                 )
                 distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2 + del_z ** 2)
 
-                if distance_to_goal < self.expand_dis or not check_intersection(
-                    [new_node, goal_node], obstacle_list
-                ):
+                traj = Trajectory(
+                    [RobotState(position=new_point), RobotState(position=goal_point)]
+                )
+                if distance_to_goal < self.expand_dis or ScanEnv.get_traj_status(traj):
                     goal_node.parent = node_list[-1]
                     node_list.append(goal_node)
                     print("Goal reached!")
@@ -148,46 +145,4 @@ class RRT:
             last_node = node.parent
         path.append(start)
 
-        if animation is True:
-            RRT.visualize_tree(node_list, obstacle_list)
-
         return list(reversed(path)), node_list
-
-    @staticmethod
-    def visualize_tree(node_list, obstacle_list, rnd_point=None):
-        """Draw the tree along with randomly sampled point.
-
-            Args:
-                node_list: list of nodes in the tree.
-                obstacle_list: list of obstactles.
-                rnd_point: randomly sampled point.
-
-            Returns:
-                Nothing. Function is used to draw the tree.
-        """
-
-        # Clear the figure
-        plt.clf()
-
-        # Plot randomly sampled point
-        if rnd_point is not None:
-            plt.plot(rnd_point.x, rnd_point.y, "^k")
-
-        # Plot each edge of the tree
-        for node in node_list:
-            if node.parent is not None:
-                plt.plot(
-                    [node.position.x, node_list[node_list.index(node.parent)].x],
-                    [node.position.y, node_list[node_list.index(node.parent)].y],
-                    "-g",
-                )
-
-        # Draw the obstacles in the environment
-        for obstacle in obstacle_list:
-            obstacle_polygon = Polygon(obstacle)
-            fig = plt.figure(1, figsize=(5, 5), dpi=90)
-            ax = fig.add_subplot(111)
-            poly_patch = PolygonPatch(obstacle_polygon)
-            ax.add_patch(poly_patch)
-
-        plt.show()
