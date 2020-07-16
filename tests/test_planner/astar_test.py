@@ -1,4 +1,4 @@
-from gennav.planners.graph_search_algorithms.astar import astar
+from gennav.planners.graph_search.astar import astar
 
 
 def test_astar():
