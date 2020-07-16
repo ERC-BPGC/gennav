@@ -1,4 +1,3 @@
-
 from gennav.envs.polygon_env import PolygonEnv
 from gennav.planners.rrt.rrt import RRT
 from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
