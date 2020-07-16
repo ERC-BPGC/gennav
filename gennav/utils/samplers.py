@@ -1,4 +1,5 @@
 import random
+from math import cos, pi, sin
 
 
 def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
@@ -34,3 +35,21 @@ def uniform_random_sampler(sample_area):
         random.uniform(sample_area[0], sample_area[1]),
         random.uniform(sample_area[0], sample_area[1]),
     )
+
+
+def uniform_random_circular_sampler(r):
+    """Randomly samples point in a circular region of radius r around the origin.
+        Args:
+            r: radius of the circle.
+        Return:
+            Randomly selected point as tuple.
+    """
+    # Generate a random angle theta.
+    theta = 2 * pi * random.random()
+    u = random.random() + random.random()
+    if u > 1:
+        a = 2 - u
+    else:
+        a = u
+
+    return (r * a * cos(theta), r * a * sin(theta))
