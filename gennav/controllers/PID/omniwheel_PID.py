@@ -1,4 +1,4 @@
-from ...utils.robot_state import Velocity
+from ...utils.common import Velocity
 from ..base import Controller
 from .common import PIDGains
 
