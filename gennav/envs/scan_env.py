@@ -1,23 +1,17 @@
 #!/usr/bin/env python
-import os
+import cmath
+import math
 
-try:
-    from gennav.core import ObstacleChecker
-    import numpy as np
-    import math
-    import cmath
-    from shapely.geometry import LineString
-    import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import pyplot as plt
+from shapely.geometry import LineString
 
-
-except Exception as e:
-    print("Import Error in: " + os.path.abspath(__file__))
-    print(e)
+from .base import Environment
 
 
-class CheckIndividualPoints(ObstacleChecker):
+class ScanEnv(Environment):
     def __init__(self, scan_=None, bot_size=0.4, ang_range=[0, 2 * np.pi], viz=False):
-        ObstacleChecker.__init__(self)
+        ScanEnv.__init__(self)
         self._scan = None
         self._bot_size = bot_size
         self._ang_range = ang_range
@@ -38,12 +32,20 @@ class CheckIndividualPoints(ObstacleChecker):
             self._make_line_obstacle_ind()
             self._make_obstacles()
 
-    def point_collide(self, point):
+    def get_status(self, state):
+        """ Get whether a given state is valid within the environment.
 
+        Checks whether position of given state is clear of all points in the
+        scan by a certain threshold given as the robot size.
+
+        Args:
+            state (gennav.utils.RoboState): State to be checked
+
+        Returns:
+            bool: True if state is valid otherwise False
         """
-        """
+        point = state.position
         phi = math.atan2(point.x, point.y)
-
         rho = math.sqrt(point.x ** 2 + point.y ** 2)
 
         if self._viz:
@@ -61,9 +63,19 @@ class CheckIndividualPoints(ObstacleChecker):
                 return True
         return False
 
-    def path_collide(self, path):
+    def get_traj_status(self, traj):
+        """ Get whether a given trajectory is valid within the environment.
+
+        Checks if the path is clear of all obstacles by a certain threshold
+        given as the robot size.
+
+        Args:
+            state (gennav.utils.Trajectory): Trajectory to be checked
+
+        Returns:
+            bool: True if state is valid otherwise False
         """
-        """
+        path = traj.path
         path_coords = [(p.position.x, p.position.y) for p in path.poses]
         line_path = LineString(path_coords)
 
@@ -171,11 +183,19 @@ class CheckIndividualPoints(ObstacleChecker):
 
         plt.show()
 
-    def get_scan(self):
+    @property
+    def scan(self):
         return self._scan
 
-    def set_scan(self, msg):
-        self._scan = msg
+    def update(self, data):
+        """ Update the environment.
+
+        Updates internal representation with new scan data.
+
+        Args:
+            data: The updated scan data.
+        """
+        self._scan = data
         self._pt_ang = np.arange(
             self._ang_range[0],
             self._ang_range[1],
@@ -186,5 +206,3 @@ class CheckIndividualPoints(ObstacleChecker):
 
         if self._viz:
             self._visualize()
-
-    scan = property(get_scan, set_scan)

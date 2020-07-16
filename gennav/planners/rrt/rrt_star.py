@@ -1,8 +1,7 @@
 import math
 
-import matplotlib.pyplot as plt
 import numpy as np
-
+from matplotlib import pyplot as plt
 from utils_scan import adjustable_random_sampler as sampler
 from utils_scan import (
     check_intersection_scan,
@@ -215,7 +214,7 @@ class RRTStar(object):
             # If costs is empty continue
             try:
                 min_cost = min(costs)
-            except:
+            except IndexError:
                 continue
 
             # Calculating the minimum cost and selecting the node for which it occurs as parent child
