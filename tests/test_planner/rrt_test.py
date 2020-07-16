@@ -1,7 +1,6 @@
+from gennav.envs import PolygonEnv
 from gennav.planners.rrt.rrt import RRT
-from gennav.planners.samplers import uniform_adjustable_random_sampler as sampler
-from gennav.utils.planner import check_intersection
-from gennav.utils.planner import los_optimizer as path_optimizer
+from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
 
 
 def test_rrt():
@@ -14,16 +13,17 @@ def test_rrt():
         ],
     ]
 
+    poly = PolygonEnv()
+    # poly.update(general_obstacles_list)
+
     for obstacles in general_obstacles_list:
-        obstacle_list = obstacles
+        poly.update(obstacles)
 
         # Instatiate rrt planner object
         my_tree = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
-        path, node_list = my_tree.plan((1, 1), (10, 10), obstacle_list)
+        path = my_tree.plan((1, 1), (10, 10), poly)
 
-        # RRT.visualize_tree(node_list, obstacle_list)
-        optimized_path = path_optimizer(path, obstacle_list)
-        # from gennav.utils.planner import visualize_path
-        # visualize_path(optimized_path, obstacle_list)
+        # from gennav.envs.common import visualize_path
+        # visualize_path(optimized_path, poly)
 
-        assert check_intersection(optimized_path, obstacle_list) is False
+        assert poly.get_traj_status(path) is True
