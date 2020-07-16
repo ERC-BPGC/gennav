@@ -1,14 +1,11 @@
 import math
 
-from gennav.envs import Environment
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
 
 # from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
-
-env = Environment()
 
 
 class RRT(Planner):
@@ -144,8 +141,9 @@ class RRT(Planner):
 
         while node_list[node_list.index(last_node)].parent is not None:
             node = node_list[node_list.index(last_node)]
-            path.append(node)
+            path.append(RobotState(position=node.state.position))
             last_node = node.parent
-        path.append(start)
+        path.append(RobotState(position=start.state.position))
+        path = Trajectory(list(reversed(path)))
 
-        return list(reversed(path)), node_list
+        return path
