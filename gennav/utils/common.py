@@ -9,7 +9,7 @@ class RobotState:
             orientation : class utils.common.OrientationRPY (default = utils.common.OrientationRPY)
     """
 
-    def __init__(self, position = Point(), orientation = OrientationRPY()):
+    def __init__(self, position=Point(), orientation=OrientationRPY()):
 
         self.position = position
         self.orientation = orientation
@@ -43,7 +43,7 @@ class Velocity:
             angular : class utils.common.Vector3D (default = utils.common.Vector3D)
     """
 
-    def __init__(self, linear = Vector3D(), angular = Vector3D()):
+    def __init__(self, linear=Vector3D(), angular=Vector3D()):
         self.linear = linear
         self.angular = angular
 
@@ -77,7 +77,7 @@ class Trajectory:
         timestamps (:obj:`list` of :obj:`datetime.datetime`, optional): timstamps for each state
     """
 
-    def __init__(self, path, timestamps = None):
+    def __init__(self, path, timestamps=None):
         self.path = path
         self.timestamps = timestamps
 
@@ -92,18 +92,18 @@ class Node:
 
     """
 
-    def __init__(self, state = RobotState(), parent = None):
+    def __init__(self, state=RobotState(), parent=None):
         self.state = state
         self.parent = parent
 
     @classmethod
     def from_coordinates(cls, coordinates):
         """Create Node from coordinates (type of arg: Point)."""
-        state = RobotState(position = coordinates)
+        state = RobotState(position=coordinates)
         return cls(state)
 
     @classmethod
     def from_orientation(cls, orientation_rpy):
         """Create Node from orientation (type of arg: OrientationRPY)."""
-        state = RobotState(orientation = orientation_rpy)
+        state = RobotState(orientation=orientation_rpy)
         return cls(state)
