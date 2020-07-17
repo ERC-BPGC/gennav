@@ -91,7 +91,7 @@ class PolygonEnv(Environment):
         Returns:
             dist (float) : distance to the nearest obstacle
             obj (shapely.Polygon) : nearest obstacle
-
+        
         """
         point = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
         nearest_obst = sorted(self.obstacle_list, key=lambda obj: point.distance(Polygon(obj)))[
@@ -109,7 +109,6 @@ class PolygonEnv(Environment):
             sort (bool default = False) : returns the distances in ascending form when set true
         Returns :
             min_dist (list) : list containing minimum distances(float) of each obstacle from the robot state
-
         """
         point = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
         min_dist = [point.distance(Polygon(obj)) for obj in obstacle_list]
