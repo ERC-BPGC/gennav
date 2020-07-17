@@ -59,7 +59,7 @@ class Environment(object):
         raise NotImplementedError
 
     def minimum_distance(self, state, *args, **kwargs):
-        """ Gives a list of minimum distance of each obstacle from the robot state. 
+        """ Gives a list of minimum distance of each obstacle from the robot state.
 
         This method needs to be implemented in the specific env implementation.
 
