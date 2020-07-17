@@ -1,5 +1,6 @@
 from gennav.envs import PolygonEnv
 from gennav.planners.rrt.rrt import RRT
+from gennav.utils.geometry import Point
 from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
 
 
@@ -21,9 +22,9 @@ def test_rrt():
 
         # Instatiate rrt planner object
         my_tree = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
-        path = my_tree.plan((1, 1), (10, 10), poly)
+        path = my_tree.plan(Point(1, 1), Point(10, 10), poly)
 
         # from gennav.envs.common import visualize_path
-        # visualize_path(optimized_path, poly)
+        # visualize_path(path, poly)
 
         assert poly.get_traj_status(path) is True
