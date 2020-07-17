@@ -97,17 +97,10 @@ class RRT(Planner):
                     nearest_node.state.position.x + self.expand_dis * math.cos(theta)
                 )
                 new_point.y = (
-                    nearest_node.state.position.y + self.expand_dis * math.sin(theta),
+                    nearest_node.state.position.y + self.expand_dis * math.sin(theta)
                 )
-
                 # Check whether new point is inside an obstacles
                 if not env.get_status(RobotState(position=new_point)):
-                    new_point.x = float("nan")
-                    new_point.y = float("nan")
-                    continue
-
-                # Expand tree
-                if math.isnan(new_point.x):
                     continue
                 else:
                     new_node = Node.from_coordinates(new_point)
