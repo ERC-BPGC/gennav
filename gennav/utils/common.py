@@ -92,6 +92,18 @@ class Node:
 
     """
 
-    def __init__(self, state, parent=None):
+    def __init__(self, state=RobotState(), parent=None):
         self.state = state
         self.parent = parent
+
+    @classmethod
+    def from_coordinates(cls, coordinates):
+        """Create Node from coordinates (type of arg: Point)."""
+        state = RobotState(position=coordinates)
+        return cls(state)
+
+    @classmethod
+    def from_orientation(cls, orientation_rpy):
+        """Create Node from orientation (type of arg: OrientationRPY)."""
+        state = RobotState(orientation=orientation_rpy)
+        return cls(state)

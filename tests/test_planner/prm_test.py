@@ -1,7 +1,7 @@
-from gennav.planners.prm import PRM
-from gennav.planners.samplers import uniform_random_sampler as sampler
-from gennav.utils.planner import check_intersection
-from gennav.utils.planner import los_optimizer as path_optimizer
+from gennav.envs import PolygonEnv
+from gennav.planners.prm.prm import PRM
+from gennav.utils.geometry import Point
+from gennav.utils.samplers import uniform_random_sampler as sampler
 
 
 def test_prm_plan():
@@ -14,20 +14,18 @@ def test_prm_plan():
         ],
     ]
 
+    poly = PolygonEnv()
     for obstacles in general_obstacles_list:
-        obstacle_list = obstacles
+        poly.update(obstacles)
 
         # Instatiate prm constructer object
-        start = (0, 0)
-        end = (12, 10)
+        start = Point(0, 0)
+        end = Point(12, 10)
         my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=100)
-        path = my_tree.plan(start, end, obstacle_list)
-        if len(path) > 1:
-            optimized_path = path_optimizer(path, obstacle_list)
-            # from gennav.utils.planner import visualize_path
-            # visualize_path(optimized_path, obstacle_list)
-            if len(optimized_path) > 1:
-                assert check_intersection(optimized_path, obstacle_list) is False
+        path = my_tree.plan(start, end, poly)
+        # from gennav.envs.common import visualize_path
+        # visualize_path(path, poly)
+        assert poly.get_traj_status(path) is True
 
 
 def test_prm_construct():
@@ -39,11 +37,12 @@ def test_prm_construct():
             [(8, 2), (8, 7), (10, 7), (10, 2)],
         ],
     ]
-
+    poly = PolygonEnv()
     for obstacles in general_obstacles_list:
-        obstacle_list = obstacles
+        poly.update(obstacles)
 
         # Instatiate prm constructer object
         my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=50)
-        graph = my_tree.construct(obstacle_list)  # noqa: F841
-        # PRM.visualize_graph(graph,obstacle_list)
+        graph = my_tree.construct(poly)  # noqa: F841
+        # from gennav.utils.visualisation import visualize_graph
+        # visualize_graph(graph,poly)

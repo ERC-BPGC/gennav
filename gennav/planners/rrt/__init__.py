@@ -1,2 +1,2 @@
-from gennav.planners.rrt.rrt import rrt  # noqa: F401
-from gennav.planners.rrt.rrt_star import RRTStar  # noqa: F401
+from gennav.planners.rrt.rrt import RRT  # noqa: F401
+from gennav.planners.rrt.rrtstar import RRTStar  # noqa: F401

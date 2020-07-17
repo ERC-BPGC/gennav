@@ -3,21 +3,23 @@ from matplotlib import pyplot as plt
 from shapely.geometry import Polygon
 
 
-def visualize_path(traj, env):
+def visualize_graph(graph, env):
     """
-    Draw the path along with environment obstacles.
+    Draw the graph along with environment obstacles.
 
     Args:
-        traj (gennav.utils.Trajectory): list of points in the path as tuples.
+        graph (dict): the dict representing the graph.
         env (gennav.envs.Environment): list of obtacles.
     """
-    path = traj.path
     obstacle_list = env.obstacle_list
     # Clear the figure
     plt.clf()
-
-    # Plot each point in the path
-    plt.plot([p.position.x for p in path], [p.position.y for p in path], color="red")
+    # Plot each edge of the tree
+    for node in graph:
+        for neighbour in graph[node]:
+            plt.plot(
+                [node.x, neighbour.x], [node.y, neighbour.y], color="red",
+            )
 
     # Draw the obstacles in the environment
     for obstacle in obstacle_list:
