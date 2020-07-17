@@ -1,6 +1,6 @@
 import math
 
-from ...utils.common import Velocity, RobotState
+from ...utils.common import RobotState, Velocity
 from ..base import Controller
 from .common import PIDGains
 
@@ -66,7 +66,7 @@ class DiffPID(Controller):
 
         self.velocity.linear.x = vel
         self.velocity.angular.z = (ang) - (self.robot_state.orientation.yaw)
-        self.velocity = constrain(self.velocity)
+        self.velocity = self.constrain(self.velocity)
 
         self.dist_diff = dist_error - self.dist_diff
         self.dist_integral += dist_error
@@ -77,7 +77,6 @@ class DiffPID(Controller):
         return self.velocity
 
     def constrain(self, velocity):
-        
         """
             Constrains the velocity within the given limits
             Args:
@@ -87,14 +86,13 @@ class DiffPID(Controller):
             velocity.linear.x = self.maxVel
         elif velocity.linear.x < -self.maxVel:
             velocity.linear.x = -self.maxVel
-       
         if velocity.angular.z > self.maxAng:
             velocity.angular.z = self.maxAng
         elif velocity.angular.z < -self.maxAng:
             velocity.angular.z = -self.maxAng
-       
+
         return velocity
-            
+
     def parameters(self):
         return dict(
             {
