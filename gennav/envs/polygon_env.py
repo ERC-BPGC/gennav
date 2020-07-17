@@ -2,8 +2,10 @@
     Polygon Environment Class
 """
 
+import shapely
+from shapely.geometry import LineString, Polygon
+
 from gennav.envs.base import Environment
-from shapely.geometry import LineString, Point, Polygon
 
 
 class PolygonEnv(Environment):
@@ -44,7 +46,9 @@ class PolygonEnv(Environment):
         Returns:
             bool : True if the state is valid, False otherwise
         """
-        position = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
+        position = shapely.geometry.Point(
+            state.position.x, state.position.y, state.position.z
+        )
         valid = True
         for obst in self.obstacle_list:
             if position.within(Polygon(obst)):
@@ -91,15 +95,16 @@ class PolygonEnv(Environment):
         Returns:
             dist (float) : distance to the nearest obstacle
             obj (shapely.Polygon) : nearest obstacle
-        
         """
-        point = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
-        nearest_obst = sorted(self.obstacle_list, key=lambda obj: point.distance(Polygon(obj)))[
-            0
-        ]
+        point = shapely.geometry.Point(
+            state.position.x, state.position.y, state.position.z
+        )
+        nearest_obst = sorted(
+            self.obstacle_list, key=lambda obj: point.distance(Polygon(obj))
+        )[0]
         return point.distance(nearest_obst), nearest_obst
 
-    def minimum_distances(self, state, sort = False):
+    def minimum_distances(self, state, sort=False):
         """Function to get the minimum distance of each obstacle form the robot state
 
         Uses shapely Point's distance method to obtain the minimum distances
@@ -110,8 +115,10 @@ class PolygonEnv(Environment):
         Returns :
             min_dist (list) : list containing minimum distances(float) of each obstacle from the robot state
         """
-        point = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
-        min_dist = [point.distance(Polygon(obj)) for obj in obstacle_list]
+        point = shapely.geometry.Point(
+            state.position.x, state.position.y, state.position.z
+        )
+        min_dist = [point.distance(Polygon(obj)) for obj in self.obstacle_list]
 
         if sort:
             min_dist.sort()
