@@ -1,6 +1,6 @@
 import math
 
-from gennav.utils.common import Node, RobotState
+from gennav.utils.common import Node, RobotState, Trajectory
 
 
 class NodeAstar(Node):
@@ -19,6 +19,15 @@ class NodeAstar(Node):
     def __lt__(self, other):
         return self.f < other.f
 
+    def __le__(self, other):
+        return self.f <= other.f
+
+    def __ge__(self, other):
+        return self.f >= other.f
+
+    def __gt__(self, other):
+        return self.f > other.f
+
     # Compare nodes
     def __eq__(self, other):
         if not isinstance(other, NodeAstar):
@@ -30,22 +39,23 @@ def astar(graph, start, end, heuristic={}):
     """Performs A-star search to find the shortest path from start to end
 
         Args:
-            graph(dict): Dictionary representing the graph,
+            graph (dict): Dictionary representing the graph,
                     where keys are the nodes and the
                     value is a list of all neighbouring nodes
-            start(gennav.utils.geometry.Point): Point representing key corresponding to the start point
-            end(gennav.utils.geometry.Point): Point representing key corresponding to the end point
-            heuristic(dict): Dictionary containing the heuristic values
+            start (gennav.utils.geometry.Point): Point representing key corresponding to the start point
+            end (gennav.utils.geometry.Point): Point representing key corresponding to the end point
+            heuristic (dict): Dictionary containing the heuristic values
                      for all the nodes, if not specified the default
                      heuristic is euclidean distance
         Returns:
-            path(list):A list of RobotState(gennav.utils.common.RobotState) representing the path determined from
+            path (list):A list of RobotState(gennav.utils.common.RobotState) representing the path determined from
                     start to goal.An list containing just the start point means
                      path could not be planned.
     """
     if not (start in graph and end in graph):
         path = [RobotState(position=start)]
-        return path
+        traj = Trajectory(path)
+        return traj
     open_ = []
     closed = []
     # calcula]tes heuristic for start if not provided by the user
@@ -73,7 +83,9 @@ def astar(graph, start, end, heuristic={}):
                 current_node = current_node.parent
             path.append(start_node.state)
             # returns reversed path
-            return path[::-1]
+            path = path[::-1]
+            traj = Trajectory(path)
+            return traj
         # continues to search for the goal
         # makes a list of all neighbours of the current_node
         neighbours = graph[current_node.state.position]
@@ -115,4 +127,5 @@ def astar(graph, start, end, heuristic={}):
                 open_.append(neighbour)
     # if path doesn't exsist it returns just the start point as the path
     path = [RobotState(position=start)]
-    return path
+    traj = Trajectory(path)
+    return traj

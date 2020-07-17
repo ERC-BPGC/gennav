@@ -9,10 +9,10 @@ class PRM(Planner):
     """PRM Class.
 
     Attributes:
-        sample_area(tuple): area for sampling random points (min,max)
-        sampler(function): function to sample random points in sample_area
-        r(float): maximum radius to look for neighbours
-        n(int): total no. of nodes to be sampled in sample_area
+        sample_area (tuple): area for sampling random points (min,max)
+        sampler (function): function to sample random points in sample_area
+        r (float): maximum radius to look for neighbours
+        n (int): total no. of nodes to be sampled in sample_area
     """
 
     def __init__(self, sample_area, sampler, r, n):
@@ -27,10 +27,10 @@ class PRM(Planner):
         """Constructs PRM graph.
 
         Args:
-            env: (gennav.envs.Environment) Base class for an envrionment.
+            env (gennav.envs.Environment): Base class for an envrionment.
 
         Returns:
-            graph(dict):A dict where the keys correspond to nodes and the values for each key is a list
+            graph (dict):A dict where the keys correspond to nodes and the values for each key is a list
                 of the neighbour nodes
         """
         nodes = []
@@ -73,9 +73,9 @@ class PRM(Planner):
         """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
 
         Args:
-            start_point(gennav.utils.geometry.Point): tuple with start point coordinates.
-            end_point(gennav.utils.geometry.Point): tuple with end point coordinates.
-            env: (gennav.envs.Environment) Base class for an envrionment.
+            start_point (gennav.utils.geometry.Point): tuple with start point coordinates.
+            end_point (gennav.utils.geometry.Point): tuple with end point coordinates.
+            env (gennav.envs.Environment): Base class for an envrionment.
 
         Returns:
             A list of RobotStates (Point from gennav.utils.common) representing the path determined from
@@ -108,12 +108,13 @@ class PRM(Planner):
                 e = node
         # add start_point to path
         path = [RobotState(position=start_point)]
+        traj = Trajectory(path)
         # perform astar search
         p = astar(graph, s, e)
-        if len(p) == 1:
-            return Trajectory(path)
+        if len(p.path) == 1:
+            return traj
         else:
-            path.extend(p)
+            traj.path.extend(p.path)
         # add end_point to path
-        path.append(RobotState(position=end_point))
-        return Trajectory(path)
+        traj.path.append(RobotState(position=end_point))
+        return traj
