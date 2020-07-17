@@ -1,6 +1,6 @@
 import math
 
-from ...utils.common import Velocity
+from ...utils.common import Velocity, RoboState
 from ..base import Controller
 from .common import PIDGains
 
@@ -32,6 +32,7 @@ class DiffPID(Controller):
 
         # Initialise variables
         self.velocity = Velocity()
+        self.robot_state = RoboState()
         self.dist_diff, self.angle_diff, self.dist_integral, self.angle_integral = (
             0,
             0,
@@ -63,11 +64,9 @@ class DiffPID(Controller):
             + self.angle_gains.ki * self.angle_integral
         )
 
-        vel = self.constrain(vel= vel)
-        ang = self.constrain(ang= ang)
-
         self.velocity.linear.x = vel
         self.velocity.angular.z = (ang) - (self.robot_state.orientation.yaw)
+        self.velocity = constrain(self.velocity)
 
         self.dist_diff = dist_error - self.dist_diff
         self.dist_integral += dist_error
@@ -77,27 +76,24 @@ class DiffPID(Controller):
 
         return self.velocity
 
-    def constrain(self, vel= None, ang= None):
+    def constrain(self, velocity):
+        
         """
             Constrains the velocity within the given limits
             Args:
-                vel : Translational Velocity that needs to be constrained
-                ang : Angular velocity that needs to be constrained
+                velocity : Velocity that needs to be constrained
         """
-        if vel is not None:
-            if vel > self.maxVel:
-                return self.maxVel
-            elif vel < -self.maxVel:
-                return -self.maxVel
-            else:
-                return vel
-        elif ang is not None:
-            if ang > self.maxAng:
-                return self.maxAng
-            elif ang < -self.maxAng:
-                return -self.maxAng
-            else:
-                return ang
+        if velocity.linear.x > self.maxVel:
+            velocity.linear.x = self.maxVel
+        elif velocity.linear.x < -self.maxVel:
+            velocity.linear.x = -self.maxVel
+       
+        if velocity.angular.z > self.maxAng:
+            velocity.angular.z = self.maxAng
+        elif velocity.angular.z < -self.maxAng:
+            velocity.angular.z = -self.maxAng
+       
+        return velocity
             
     def parameters(self):
         return dict(
