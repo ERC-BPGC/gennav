@@ -4,6 +4,7 @@ import math
 import time
 from math import atan2, pow, sqrt
 
+import numpy as np
 import rospy
 import tf
 from gazebo_msgs.msg import ModelState
@@ -12,8 +13,6 @@ from geometry_msgs.msg import Point, Twist
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion as efq
 from tf.transformations import quaternion_from_euler
-
-import numpy as np
 
 kp_distance = 1
 ki_distance = 0
@@ -50,7 +49,6 @@ class GotoPoint:
         if goal_z > 180 or goal_z < -180:
             print("you input wrong z range.")
             self.shutdown()
-        goal_z = np.deg2rad(goal_z)
 
         goal_distance = sqrt(
             pow(goal_x - self.position.x, 2) + pow(goal_y - self.position.y, 2)

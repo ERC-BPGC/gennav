@@ -4,14 +4,13 @@ import math
 import time
 from math import atan2, pi, pow, sqrt
 
+import numpy as np
 import rospy
 import tf
 from gazebo_msgs.msg import ModelState
 from gazebo_msgs.srv import SetModelState
 from geometry_msgs.msg import Point, Twist
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
-
-import numpy as np
 
 kp_distance = 1
 ki_distance = 0.01
@@ -27,7 +26,6 @@ class GotoPoint:
         rospy.init_node("turtlebot3_pointop_key", anonymous=False)
         rospy.on_shutdown(self.shutdown)
         self.cmd_vel = rospy.Publisher("cmd_vel", Twist, queue_size=5)
-        position = Point()
         move_cmd = Twist()
         r = rospy.Rate(10)
         self.tf_listener = tf.TransformListener()
