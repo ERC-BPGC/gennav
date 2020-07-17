@@ -1,7 +1,12 @@
 import math
-from gennav.utils.common import Node,RobotState
+
+from gennav.utils.common import Node, RobotState
+
 
 class NodeAstar(Node):
+    """Node class for Astar Node
+        Inherits from gennav.utils.common.Node
+    """
 
     # Initialize the class
     def __init__(self, state=RobotState(), parent=None):
@@ -13,16 +18,12 @@ class NodeAstar(Node):
     # Sort nodes
     def __lt__(self, other):
         return self.f < other.f
-    
+
     # Compare nodes
     def __eq__(self, other):
         if not isinstance(other, NodeAstar):
             return False
         return self.state.position == other.state.position
-
-    def __repr__(self):
-        return self.state.position
-
 
 
 def astar(graph, start, end, heuristic={}):
@@ -32,19 +33,19 @@ def astar(graph, start, end, heuristic={}):
             graph(dict): Dictionary representing the graph,
                     where keys are the nodes and the
                     value is a list of all neighbouring nodes
-            start(tuple): Tuple representing key corresponding to the start point
-            end(tuple): Tuple representing key corresponding to the end point
+            start(gennav.utils.geometry.Point): Point representing key corresponding to the start point
+            end(gennav.utils.geometry.Point): Point representing key corresponding to the end point
             heuristic(dict): Dictionary containing the heuristic values
                      for all the nodes, if not specified the default
                      heuristic is euclidean distance
         Returns:
-            path(list):A list of points representing the path determined from
+            path(list):A list of RobotState(gennav.utils.common.RobotState) representing the path determined from
                     start to goal.An list containing just the start point means
                      path could not be planned.
     """
-    # if not (start in graph and end in graph):
-    #     path = [RobotState(position=start)]
-    #     return path
+    if not (start in graph and end in graph):
+        path = [RobotState(position=start)]
+        return path
     open_ = []
     closed = []
     # calcula]tes heuristic for start if not provided by the user
@@ -67,11 +68,10 @@ def astar(graph, start, end, heuristic={}):
         if current_node.state.position == end:
             path = []
             # forms path from closed list
-            while current_node != start_node:
-                for node in closed:
-                    path.append(current_node.state)
-                    current_node = current_node.parent
-            path.append(start)
+            while current_node.parent is not None:
+                path.append(current_node.state)
+                current_node = current_node.parent
+            path.append(start_node.state)
             # returns reversed path
             return path[::-1]
         # continues to search for the goal
@@ -81,7 +81,7 @@ def astar(graph, start, end, heuristic={}):
         # checks and updates the total cost for all the neighbours
         for node in neighbours:
             # creates neighbour which can be pushed to open_ if required
-            neighbour = NodeAstar(node, current_node.state)
+            neighbour = NodeAstar(RobotState(position=node), current_node)
             # checks if neighbour is in closed
             if neighbour in closed:
                 continue
@@ -95,9 +95,7 @@ def astar(graph, start, end, heuristic={}):
             )
             # calculates heuristic for the node if not provided by the user
             if len(heuristic) == 0:
-                neighbour.h = math.sqrt(
-                    (node.x - end.x) ** 2 + (node.y - end.y) ** 2
-                )
+                neighbour.h = math.sqrt((node.x - end.x) ** 2 + (node.y - end.y) ** 2)
             else:
                 neighbour.h = heuristic[node]
             # calculates total cost
