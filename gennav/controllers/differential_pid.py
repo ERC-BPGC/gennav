@@ -1,6 +1,6 @@
 import math
 
-from ...utils.common import Velocity, RoboState
+from ...utils.common import Velocity, RobotState
 from ..base import Controller
 from .common import PIDGains
 
@@ -32,7 +32,7 @@ class DiffPID(Controller):
 
         # Initialise variables
         self.velocity = Velocity()
-        self.robot_state = RoboState()
+        self.robot_state = RobotState()
         self.dist_diff, self.angle_diff, self.dist_integral, self.angle_integral = (
             0,
             0,
@@ -40,7 +40,7 @@ class DiffPID(Controller):
             0,
         )
 
-    def _move_bot(self, traj):
+    def compute_vel(self, traj):
         """
             Given the trajectory point, it returns the velocity using in differential format
             Args:
@@ -107,7 +107,7 @@ class DiffPID(Controller):
             }
         )
 
-    def restart(self):
+    def reset(self):
         self.dist_diff, self.dist_integral, self.angle_diff, self.angle_integral = (
             0,
             0,
