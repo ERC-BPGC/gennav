@@ -1,12 +1,11 @@
 import math
+from gennav.utils.common import Node,RobotState
 
-
-class Node:
+class NodeAstar(Node):
 
     # Initialize the class
-    def __init__(self, node, parent):
-        self.node = node
-        self.parent = parent
+    def __init__(self, state=RobotState(), parent=None):
+        Node.__init__(self, state, parent)
         self.g = 0  # Distance to start node
         self.h = 0  # Distance to goal node
         self.f = 0  # Total cost
@@ -14,10 +13,16 @@ class Node:
     # Sort nodes
     def __lt__(self, other):
         return self.f < other.f
-
+    
     # Compare nodes
     def __eq__(self, other):
-        return self.node == other.node
+        if not isinstance(other, NodeAstar):
+            return False
+        return self.state.position == other.state.position
+
+    def __repr__(self):
+        return self.state.position
+
 
 
 def astar(graph, start, end, heuristic={}):
@@ -37,17 +42,17 @@ def astar(graph, start, end, heuristic={}):
                     start to goal.An list containing just the start point means
                      path could not be planned.
     """
-    if not (start in graph and end in graph):
-        path = [start]
-        return path
+    # if not (start in graph and end in graph):
+    #     path = [RobotState(position=start)]
+    #     return path
     open_ = []
     closed = []
     # calcula]tes heuristic for start if not provided by the user
     # pushes the start point in the open_ Priority Queue
 
-    start_node = Node(start, None)
+    start_node = NodeAstar(RobotState(position=start), None)
     if len(heuristic) == 0:
-        start_node.h = math.sqrt((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2)
+        start_node.h = math.sqrt((start.x - end.x) ** 2 + (start.y - end.y) ** 2)
     else:
         start_node.h = heuristic[start]
     start_node.g = 0
@@ -59,41 +64,39 @@ def astar(graph, start, end, heuristic={}):
         current_node = open_.pop(0)
         closed.append(current_node)
         # checks if the goal has been reached
-        if current_node.node == end:
+        if current_node.state.position == end:
             path = []
             # forms path from closed list
-            while current_node.parent is not None:
+            while current_node != start_node:
                 for node in closed:
-                    if node.node == current_node.parent:
-                        path.append(current_node.node)
-                        current_node = node
-                        break
+                    path.append(current_node.state)
+                    current_node = current_node.parent
             path.append(start)
             # returns reversed path
             return path[::-1]
         # continues to search for the goal
         # makes a list of all neighbours of the current_node
-        neighbours = graph[current_node.node]
+        neighbours = graph[current_node.state.position]
         # adds them to open_ if they are already present in open_
         # checks and updates the total cost for all the neighbours
         for node in neighbours:
             # creates neighbour which can be pushed to open_ if required
-            neighbour = Node(node, current_node.node)
+            neighbour = NodeAstar(node, current_node.state)
             # checks if neighbour is in closed
             if neighbour in closed:
                 continue
             # calculates weight cost
             neighbour.g = (
                 math.sqrt(
-                    (node[0] - current_node.node[0]) ** 2
-                    + (node[1] - current_node.node[1]) ** 2
+                    (node.x - current_node.state.position.x) ** 2
+                    + (node.y - current_node.state.position.y) ** 2
                 )
                 + current_node.g
             )
             # calculates heuristic for the node if not provided by the user
             if len(heuristic) == 0:
                 neighbour.h = math.sqrt(
-                    (node[0] - end[0]) ** 2 + (node[1] - end[1]) ** 2
+                    (node.x - end.x) ** 2 + (node.y - end.y) ** 2
                 )
             else:
                 neighbour.h = heuristic[node]
@@ -113,5 +116,5 @@ def astar(graph, start, end, heuristic={}):
             if flag == 1:
                 open_.append(neighbour)
     # if path doesn't exsist it returns just the start point as the path
-    path = [start]
+    path = [RobotState(position=start)]
     return path

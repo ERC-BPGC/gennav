@@ -1,5 +1,5 @@
 import random
-
+from gennav.utils.geometry import Point
 
 def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
     """Randomly sample point in area while sampling goal point
@@ -15,12 +15,16 @@ def uniform_adjustable_random_sampler(sample_area, goal, goal_sample_rate):
     """
 
     if random.random() > goal_sample_rate:
-        return (
-            random.uniform(sample_area[0], sample_area[1]),
-            random.uniform(sample_area[0], sample_area[1]),
-        )
+        new_point=Point()
+        new_point.x=random.uniform(sample_area[0], sample_area[1])
+        new_point.y=random.uniform(sample_area[0], sample_area[1])
+        return new_point
     else:
-        return goal
+        goal_point=Point
+        goal_point.x=goal[0]
+        goal_point.y=goal[1]
+        goal_point.z=goal[2]
+        return goal_point
 
 
 def uniform_random_sampler(sample_area):
@@ -30,7 +34,7 @@ def uniform_random_sampler(sample_area):
         Return:
             Randomly selected point as a tuple.
     """
-    return (
-        random.uniform(sample_area[0], sample_area[1]),
-        random.uniform(sample_area[0], sample_area[1]),
-    )
+    new_point=Point()
+    new_point.x=random.uniform(sample_area[0], sample_area[1])
+    new_point.y=random.uniform(sample_area[0], sample_area[1])  
+    return new_point
