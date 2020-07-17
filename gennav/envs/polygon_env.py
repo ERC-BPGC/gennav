@@ -44,7 +44,7 @@ class PolygonEnv(Environment):
         Returns:
             bool : True if the state is valid, False otherwise
         """
-        position = Point(state.position.x, state.position.y, state.position.z)
+        position = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
         valid = True
         for obst in self.obstacle_list:
             if position.within(Polygon(obst)):
@@ -93,7 +93,7 @@ class PolygonEnv(Environment):
             obj (shapely.Polygon) : nearest obstacle
 
         """
-        point = Point(state.position.x, state.position.y, state.position.z)
+        point = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
         nearest_obst = sorted(self.obstacle_list, key=lambda obj: point.distance(Polygon(obj)))[
             0
         ]
@@ -111,8 +111,7 @@ class PolygonEnv(Environment):
             min_dist (list) : list containing minimum distances(float) of each obstacle from the robot state
 
         """
-
-        point = Point(state.position.x, state.position.y, state.position.z)
+        point = shapely.geometry.Point(state.position.x, state.position.y, state.position.z)
         min_dist = [point.distance(Polygon(obj)) for obj in obstacle_list]
 
         if sort:
