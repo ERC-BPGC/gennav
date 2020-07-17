@@ -33,9 +33,9 @@ class RRT(Planner):
             end_point: Point (from gennav.utils.geometry) with end point coordinates.
             env: (gennav.envs.Environment) Base class for an envrionment.
         Returns:
-            A list of points (Point from gennav.utils.geometry) representing the path determined from
+            A list of RobotStates (Point from gennav.utils.common) representing the path determined from
             start to goal while avoiding obstacles.
-            A list containing just the start point (Point from gennav.utils.geometry) means path could not be planned.
+            A list containing just the start RobotState (RobotState from gennav.utils.common) means path could not be planned.
         """
 
         # Initialize start and goal nodes
@@ -97,17 +97,10 @@ class RRT(Planner):
                     nearest_node.state.position.x + self.expand_dis * math.cos(theta)
                 )
                 new_point.y = (
-                    nearest_node.state.position.y + self.expand_dis * math.sin(theta),
+                    nearest_node.state.position.y + self.expand_dis * math.sin(theta)
                 )
-
                 # Check whether new point is inside an obstacles
                 if not env.get_status(RobotState(position=new_point)):
-                    new_point.x = float("nan")
-                    new_point.y = float("nan")
-                    continue
-
-                # Expand tree
-                if math.isnan(new_point.x):
                     continue
                 else:
                     new_node = Node.from_coordinates(new_point)
