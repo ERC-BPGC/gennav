@@ -37,3 +37,24 @@ def uniform_random_sampler(sample_area):
     new_point.x = random.uniform(sample_area[0], sample_area[1])
     new_point.y = random.uniform(sample_area[0], sample_area[1])
     return new_point
+
+
+def uniform_random_circular_sampler(r):
+    """Randomly samples point in a circular region of radius r around the origin.
+        Args:
+            r: radius of the circle.
+        Return:
+            Randomly selected point as Point(gennav.utils.geometry.Point).
+    """
+    # Generate a random angle theta.
+    theta = 2 * pi * random.random()
+    u = random.random() + random.random()
+    if u > 1:
+        a = 2 - u
+    else:
+        a = u
+
+    new_point = Point()
+    new_point.x = r * a * cos(theta)
+    new_point.y = r * a * sin(theta)
+    return new_point
