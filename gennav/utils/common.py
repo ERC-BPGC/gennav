@@ -4,6 +4,7 @@ from .geometry import OrientationRPY, Point, Vector3D
 class RobotState:
     """
         Class for representing the robot state
+
         Args:
             position : class utils.common.Point (default = utils.common.Point)
             orientation : class utils.common.OrientationRPY (default = utils.common.OrientationRPY)
@@ -38,6 +39,7 @@ class RobotState:
 class Velocity:
     """
         Class for representing Velocity
+
         Args:
             linear : class utils.common.Vector3D (default = utils.common.Vector3D)
             angular : class utils.common.Vector3D (default = utils.common.Vector3D)
