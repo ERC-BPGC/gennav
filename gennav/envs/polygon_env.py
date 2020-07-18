@@ -3,9 +3,8 @@
 """
 
 import shapely
-from shapely.geometry import LineString, Polygon
-
 from gennav.envs.base import Environment
+from shapely.geometry import LineString, Polygon
 
 
 class PolygonEnv(Environment):
