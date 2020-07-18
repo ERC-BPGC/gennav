@@ -1,10 +1,16 @@
 from gennav.envs.base import Environment
 import numpy as np
 import matplotlib.pyplot as plt
-from gennav.utils.common import RobotState
+from gennav.utils.common import RobotState, Trajectory
 from gennav.utils.geometry import Point
 
 class BinaryOccupancyGrid2DEnv(Environment):
+    """Base class for a Binary Occupancy Grid 2D envrionment.
+
+        Arguments:
+            X (unsigned int) : The number of grid cells in the x-direction
+            Y (unsigned int) : the number of grid cells in the y-direction
+    """
 
     def __init__(self, X = 10, Y = 10):
         super(BinaryOccupancyGrid2DEnv, self).__init__()
@@ -38,9 +44,9 @@ class BinaryOccupancyGrid2DEnv(Environment):
         """Function that fills the occupancy grid in every update
         
             Assumptions:
-                1. RobotPose is (0, 0, 0) because the laser scan produces ranges wrt to the bot
+                1. RobotPose is considered (0, 0, 0) to accomadate the laser scan, which produces ranges wrt to the bot
                 2. The RobotPose in the occupancy grid is (X/2, Y/2, 0)
-                3. The attribut self.robotPose is the real pose of the robot wrt to the world Frame,
+                3. The attribute robotPose is the real pose of the robot wrt to the world Frame,
                     thus it helps us to calculate the transform for the queries 
         """
         self.grid[:] = 0
@@ -58,9 +64,41 @@ class BinaryOccupancyGrid2DEnv(Environment):
                         self.grid[int(x)][int(y)] = 1
             
     def get_status(self, state):
-        pass
+        """ Get whether a given state is valid within the environment.
+
+        This method needs to be implemented in the specific env implementation.
+
+        Args:
+            state (gennav.utils.RobotState): State to be checked
+
+        Returns:
+            bool: True if state is valid otherwise False
+        """
+        state = self.transform("world", "map", state)
+        point = (int(state.position.x), int(state.position.y))
+        if self.grid[point[0]][point[1]] == 1:
+            return False
+        else:
+            return True
+                
     def get_traj_status(self, traj):
-        pass
+        """ Get whether a given trajectory is valid within the environment.
+
+        This method needs to be implemented in the specific env implementation.
+
+        Args:
+            state (gennav.utils.Trajectory): Trajectory to be checked
+
+        Returns:
+            bool: True if state is valid otherwise False
+        """
+        collision = False
+        for i in range(len(traj.path) - 1):
+            collision = self.check_line_segment(self.transform("world", "map", traj.path[i]), self.transform("world", "map", traj.path[i+1]))
+            if collision == True:
+                break
+        return not collision
+
     def nearest_obstacle_distance(self, state):
         pass
 
@@ -97,8 +135,8 @@ class BinaryOccupancyGrid2DEnv(Environment):
         """Computes transforms between frames
 
             Uses robot pose to compute transform between the world frame and the bot frame
+            
         """
-
         x, y, yaw = self.robotPose.position.x, self.robotPose.position.y, self.robotPose.orientation.yaw
         worldTbot = np.array([[np.cos(yaw), -np.sin(yaw), x],[np.sin(yaw), np.cos(yaw), y], [0, 0, 1]]).reshape(3, 3)
         self.botTworld["transform"] = np.linalg.inv(worldTbot)
@@ -106,23 +144,56 @@ class BinaryOccupancyGrid2DEnv(Environment):
         
 
     def visualise_grid(self):
+        """
+            Helper function to visualise grid
+        """
         fig, ax = plt.subplots()
         #ax.grid(color="black", alpha=0.5, ls = '-', lw=1)
         ax.imshow(self.grid, cmap="binary", vmin=0, vmax=1)
         plt.gca().invert_yaxis()
-        plt.show()                
+        #plt.show()  
+
+    def check_line_segment(self, state1, state2):
+        """Checks whether a line segment is collision free in the environent
+
+            Computes a line segment from the start point to the end point and
+            parametrically checks if the grid cells they occupy are occupied.
+
+            Args:
+                state1 (gennav.utils.common.RobotState) : One end point
+                state2 (gennav.utils.common.RobotState) : The pther end point
+        """
+        point1 = state1.position
+        point2 = state2.position
+        x1, y1 = point1.x, point1.y
+        x2, y2 = point2.x, point2.y
+        m = (y2 - y1)/(x2 - x1)
+        collision = False
+        for x in np.arange(x1, x2, 0.5):
+            y = m * x - m * x1 + y1
+            if self.grid[int(x)][int(y)] == 1:
+                collision = True
+                break
+        return collision              
 
 if __name__ == "__main__":
     
-    ranges1 = [min(abs(np.random.uniform(10, 15)/np.cos(theta)), abs(np.random.uniform(10, 15)/np.sin(theta))) for theta in np.arange(0, 3.14*2, 3.14*2/100)]
-    ranges2 = [np.random.uniform(20, 22) for _ in range(100)]
+    ranges1 = [min(abs(np.random.uniform(20, 21)/np.cos(theta)), abs(np.random.uniform(10, 15)/np.sin(theta))) for theta in np.arange(0, 3.14*2, 3.14*2/500)]
+    ranges2 = [10 for _ in range(500)]
     ang_min = 0
     ang_max = 6.28
     obst = [[ang_min, ang_max, ranges1], [ang_min, ang_max, ranges2]]
     state = RobotState(Point(5, 5))
+    state2 = RobotState(Point(16, 5))
+    state3 = RobotState(Point(12, 10))
+    traj = Trajectory([state, state2, state3])
+
     
     env = BinaryOccupancyGrid2DEnv(50, 50)
     for ob in obst:
         env.update(ob, state)
         env.visualise_grid()
-
+        print(env.transform("world", "map", state2))
+        print(env.get_status(state2))
+        print(env.get_traj_status(traj))
+        plt.show()
