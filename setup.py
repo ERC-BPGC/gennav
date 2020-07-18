@@ -9,10 +9,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "gennav"))
 NAME = "gennav"
 DESCRIPTION = "Python Package for Robot Navigation Algorithms"
 REPOSITORY = "https://github.com/ERC-BPGC/gennav"
-EMAIL = "ercbitsgoa19@gmail.com"
-AUTHOR = "ERC BITS Goa"
+EMAIL = "atharvs.twm@gmail.com"
+AUTHOR = "Electronics and Robotics Club (ERC) BITS Goa"
 REQUIRES_PYTHON = ">=2.7.0"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 KEYWORDS = ("path planning", "robotics", "motion planning", "navigation", "algorithms")
 CLASSIFIERS = (
     # Trove classifiers
@@ -24,10 +24,11 @@ CLASSIFIERS = (
     "Natural Language :: English",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 2.7" "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.6",
 )
 with open("README.md", "r") as f:

@@ -8,8 +8,6 @@ class Controller(object):
         Attributes:
             robot_state (gennav.utils.RoboState): The state of the robot.
 
-        TODO:
-            Add actuation constraints
     """
 
     def __init__(self, init_state=None):
