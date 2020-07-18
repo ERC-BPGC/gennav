@@ -1,11 +1,16 @@
-tox
-flake8
-isort
-pytest
+# Build requirements
 descartes
 matplotlib
 numpy
 shapely
+
+# Development requirements
+tox
+flake8
+isort
+pytest
+
+# Documentation build requirements
 sphinx
 sphinxcontrib-napoleon
 sphinx-rtd-theme

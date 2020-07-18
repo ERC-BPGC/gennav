@@ -46,14 +46,27 @@ class Environment(object):
         raise NotImplementedError
 
     def nearest_obstacle_distance(self, state, *args, **kwargs):
-        """ Get the distacne to nearest obstacle.
+        """ Get the distance to nearest obstacle.
 
         This method needs to be implemented in the specific env implementation
 
         Args:
             state (gennav.utils.common.RobotState) : The current state of the robot.
-            *args: Variable length argument list
+            *args: Variable length argument list.
             **kwargs: Variable length keyword arguments.
+
+        """
+        raise NotImplementedError
+
+    def minimum_distance(self, state, *args, **kwargs):
+        """ Gives a list of minimum distance of each obstacle from the robot state.
+
+        This method needs to be implemented in the specific env implementation.
+
+        Args:
+            state (gennav.utils.common.RobotState) : The current state of the robot.
+            *args : Variable length argument list.
+            **kwargs : Variable length keyword arguments.
 
         """
         raise NotImplementedError
