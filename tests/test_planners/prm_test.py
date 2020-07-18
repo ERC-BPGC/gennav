@@ -1,5 +1,6 @@
 from gennav.envs import PolygonEnv
 from gennav.planners.prm.prm import PRM
+from gennav.utils import RobotState
 from gennav.utils.geometry import Point
 from gennav.utils.samplers import uniform_random_sampler as sampler
 
@@ -19,10 +20,10 @@ def test_prm_plan():
         poly.update(obstacles)
 
         # Instatiate prm constructer object
-        start = Point(0, 0)
-        end = Point(12, 10)
+        start = RobotState(position=Point(0, 0))
+        goal = RobotState(position=Point(12, 10))
         my_tree = PRM(sample_area=(-5, 15), sampler=sampler, r=5, n=100)
-        path = my_tree.plan(start, end, poly)
+        path = my_tree.plan(start, goal, poly)
         # from gennav.envs.common import visualize_path
         # visualize_path(path, poly)
         assert poly.get_traj_status(path) is True

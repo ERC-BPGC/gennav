@@ -5,16 +5,14 @@ from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
 
-# from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
-
 
 class RRT(Planner):
     """RRT Planner Class.
     Attributes:
-        sample_area: area for sampling random points (min,max)
-        sampler: function to sample random points in sample_area
-        expand_dis: distance to expand tree by at each step
-        goal_sample_rate: rate at which to sample goal during random sampling
+        sample_area (tuple): area for sampling random points (min,max)
+        sampler (function): function to sample random points in sample_area
+        expand_dis (float): distance to expand tree by at each step
+        goal_sample_rate (float): rate at which to sample goal during random sampling
     """
 
     def __init__(self, sample_area, sampler, expand_dis=0.1, goal_sample_rate=0.15):
@@ -26,42 +24,30 @@ class RRT(Planner):
         self.expand_dis = expand_dis
         self.goal_sample_rate = goal_sample_rate
 
-    def plan(self, start_point, goal_point, env):
+    def plan(self, start, goal, env):
         """Plans path from start to goal avoiding obstacles.
         Args:
-            start_point: Point (from gennav.utils.geometry) with start point coordinates.
-            end_point: Point (from gennav.utils.geometry) with end point coordinates.
+            start_point(gennav.utils.RobotState): with start point coordinates.
+            end_point (gennav.utils.RobotState): with end point coordinates.
             env: (gennav.envs.Environment) Base class for an envrionment.
         Returns:
-            A list of RobotStates (Point from gennav.utils.common) representing the path determined from
-            start to goal while avoiding obstacles.
-            A list containing just the start RobotState (RobotState from gennav.utils.common) means path could not be planned.
+            gennav.utils.Trajectory: The planned path as trajectory
         """
 
         # Initialize start and goal nodes
-        start = Node.from_coordinates(start_point)
-        goal_node = Node.from_coordinates(goal_point)
+        start_node = Node(state=start)
+        goal_node = Node(state=goal)
 
         # Initialize node_list with start
-        node_list = [start]
-
-        # Calculate distances between start and goal
-        del_x, del_y, del_z = (
-            start.state.position.x - goal_node.state.position.x,
-            start.state.position.y - goal_node.state.position.y,
-            start.state.position.z - goal_node.state.position.z,
-        )
-        distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2 + del_z ** 2)
+        node_list = [start_node]
 
         # Loop to keep expanding the tree towards goal if there is no direct connection
-        traj = Trajectory(
-            [RobotState(position=start_point), RobotState(position=goal_point)]
-        )
+        traj = Trajectory(path=[start, goal])
         if not env.get_traj_status(traj):
             while True:
                 # Sample random point in specified area
                 rnd_point = self.sampler(
-                    self.sample_area, goal_point, self.goal_sample_rate
+                    self.sample_area, goal.position, self.goal_sample_rate
                 )
 
                 # Find nearest node to the sampled point
@@ -115,9 +101,7 @@ class RRT(Planner):
                 )
                 distance_to_goal = math.sqrt(del_x ** 2 + del_y ** 2 + del_z ** 2)
 
-                traj = Trajectory(
-                    [RobotState(position=new_point), RobotState(position=goal_point)]
-                )
+                traj = Trajectory(path=[RobotState(position=new_point), goal])
                 if distance_to_goal < self.expand_dis or env.get_traj_status(traj):
                     goal_node.parent = node_list[-1]
                     node_list.append(goal_node)
@@ -125,8 +109,8 @@ class RRT(Planner):
                     break
 
         else:
-            goal_node.parent = start
-            node_list = [start, goal_node]
+            goal_node.parent = start_node
+            node_list = [start_node, goal_node]
 
         # Construct path by traversing backwards through the tree
         path = []
@@ -136,7 +120,7 @@ class RRT(Planner):
             node = node_list[node_list.index(last_node)]
             path.append(RobotState(position=node.state.position))
             last_node = node.parent
-        path.append(RobotState(position=start.state.position))
+        path.append(start)
         path = Trajectory(list(reversed(path)))
 
         return path
