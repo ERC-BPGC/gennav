@@ -6,3 +6,6 @@ descartes
 matplotlib
 numpy
 shapely
+sphinx
+sphinxcontrib-napoleon
+sphinx-rtd-theme
