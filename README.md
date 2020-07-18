@@ -44,8 +44,8 @@ env.update(obstacles)
 start = RobotState(position=Point(1, 1))
 goal = RobotState(position=Point(10, 10))
 
-palnner = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
-path = palnner.plan(start, goal, env)
+planner = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
+path = planner.plan(start, goal, env)
 ```
 
 Note that the environment have been left blank empty here, they should be updated as per use case.

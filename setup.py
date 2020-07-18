@@ -12,7 +12,7 @@ REPOSITORY = "https://github.com/ERC-BPGC/gennav"
 EMAIL = "atharvs.twm@gmail.com"
 AUTHOR = "Electronics and Robotics Club (ERC) BITS Goa"
 REQUIRES_PYTHON = ">=2.7.0"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 KEYWORDS = ("path planning", "robotics", "motion planning", "navigation", "algorithms")
 CLASSIFIERS = (
     # Trove classifiers
