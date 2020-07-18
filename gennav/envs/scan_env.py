@@ -178,7 +178,7 @@ class ScanEnv(Environment):
             plt.plot(pt.x, pt.y, "kx")
 
         if pth is not None:
-            for i in pth:
+            for _ in pth:
                 plt.plot([x for (x, _) in pth], [y for (_, y) in pth], "k-")
 
         plt.show()

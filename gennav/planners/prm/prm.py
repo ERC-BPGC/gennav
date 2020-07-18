@@ -30,8 +30,8 @@ class PRM(Planner):
             env (gennav.envs.Environment): Base class for an envrionment.
 
         Returns:
-            graph (dict):A dict where the keys correspond to nodes and the values for each key is a list
-                of the neighbour nodes
+            graph (dict): A dict where the keys correspond to nodes and
+                the values for each key is a list of the neighbour nodes
         """
         nodes = []
         graph = {}
@@ -69,18 +69,16 @@ class PRM(Planner):
 
         return graph
 
-    def plan(self, start_point, end_point, env):
+    def plan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
 
         Args:
-            start_point (gennav.utils.geometry.Point): tuple with start point coordinates.
-            end_point (gennav.utils.geometry.Point): tuple with end point coordinates.
+            start (gennav.utils.RobotState): tuple with start point coordinates.
+            goal (gennav.utils.RobotState): tuple with end point coordinates.
             env (gennav.envs.Environment): Base class for an envrionment.
 
         Returns:
-            A list of RobotStates (Point from gennav.utils.common) representing the path determined from
-            start to goal while avoiding obstacles.
-            A list containing just the start RobotState (RobotState from gennav.utils.common) means path could not be planned.
+            gennav.utils.Trajectory: The planned path as trajectory
         """
         # construct graph
         graph = self.construct(env)
@@ -88,10 +86,10 @@ class PRM(Planner):
         min_dist = float("inf")
         for node in graph.keys():
             dist = math.sqrt(
-                (node.x - start_point.x) ** 2 + (node.y - start_point.y) ** 2
+                (node.x - start.position.x) ** 2 + (node.y - start.position.y) ** 2
             )
             traj = Trajectory(
-                [RobotState(position=node), RobotState(position=start_point)]
+                [RobotState(position=node), RobotState(position=start.position)]
             )
             if dist < min_dist and (env.get_traj_status(traj)):
                 min_dist = dist
@@ -99,15 +97,17 @@ class PRM(Planner):
         # find collision free point in graph closest to end_point
         min_dist = float("inf")
         for node in graph.keys():
-            dist = math.sqrt((node.x - end_point.x) ** 2 + (node.y - end_point.y) ** 2)
+            dist = math.sqrt(
+                (node.x - goal.position.x) ** 2 + (node.y - goal.position.y) ** 2
+            )
             traj = Trajectory(
-                [RobotState(position=node), RobotState(position=end_point)]
+                [RobotState(position=node), RobotState(position=goal.position)]
             )
             if dist < min_dist and (env.get_traj_status(traj)):
                 min_dist = dist
                 e = node
         # add start_point to path
-        path = [RobotState(position=start_point)]
+        path = [start]
         traj = Trajectory(path)
         # perform astar search
         p = astar(graph, s, e)
@@ -116,5 +116,5 @@ class PRM(Planner):
         else:
             traj.path.extend(p.path)
         # add end_point to path
-        traj.path.append(RobotState(position=end_point))
+        traj.path.append(goal)
         return traj
