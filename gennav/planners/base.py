@@ -2,8 +2,6 @@ class Planner:
     """
         Base class for path planning algorithms.
 
-        TODO:
-            Add state space constraints as an attribute.
     """
 
     def plan(self, start, goal, env):

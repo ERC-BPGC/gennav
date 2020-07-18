@@ -76,10 +76,13 @@ class PolygonEnv(Environment):
 
         Args:
             obstacles : list of list of points (x, y) that make an obstacle
-        Example of argument:
-            [[(1, 1), (2, 1), (2, 2), (1, 2)],
-             [(3, 4), (3.3, 4), (3.3, 4.2), (3, 4.2)]]
-            The above list contains a list of points that constitute an obstacle. There can be arbitrary number of obstacles, which each obstacle having an arbitrary number of points
+                Example of argument:
+                [ [(1, 1), (2, 1), (2, 2), (1, 2)],
+                [(3, 4), (3.3, 4), (3.3, 4.2), (3, 4.2)] ]
+                The above list contains a list of points that constitute an obstacle.
+                There can be arbitrary number of obstacles, which each obstacle
+                having an arbitrary number of points
+
         """
         self.obstacle_list = obstacles
 
