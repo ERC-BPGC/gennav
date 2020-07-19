@@ -12,6 +12,14 @@ gennav.planners.prm.prm module
    :undoc-members:
    :show-inheritance:
 
+gennav.planners.prm.prmstar module
+----------------------------------
+
+.. automodule:: gennav.planners.prm.prmstar
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------
