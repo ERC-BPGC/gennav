@@ -1,13 +1,23 @@
 import math
 
-import matplotlib.patches as patches
-import matplotlib.pyplot as plt
-from gennav.utils.common import RobotState, Trajectory
-from matplotlib.path import Path
+from gennav.planners.base import Planner
+from gennav.utils import RobotState, Trajectory
 
 
-class potential_field:
+class potential_field(Planner):
+    """Potential Field Class
+
+    Attributes:
+        KP (float) : Attractive potential gain
+        ETA (float) : Repulsive potential gain
+        THRESH (float) : Distance beyond which attractive potential varies conically and repulsive potential has no effect
+        STEP_SIZE (float) : Step size for gradient descent while add a waypoint
+        error (float) : Minimum distance from the goal after which the bot will stop
+    """
+
     def __init__(self, KP, ETA, THRESH, STEP_SIZE, error):
+        """ initialise potential field parameters"""
+
         self.KP = KP
         self.ETA = ETA
         self.THRESH = THRESH
@@ -15,6 +25,15 @@ class potential_field:
         self.STEP_SIZE = STEP_SIZE
 
     def grad_attractive(self):
+        """ Calculates the gradient due to the attractive component of the potential field, i.e, the potential field created by the goal point
+
+        Args:
+            None
+
+        Returns:
+            grad (float) : The gradient due to the attractive potential field at the state of the robot
+        """
+
         dist = math.sqrt(
             (self.current.position.x - self.goal.position.x) ** 2
             + (self.current.position.y - self.goal.position.y) ** 2
@@ -34,6 +53,15 @@ class potential_field:
         return grad
 
     def grad_repulsive(self):
+        """Calculates the gradient due to the repulsive component of the potential field, i.e, the potential field created by the obstacles
+
+        Args:
+            None
+
+        Returns:
+            total_grad (float) : Total gradient due to potential field of all obstacles at the state of the robot
+        """
+
         total_grad = [0, 0]
         min_dist = self.env.minimum_distances(self.current)
         for i, obj in enumerate(self.env.obstacle_list):
@@ -59,10 +87,7 @@ class potential_field:
                     (y_grad - min_dist) / 0.01,
                 ]
                 factor = (
-                    self.ETA
-                    * ((1 / self.THRESH) - 1 / min_dist)
-                    * 1
-                    / (min_dist ** 2)
+                    self.ETA * ((1 / self.THRESH) - 1 / min_dist) * 1 / (min_dist ** 2)
                 )
                 grad = [x * factor for x in grad]
                 total_grad[0] = total_grad[0] + grad[0]
@@ -70,42 +95,31 @@ class potential_field:
         return total_grad
 
     def plan(self, start, goal, env):
+        """ Plans the path to be taken by the robot to get from start to goal in the form of waypoints
+
+        Args:
+            start (gennav.utils.RobotState) : starting state of the robot (x, y and z coordinates)
+            goal (gennav.utils.RobotState) : goal state of the robot (x, y and z coordinates)
+            env (gennav.envs.Environment) : Type of environment the robot is operating in
+
+        Returns:
+            trajectory (gennav.utils.Trajectory) : A list of waypoints(in the form of robot states) that the robot will follow to go to the goal from the start
+        """
+
         self.current = start
         self.goal = goal
         self.env = env
         waypoints = [self.current]
         while (
-            math.sqrt((self.x - self.x_g) ** 2 + (self.y - self.y_g) ** 2)
-            > self.error
+            math.sqrt((self.x - self.x_g) ** 2 + (self.y - self.y_g) ** 2) > self.error
         ):
             grad_attract = self.grad_attractive()
             grad_repel = self.grad_repulsive()
             grad = [0, 0]
             grad[0] = grad_attract[0] + grad_repel[0]
             grad[1] = grad_attract[1] + grad_repel[1]
-            self.current.position.x = (
-                self.current.position.x - self.STEP_SIZE * grad[0]
-            )
-            self.current.position.y = (
-                self.current.position.y - self.STEP_SIZE * grad[1]
-            )
+            self.current.position.x = self.current.position.x - self.STEP_SIZE * grad[0]
+            self.current.position.y = self.current.position.y - self.STEP_SIZE * grad[1]
             waypoints.append(self.current)
             trajectory = Trajectory(waypoints)
         return trajectory
-
-    def plot(self, trajectory):
-        codes = []
-        for i in range(len(trajectory.path)):
-            codes.append(Path.LINETO)
-        codes[0] = Path.MOVETO
-        waypoints = []
-        for obj in trajectory:
-            waypoints.append((obj.position.x, obj.position.y))
-        path = Path(waypoints, codes)
-        fig, ax = plt.subplots()
-
-        patch = patches.PathPatch(path, lw=2)
-        ax.add_patch(patch)
-        plt.xlim(-8, 8)
-        plt.ylim(-8, 8)
-        plt.show()
