@@ -5,7 +5,7 @@ from gennav.utils.geometry import Point
 from gennav.utils.samplers import uniform_random_sampler as sampler
 
 
-def test_prm_plan():
+def test_prmstar_plan():
     general_obstacles_list = [
         [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
         [
@@ -29,7 +29,7 @@ def test_prm_plan():
         assert poly.get_traj_status(path) is True
 
 
-def test_prm_construct():
+def test_prmstar_construct():
     general_obstacles_list = [
         [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
         [
