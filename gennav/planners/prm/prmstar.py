@@ -5,8 +5,8 @@ from gennav.planners.graph_search.astar import astar
 from gennav.utils import RobotState, Trajectory
 
 
-class PRMSTAR(Planner):
-    """PRM-STAR Class.
+class PRMStar(Planner):
+    """PRM-Star Class.
 
     Attributes:
         sample_area (tuple): area for sampling random points (min,max)
@@ -16,7 +16,7 @@ class PRMSTAR(Planner):
     """
 
     def __init__(self, sample_area, sampler, c, n):
-        """Init PRM Parameters."""
+        """Init PRM-Star Parameters."""
 
         self.sample_area = sample_area
         self.sampler = sampler
@@ -24,7 +24,7 @@ class PRMSTAR(Planner):
         self.c = c
 
     def construct(self, env):
-        """Constructs PRM-STAR graph.
+        """Constructs PRM-Star graph.
 
         Args:
             env (gennav.envs.Environment): Base class for an envrionment.

@@ -1,5 +1,5 @@
 from gennav.envs import PolygonEnv
-from gennav.planners.prm.prmstar import PRMSTAR
+from gennav.planners.prm.prmstar import PRMStar
 from gennav.utils import RobotState
 from gennav.utils.geometry import Point
 from gennav.utils.samplers import uniform_random_sampler as sampler
@@ -22,7 +22,7 @@ def test_prmstar_plan():
         # Instatiate prm constructer object
         start = RobotState(position=Point(0, 0))
         goal = RobotState(position=Point(12, 10))
-        my_tree = PRMSTAR(sample_area=(-5, 15), sampler=sampler, c=30, n=100)
+        my_tree = PRMStar(sample_area=(-5, 15), sampler=sampler, c=30, n=100)
         path = my_tree.plan(start, goal, poly)
         # from gennav.envs.common import visualize_path
         # visualize_path(path, poly)
@@ -43,7 +43,7 @@ def test_prmstar_construct():
         poly.update(obstacles)
 
         # Instatiate prm constructer object
-        my_tree = PRMSTAR(sample_area=(-5, 15), sampler=sampler, c=30, n=50)
+        my_tree = PRMStar(sample_area=(-5, 15), sampler=sampler, c=30, n=50)
         graph = my_tree.construct(poly)  # noqa: F841
         # from gennav.utils.visualisation import visualize_graph
         # visualize_graph(graph,poly)
