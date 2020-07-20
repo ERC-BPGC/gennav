@@ -88,7 +88,7 @@ class Node:
     """Node class used in trees and graph representations.
 
     Args:
-        **data: Arbitrary keyword arguments (**kwargs).
+        data (dict): Arbitrary keyword arguments (**kwargs).
     """
 
     def __init__(self, **data):
