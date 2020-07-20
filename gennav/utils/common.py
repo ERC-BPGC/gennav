@@ -94,6 +94,7 @@ class Node:
     def __init__(self, **data):
         """Node init parameters.
         """
+        self.data = data
         self.state = data.get("state", RobotState())
         self.parent = data.get("parent")
         self.cost = data.get("cost", 0.0)
