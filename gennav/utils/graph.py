@@ -1,7 +1,5 @@
 from collections import defaultdict
-
-from gennav.utils import RobotState
-from gennav.utils.common import Node
+from math import sqrt
 
 
 class Graph:
@@ -12,8 +10,9 @@ class Graph:
         self.nodes = set()
         self.edges = defaultdict(list)
         self.distances = {}
+        self.dist = 0.0
 
-    def add_node(self, node=Node(state=RobotState())):
+    def add_node(self, node):
         """Adds nodes to the graph.
 
         Args:
@@ -22,18 +21,31 @@ class Graph:
         self.nodes.add(node)
 
     def add_edge(
-        self,
-        from_node=Node(state=RobotState()),
-        to_node=Node(state=RobotState()),
-        distance=0.0,
+        self, from_node, to_node,
     ):
         """Adds edge connecting two nodes to the graph.
 
         Args:
             from_node (gennav.utils.common.Node): starting node of the edge.
             to_node (gennav.utils.common.Node): ending node of the edge.
-            distance (float): The distance of the edge joining the two nodes.
         """
         self.edges[from_node].append(to_node)
         self.edges[to_node].append(from_node)
-        self.distances[(from_node, to_node)] = distance
+        self.distances[(from_node, to_node)] = self.calc_dist(from_node, to_node)
+
+    def calc_dist(self, from_node, to_node):
+        """Calculates distance between two nodes.
+
+        Args:
+            from_node (gennav.utils.common.Node): starting node of the edge.
+            to_node (gennav.utils.common.Node): ending node of the edge.
+
+        Returns:
+            dist (float): distance between two nodes.
+        """
+        self.dist = sqrt(
+            (from_node.state.position.x - to_node.state.position.x) ** 2
+            + (from_node.state.position.y - to_node.state.position.y) ** 2
+            + (from_node.state.position.z - to_node.state.position.z) ** 2
+        )
+        return self.dist
