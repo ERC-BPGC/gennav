@@ -9,8 +9,8 @@ class NodeAstar(Node):
     """
 
     # Initialize the class
-    def __init__(self, state=RobotState(), parent=None):
-        Node.__init__(self, state, parent)
+    def __init__(self, **data):
+        Node.__init__(self, **data)
         self.g = 0  # Distance to start node
         self.h = 0  # Distance to goal node
         self.f = 0  # Total cost
@@ -61,7 +61,7 @@ def astar(graph, start, end, heuristic={}):
     # calcula]tes heuristic for start if not provided by the user
     # pushes the start point in the open_ Priority Queue
 
-    start_node = NodeAstar(RobotState(position=start), None)
+    start_node = NodeAstar(state=RobotState(position=start))
     if len(heuristic) == 0:
         start_node.h = math.sqrt((start.x - end.x) ** 2 + (start.y - end.y) ** 2)
     else:
@@ -93,7 +93,7 @@ def astar(graph, start, end, heuristic={}):
         # checks and updates the total cost for all the neighbours
         for node in neighbours:
             # creates neighbour which can be pushed to open_ if required
-            neighbour = NodeAstar(RobotState(position=node), current_node)
+            neighbour = NodeAstar(state=RobotState(position=node), parent=current_node)
             # checks if neighbour is in closed
             if neighbour in closed:
                 continue
