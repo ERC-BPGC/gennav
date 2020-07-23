@@ -1,7 +1,7 @@
 import math
 
 from gennav.planners.base import Planner
-from gennav.planners.graph_search.astar import astar
+from gennav.utils.graph_search.astar import astar
 from gennav.utils import RobotState, Trajectory
 
 
