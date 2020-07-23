@@ -41,23 +41,23 @@ class Graph:
             to_node (gennav.utils.common.Node): ending node of the edge.
         """
 
-        if len(self.edges[from_node]):
-            if (len(self.edges[from_node])) == 1:
+        if len(self.edges[from_node]) == 0:
+            raise ValueError
+        else:
+            if len(self.edges[from_node]) == 1:
                 del self.edges[from_node]
             else:
                 self.edges[from_node].remove(to_node)
 
             del self.distances[(from_node, to_node)]
-        else:
-            print("Edge does not exist")
 
-        if len(self.edges[to_node]):
-            if (len(self.edges[to_node])) == 1:
+        if len(self.edges[to_node]) == 0:
+            raise ValueError
+        else:
+            if len(self.edges[to_node]) == 1:
                 del self.edges[to_node]
             else:
                 self.edges[to_node].remove(from_node)
-        else:
-            print("Edge does not exist")
 
     def calc_dist(self, from_node, to_node):
         """Calculates distance between two nodes.
