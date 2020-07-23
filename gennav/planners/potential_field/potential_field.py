@@ -64,7 +64,7 @@ class potential_field(Planner):
 
         total_grad = [0, 0]
         min_dist = self.env.minimum_distances(self.current)
-        for i, obj in enumerate(self.env.obstacle_list):
+        for i, _ in enumerate(self.env.obstacle_list):
             if min_dist[i] < self.THRESH:
                 dummy_state_x = RobotState(
                     (
@@ -87,7 +87,10 @@ class potential_field(Planner):
                     (y_grad - min_dist) / 0.01,
                 ]
                 factor = (
-                    self.ETA * ((1 / self.THRESH) - 1 / min_dist) * 1 / (min_dist ** 2)
+                    self.ETA
+                    * ((1 / self.THRESH) - 1 / min_dist)
+                    * 1
+                    / (min_dist ** 2)
                 )
                 grad = [x * factor for x in grad]
                 total_grad[0] = total_grad[0] + grad[0]
@@ -111,15 +114,23 @@ class potential_field(Planner):
         self.env = env
         waypoints = [self.current]
         while (
-            math.sqrt((self.x - self.x_g) ** 2 + (self.y - self.y_g) ** 2) > self.error
+            math.sqrt(
+                (self.current.position.x - self.goal.position.x) ** 2
+                + (self.current.position.y - self.goal.position.y) ** 2
+            )
+            > self.error
         ):
             grad_attract = self.grad_attractive()
             grad_repel = self.grad_repulsive()
             grad = [0, 0]
             grad[0] = grad_attract[0] + grad_repel[0]
             grad[1] = grad_attract[1] + grad_repel[1]
-            self.current.position.x = self.current.position.x - self.STEP_SIZE * grad[0]
-            self.current.position.y = self.current.position.y - self.STEP_SIZE * grad[1]
+            self.current.position.x = (
+                self.current.position.x - self.STEP_SIZE * grad[0]
+            )
+            self.current.position.y = (
+                self.current.position.y - self.STEP_SIZE * grad[1]
+            )
             waypoints.append(self.current)
             trajectory = Trajectory(waypoints)
         return trajectory
