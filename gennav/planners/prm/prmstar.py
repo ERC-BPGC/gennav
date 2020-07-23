@@ -3,22 +3,19 @@ import math
 from gennav.planners.base import Planner
 from gennav.planners.graph_search.astar import astar
 from gennav.utils import RobotState, Trajectory
+from gennav.utils.geometry import compute_distance
 
 
 class PRMStar(Planner):
     """PRM-Star Class.
 
-    Attributes:
-        sample_area (tuple): area for sampling random points (min,max)
-        sampler (function): function to sample random points in sample_area
+    Args:
+        sampler (gennav.utils.sampler.Sampler): sampler to get random states
         c (float): a constant for radius determination
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sample_area, sampler, c, n):
-        """Init PRM-Star Parameters."""
-
-        self.sample_area = sample_area
+    def __init__(self, sampler, c, n):
         self.sampler = sampler
         self.n = n
         self.c = c
@@ -33,40 +30,39 @@ class PRMStar(Planner):
             graph (dict): A dict where the keys correspond to nodes and
                 the values for each key is a list of the neighbour nodes
         """
-        nodes = []
+        points = []
         graph = {}
         i = 0
+
         # samples points from the sample space until n points
         # outside obstacles are obtained
         while i < self.n:
-            sample = self.sampler(self.sample_area)
-            if not env.get_status(RobotState(position=sample)):
+            sample = self.sampler()
+            if not env.get_status(sample):
                 continue
             else:
                 i += 1
-                nodes.append(sample)
+                points.append(sample.position)
 
-        # finds neighbours for each node in a dynamic radius
-        for node1 in nodes:
-            for node2 in nodes:
-                if node1 != node2:
-                    r = self.c * math.sqrt(math.log(self.n) / self.n)
-                    dist = math.sqrt(
-                        (node1.x - node2.x) ** 2 + (node1.y - node2.y) ** 2
-                    )
+        # finds neighbours for each node in a fixed radius r
+        r = self.c * math.sqrt(math.log(self.n) / self.n)
+        for p1 in points:
+            for p2 in points:
+                if p1 != p2:
+                    dist = compute_distance(p1, p2)
                     if dist < r:
                         traj = Trajectory(
-                            [RobotState(position=node1), RobotState(position=node2)]
+                            path=[RobotState(position=p1), RobotState(position=p2)]
                         )
                         if env.get_traj_status(traj):
-                            if node1 not in graph:
-                                graph[node1] = [node2]
-                            elif node2 not in graph[node1]:
-                                graph[node1].append(node2)
-                            if node2 not in graph:
-                                graph[node2] = [node1]
-                            elif node1 not in graph[node2]:
-                                graph[node2].append(node1)
+                            if p1 not in graph:
+                                graph[p1] = [p2]
+                            elif p2 not in graph[p1]:
+                                graph[p1].append(p2)
+                            if p2 not in graph:
+                                graph[p2] = [p1]
+                            elif p1 not in graph[p2]:
+                                graph[p2].append(p1)
 
         return graph
 

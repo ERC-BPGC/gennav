@@ -1,4 +1,4 @@
-class Planner:
+class Planner(object):
     """
         Base class for path planning algorithms.
 

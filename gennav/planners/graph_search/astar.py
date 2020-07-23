@@ -1,6 +1,5 @@
-import math
-
 from gennav.utils.common import Node, RobotState, Trajectory
+from gennav.utils.geometry import compute_distance
 
 
 class NodeAstar(Node):
@@ -63,7 +62,7 @@ def astar(graph, start, end, heuristic={}):
 
     start_node = NodeAstar(RobotState(position=start), None)
     if len(heuristic) == 0:
-        start_node.h = math.sqrt((start.x - end.x) ** 2 + (start.y - end.y) ** 2)
+        start_node.h = compute_distance(start, end)
     else:
         start_node.h = heuristic[start]
     start_node.g = 0
@@ -98,16 +97,11 @@ def astar(graph, start, end, heuristic={}):
             if neighbour in closed:
                 continue
             # calculates weight cost
-            neighbour.g = (
-                math.sqrt(
-                    (node.x - current_node.state.position.x) ** 2
-                    + (node.y - current_node.state.position.y) ** 2
-                )
-                + current_node.g
-            )
+            neighbour.g = compute_distance(node, current_node.state.position)
+
             # calculates heuristic for the node if not provided by the user
             if len(heuristic) == 0:
-                neighbour.h = math.sqrt((node.x - end.x) ** 2 + (node.y - end.y) ** 2)
+                neighbour.h = compute_distance(node, end)
             else:
                 neighbour.h = heuristic[node]
             # calculates total cost
@@ -125,6 +119,7 @@ def astar(graph, start, end, heuristic={}):
                     break
             if flag == 1:
                 open_.append(neighbour)
+
     # if path doesn't exsist it returns just the start point as the path
     path = [RobotState(position=start)]
     traj = Trajectory(path)

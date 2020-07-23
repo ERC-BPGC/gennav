@@ -1,24 +1,20 @@
-import math
-
 from gennav.planners.base import Planner
 from gennav.planners.graph_search.astar import astar
 from gennav.utils import RobotState, Trajectory
+from gennav.utils.geometry import compute_distance
 
 
 class PRM(Planner):
     """PRM Class.
 
-    Attributes:
-        sample_area (tuple): area for sampling random points (min,max)
-        sampler (function): function to sample random points in sample_area
+    Args:
+        sampler (gennav.utils.sampler.Sampler): sampler to get random states
         r (float): maximum radius to look for neighbours
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sample_area, sampler, r, n):
-        """Init PRM Parameters."""
-
-        self.sample_area = sample_area
+    def __init__(self, sampler, r, n):
+        super(PRM, self)
         self.sampler = sampler
         self.r = r
         self.n = n
@@ -30,42 +26,41 @@ class PRM(Planner):
             env (gennav.envs.Environment): Base class for an envrionment.
 
         Returns:
-            graph (dict): A dict where the keys correspond to nodes and
+            graph (dict): A dict where the keys correspond to states and
                 the values for each key is a list of the neighbour nodes
         """
-        nodes = []
+        states = []
         graph = {}
         i = 0
+
         # samples points from the sample space until n points
         # outside obstacles are obtained
         while i < self.n:
-            sample = self.sampler(self.sample_area)
-            if not env.get_status(RobotState(position=sample)):
+            sample = self.sampler()
+            if not env.get_status(sample):
                 continue
             else:
                 i += 1
-                nodes.append(sample)
+                states.append(sample.position)
 
         # finds neighbours for each node in a fixed radius r
-        for node1 in nodes:
-            for node2 in nodes:
-                if node1 != node2:
-                    dist = math.sqrt(
-                        (node1.x - node2.x) ** 2 + (node1.y - node2.y) ** 2
-                    )
+        for p1 in states:
+            for p2 in states:
+                if p1 != p2:
+                    dist = compute_distance(p1, p2)
                     if dist < self.r:
                         traj = Trajectory(
-                            [RobotState(position=node1), RobotState(position=node2)]
+                            path=[RobotState(position=p1), RobotState(position=p2)]
                         )
                         if env.get_traj_status(traj):
-                            if node1 not in graph:
-                                graph[node1] = [node2]
-                            elif node2 not in graph[node1]:
-                                graph[node1].append(node2)
-                            if node2 not in graph:
-                                graph[node2] = [node1]
-                            elif node1 not in graph[node2]:
-                                graph[node2].append(node1)
+                            if p1 not in graph:
+                                graph[p1] = [p2]
+                            elif p2 not in graph[p1]:
+                                graph[p1].append(p2)
+                            if p2 not in graph:
+                                graph[p2] = [p1]
+                            elif p1 not in graph[p2]:
+                                graph[p2].append(p1)
 
         return graph
 
@@ -82,35 +77,30 @@ class PRM(Planner):
         """
         # construct graph
         graph = self.construct(env)
-        # find collision free point in graph closest to start_point
-        min_dist = float("inf")
-        for node in graph.keys():
-            dist = math.sqrt(
-                (node.x - start.position.x) ** 2 + (node.y - start.position.y) ** 2
-            )
-            traj = Trajectory(
-                [RobotState(position=node), RobotState(position=start.position)]
-            )
-            if dist < min_dist and (env.get_traj_status(traj)):
-                min_dist = dist
-                s = node
-        # find collision free point in graph closest to end_point
-        min_dist = float("inf")
-        for node in graph.keys():
-            dist = math.sqrt(
-                (node.x - goal.position.x) ** 2 + (node.y - goal.position.y) ** 2
-            )
-            traj = Trajectory(
-                [RobotState(position=node), RobotState(position=goal.position)]
-            )
-            if dist < min_dist and (env.get_traj_status(traj)):
-                min_dist = dist
-                e = node
+
+        # find collision free points in graph closest to start and goal
+        min_dist_from_start = float("inf")
+        min_dist_to_goal = float("inf")
+        for point in graph.keys():
+            dist_from_start = compute_distance(point, start.position)
+            dist_to_goal = compute_distance(point, goal.position)
+            state = RobotState(position=point)
+            traj_from_start = Trajectory(path=[start, state])
+            traj_to_goal = Trajectory(path=[state, goal])
+            if dist_from_start < min_dist_from_start and (
+                env.get_traj_status(traj_from_start)
+            ):
+                min_dist_from_start = dist_from_start
+                closest_to_start = point
+            if dist_to_goal < min_dist_to_goal and (env.get_traj_status(traj_to_goal)):
+                min_dist_to_goal = dist_to_goal
+                closest_to_goal = point
+
         # add start_point to path
         path = [start]
         traj = Trajectory(path)
         # perform astar search
-        p = astar(graph, s, e)
+        p = astar(graph, closest_to_start, closest_to_goal)
         if len(p.path) == 1:
             return traj
         else:

@@ -2,7 +2,7 @@ from gennav.envs import PolygonEnv
 from gennav.planners.rrt.rrt import RRT
 from gennav.utils import RobotState
 from gennav.utils.geometry import Point
-from gennav.utils.samplers import uniform_adjustable_random_sampler as sampler
+from gennav.utils.samplers import UniformRectSampler
 
 
 def test_rrt():
@@ -14,7 +14,7 @@ def test_rrt():
             [(8, 2), (8, 7), (10, 7), (10, 2)],
         ],
     ]
-
+    sampler = UniformRectSampler(-5, -5, 15, 15)
     poly = PolygonEnv()
     # poly.update(general_obstacles_list)
 
@@ -22,7 +22,7 @@ def test_rrt():
         poly.update(obstacles)
 
         # Instatiate rrt planner object
-        my_tree = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
+        my_tree = RRT(sampler=sampler, expand_dis=0.1)
         start = RobotState(position=Point(1, 1))
         goal = RobotState(position=Point(10, 10))
         path = my_tree.plan(start, goal, poly)
