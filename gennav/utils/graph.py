@@ -33,6 +33,32 @@ class Graph:
         self.edges[to_node].append(from_node)
         self.distances[(from_node, to_node)] = self.calc_dist(from_node, to_node)
 
+    def del_edge(self, from_node, to_node):
+        """Deletes edge connecting two nodes to the graph.
+
+        Args:
+            from_node (gennav.utils.common.Node): starting node of the edge.
+            to_node (gennav.utils.common.Node): ending node of the edge.
+        """
+
+        if len(self.edges[from_node]):
+            if (len(self.edges[from_node])) == 1:
+                del self.edges[from_node]
+            else:
+                self.edges[from_node].remove(to_node)
+
+            del self.distances[(from_node, to_node)]
+        else:
+            print("Edge does not exist")
+
+        if len(self.edges[to_node]):
+            if (len(self.edges[to_node])) == 1:
+                del self.edges[to_node]
+            else:
+                self.edges[to_node].remove(from_node)
+        else:
+            print("Edge does not exist")
+
     def calc_dist(self, from_node, to_node):
         """Calculates distance between two nodes.
 
