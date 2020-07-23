@@ -1,13 +1,12 @@
 import math
 
 from gennav.planners.base import Planner
-from gennav.planners.graph_search.astar import astar
 from gennav.utils import RobotState, Trajectory
+from gennav.utils.graph_search.astar import astar
 
 
 class PRMStar(Planner):
     """PRM-Star Class.
-
     Attributes:
         sample_area (tuple): area for sampling random points (min,max)
         sampler (function): function to sample random points in sample_area
@@ -25,10 +24,8 @@ class PRMStar(Planner):
 
     def construct(self, env):
         """Constructs PRM-Star graph.
-
         Args:
             env (gennav.envs.Environment): Base class for an envrionment.
-
         Returns:
             graph (dict): A dict where the keys correspond to nodes and
                 the values for each key is a list of the neighbour nodes
@@ -72,12 +69,10 @@ class PRMStar(Planner):
 
     def plan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
-
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
             goal (gennav.utils.RobotState): tuple with end point coordinates.
             env (gennav.envs.Environment): Base class for an envrionment.
-
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
         """
