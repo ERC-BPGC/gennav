@@ -1,8 +1,8 @@
 import math
 
 from gennav.planners.base import Planner
-from gennav.utils.graph_search.astar import astar
 from gennav.utils import RobotState, Trajectory
+from gennav.utils.graph_search.astar import astar
 
 
 class PRM(Planner):
