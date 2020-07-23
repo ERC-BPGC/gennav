@@ -1,24 +1,25 @@
-import math 
+import math
 import random
 
-#Pseudo Code: Sampling based motion planning algorithm
-# 1. Initialize starting nodes, obstacles, goal(end point to be reached) & random sampling area 
-# 2. Generate random nodes 
+# Pseudo Code: Sampling based motion planning algorithm
+# 1. Initialize starting nodes, obstacles, goal(end point to be reached) & random sampling area
+# 2. Generate random nodes
 # 3. Calculate nearest nodes from randomly generated nodes
-# 4. Steer/Generate new path from these nodes 
-# 5. Check if newly generated nodes from steer path are collision free 
-# 6. Check for their optimal cost 
-# 7. Create the minimum cost path from these nodes using above steps recursively 
+# 4. Steer/Generate new path from these nodes
+# 5. Check if newly generated nodes from steer path are collision free
+# 6. Check for their optimal cost
+# 7. Create the minimum cost path from these nodes using above steps recursively
 # 8. Rewire tree to connect nearest nodes
 
 show_animation = True
 
-class RRTStar():
+
+class RRTStar:
     """Class for RRT Star planning.
 
     """
 
-    class Node():
+    class Node:
         """Class for representing node form
 
         """
@@ -32,7 +33,7 @@ class RRTStar():
                 parent (Node) : Node connected to present node
                 cost (float): cost/distance suffered to get to this node
 
-            """ 
+            """
 
             self.x = x
             self.y = y
@@ -40,15 +41,20 @@ class RRTStar():
             self.path_y = []
             self.parent = None
             self.cost = 0.0
-        
-    def __init__(self, start, goal, obstacle_list, rand_area,
-                 expand_dis=30.0,
-                 path_resolution=1.0,
-                 goal_sample_rate=20,
-                 max_iter=300,
-                 search_until_max_iter=True,
-                 connect_circle_dist=50.0
-                 ):
+
+    def __init__(
+        self,
+        start,
+        goal,
+        obstacle_list,
+        rand_area,
+        expand_dis=30.0,
+        path_resolution=1.0,
+        goal_sample_rate=20,
+        max_iter=300,
+        search_until_max_iter=True,
+        connect_circle_dist=50.0,
+    ):
         """
         Setting initial Parameters
 
@@ -63,8 +69,12 @@ class RRTStar():
             connect_circle_dist: Variable distance to get smoother and shorter path.
                                   On increasing Path Smoothens, but Processing Increases as well
         """
-        self.start = self.Node(start[0], start[1]) #Initialzing starting position as initial nodes
-        self.end = self.Node(goal[0], goal[1]) #Initialzing ending position as initial goal
+        self.start = self.Node(
+            start[0], start[1]
+        )  # Initialzing starting position as initial nodes
+        self.end = self.Node(
+            goal[0], goal[1]
+        )  # Initialzing ending position as initial goal
         self.obstacle_list = obstacle_list
         self.min_rand = rand_area[0]
         self.max_rand = rand_area[1]
@@ -75,7 +85,6 @@ class RRTStar():
         self.connect_circle_dist = connect_circle_dist
         self.node_list = []
         self.goal_node = self.Node(goal[0], goal[1])
-    
 
     def calc_cost_and_angle(self, initial_node, to_node):
         """Calculate cost i.e euclidean distance each vertex has traveled relative to its parent vertex & angle b/w nodes(Based on smart RRT* hypotense from https://journals.sagepub.com/doi/10.5772/56718)
@@ -89,11 +98,13 @@ class RRTStar():
 
         """
 
-        #Euclidean distance
-        cost = math.sqrt((to_node.x - initial_node.x)**2,(to_node.y - initial_node.y)**2) 
+        # Euclidean distance
+        cost = math.sqrt(
+            (to_node.x - initial_node.x) ** 2, (to_node.y - initial_node.y) ** 2
+        )
 
-        #Angle in radians
-        theta = math.atan2((to_node.y - initial_node.y), (to_node.x - initial_node.x)) 
+        # Angle in radians
+        theta = math.atan2((to_node.y - initial_node.y), (to_node.x - initial_node.x))
 
         return cost, theta
 
@@ -109,17 +120,16 @@ class RRTStar():
 
         """
 
-        #If no nodes are present then obviously no collision is possible
+        # If no nodes are present then obviously no collision is possible
         if node is None:
             return False
 
-        
         for (obj_x, obj_y, obj_size) in obstacleList:
             dx_list = [obj_x - x for x in node.path_x]
             dy_list = [obj_y - y for y in node.path_y]
             dist_list = [dx * dx + dy * dy for (dx, dy) in zip(dx_list, dy_list)]
 
-            #If least square of distance is less than square of object size then they are colliding
+            # If least square of distance is less than square of object size then they are colliding
             if min(dist_list) <= obj_size ** 2:
                 return False  # collision
 
@@ -133,12 +143,14 @@ class RRTStar():
 
         """
         if random.randint(0, 100) > self.goal_sample_rate:
-            random_node = self.Node(random.uniform(self.min_rand, self.max_rand),
-                            random.uniform(self.min_rand, self.max_rand))
+            random_node = self.Node(
+                random.uniform(self.min_rand, self.max_rand),
+                random.uniform(self.min_rand, self.max_rand),
+            )
         else:  # goal point sampling
             random_node = self.Node(self.end.x, self.end.y)
         return random_node
-    
+
     def generate_final_course(self, goal_index):
         """Generates final path/course from nodes to goal 
 
@@ -151,12 +163,12 @@ class RRTStar():
         path = [[self.end.x, self.end.y]]
         node = self.node_list[goal_index]
         while node.parent is not None:
-            path.append([node.x, node.y]) #Adding nodes to the path
+            path.append([node.x, node.y])  # Adding nodes to the path
             node = node.parent
         path.append([node.x, node.y])
 
         return path
-    
+
     @staticmethod
     def get_nearest_node_index(node_list, random_node):
         """Finds the nearest node from a random node
@@ -167,14 +179,15 @@ class RRTStar():
         Returns:
             int: minind. Minimum index/ index of minimum distance node 
         """
-        
-        dist_list = [(node.x - random_node.x) ** 2 + (node.y - random_node.y)
-                 ** 2 for node in node_list]
+
+        dist_list = [
+            (node.x - random_node.x) ** 2 + (node.y - random_node.y) ** 2
+            for node in node_list
+        ]
         minind = dist_list.index(min(dist_list))
 
         return minind
 
-    
     def steer(self, initial_node, to_node, extend_length=float("inf")):
         """Steers a new path based on optimizing cost & angle
 
@@ -228,7 +241,9 @@ class RRTStar():
             print("Iter:", i, ", number of nodes:", len(self.node_list))
             random_node = self.get_random_node()
             nearest_ind = self.get_nearest_node_index(self.node_list, random_node)
-            new_node = self.steer(self.node_list[nearest_ind], random_node, self.expand_dis)
+            new_node = self.steer(
+                self.node_list[nearest_ind], random_node, self.expand_dis
+            )
 
             if self.check_collision(new_node, self.obstacle_list):
                 near_indexes = self.find_near_nodes(new_node)
@@ -237,7 +252,7 @@ class RRTStar():
                     self.node_list.append(new_node)
                     self.rewire(new_node, near_indexes)
 
-            # Snippet to draw/animate node 
+            # Snippet to draw/animate node
             # if animation and i % 5 == 0:
             #     self.draw_graph(random_node)
 
@@ -246,7 +261,7 @@ class RRTStar():
                 if last_index:
                     return self.generate_final_course(last_index)
 
-        #Snippet to be executed if max iterations is reached before final 
+        # Snippet to be executed if max iterations is reached before final
         print("reached max iteration")
 
         last_index = self.search_best_goal_node()
@@ -296,7 +311,11 @@ class RRTStar():
         """
 
         dist_to_goal_list = [self.calc_dist_to_goal(n.x, n.y) for n in self.node_list]
-        goal_indexes = [dist_to_goal_list.index(i) for i in dist_to_goal_list if i <= self.expand_dis]
+        goal_indexes = [
+            dist_to_goal_list.index(i)
+            for i in dist_to_goal_list
+            if i <= self.expand_dis
+        ]
 
         safe_goal_indexes = []
         for goal_index in goal_indexes:
@@ -322,13 +341,17 @@ class RRTStar():
 
         """
         number_nodes = len(self.node_list) + 1
-        r = self.connect_circle_dist * math.sqrt((math.log(number_nodes) / number_nodes))
-        
+        r = self.connect_circle_dist * math.sqrt(
+            (math.log(number_nodes) / number_nodes)
+        )
+
         # if expand_dist exists, search vertices in a range no more than expand_dist
-        if hasattr(self, 'expand_dis'): 
+        if hasattr(self, "expand_dis"):
             r = min(r, self.expand_dis)
-        dist_list = [(node.x - new_node.x) ** 2 +
-                     (node.y - new_node.y) ** 2 for node in self.node_list]
+        dist_list = [
+            (node.x - new_node.x) ** 2 + (node.y - new_node.y) ** 2
+            for node in self.node_list
+        ]
         near_indexes = [dist_list.index(i) for i in dist_list if i <= r ** 2]
         return near_indexes
 
