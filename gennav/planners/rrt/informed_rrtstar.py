@@ -104,8 +104,6 @@ class InformedRRTstar(Planner):
                 M = np.dot(a1, I1.T)
 
                 [u, s, v] = np.linalg.svd(M)
-                # numpy returns diagonal values for s, so to convert s into a diagonal matrix
-                s = np.eye(len(s)) * s
 
                 # numpy returns the transposed value for v, so to convert it back
                 v = v.T
