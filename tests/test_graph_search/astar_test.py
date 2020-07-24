@@ -1,5 +1,5 @@
-from gennav.planners.graph_search.astar import astar
 from gennav.utils.geometry import Point
+from gennav.utils.graph_search.astar import astar
 
 
 def test_astar():
