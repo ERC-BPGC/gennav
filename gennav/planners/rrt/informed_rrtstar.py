@@ -216,7 +216,7 @@ class InformedRRTstar(Planner):
                 x_new.cost = c_min
 
                 # Adding edge
-                graph.add_edge(x_min, x_new)
+                graph.add_edge(x_min.state, x_new.state)
 
                 # Rewiring
                 for x_near in X_near:
@@ -230,10 +230,10 @@ class InformedRRTstar(Planner):
                         traj = Trajectory(path=[x_new.state, x_near.state])
 
                         if env.get_traj_status(traj):
-                            # graph.del_edge(x_near.parent, x_near)
+                            graph.del_edge(x_near.parent.state, x_near.state)
                             x_near.parent = x_new
                             x_near.cost = c_new
-                            graph.add_edge(x_new, x_near)
+                            graph.add_edge(x_new.state, x_near.state)
 
                 if (
                     math.sqrt(

@@ -1,6 +1,14 @@
 gennav.utils package
 ====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   gennav.utils.graph_search
+
 Submodules
 ----------
 
