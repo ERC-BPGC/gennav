@@ -20,6 +20,14 @@ gennav.utils.geometry module
    :undoc-members:
    :show-inheritance:
 
+gennav.utils.graph module
+-------------------------
+
+.. automodule:: gennav.utils.graph
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.utils.path\_processing module
 ------------------------------------
 
