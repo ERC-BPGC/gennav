@@ -4,6 +4,14 @@ gennav.planners.rrt package
 Submodules
 ----------
 
+gennav.planners.rrt.informed\_rrtstar module
+--------------------------------------------
+
+.. automodule:: gennav.planners.rrt.informed_rrtstar
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.planners.rrt.rrt module
 ------------------------------
 
