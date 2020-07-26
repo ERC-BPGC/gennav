@@ -53,25 +53,20 @@ class PRMStar(Planner):
                         (node1.x - node2.x) ** 2 + (node1.y - node2.y) ** 2
                     )
                     if dist < r:
-                        traj = Trajectory(
-                            [RobotState(position=node1), RobotState(position=node2)]
-                        )
+                        n1 = RobotState(position=node1)
+                        n2 = RobotState(position=node2)
+                        traj = Trajectory([n1, n2])
                         if env.get_traj_status(traj):
-                            if RobotState(position=node1) not in graph.nodes:
-                                graph.add_node(RobotState(position=node1))
+                            if n1 not in graph.nodes:
+                                graph.add_node(n1)
 
-                            if RobotState(position=node2) not in graph.nodes:
-                                graph.add_node(RobotState(position=node2))
+                            if n2 not in graph.nodes:
+                                graph.add_node(n2)
 
-                            if (
-                                RobotState(position=node2) not in graph.edges[node1]
-                                and RobotState(position=node1) not in graph.edges[node2]
-                            ):
+                            if n2 not in graph.edges[n1] and n1 not in graph.edges[n2]:
                                 graph.add_edge(
-                                    RobotState(position=node1),
-                                    RobotState(position=node2),
+                                    n1, n2,
                                 )
-
 
         return graph
 
@@ -113,7 +108,6 @@ class PRMStar(Planner):
         traj = Trajectory(path)
         # perform astar search
         p = astar(graph, s, e)
-        print(p.path)
         if len(p.path) == 1:
             return traj
         else:

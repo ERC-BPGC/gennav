@@ -74,21 +74,16 @@ def astar(graph, start, end, heuristic={}):
     open_.append(start_node)
     # performs astar search to find the shortest path
     while len(open_) > 0:
-        print("Im in while")
         open_.sort()
         current_node = open_.pop(0)
-        print(current_node.state)
-        print(current_node.state in graph.nodes)
-        print(graph.edges[current_node.state])
         closed.append(current_node)
         # checks if the goal has been reached
         if current_node.state.position == end.position:
-            print("im in first if in while")
             path = []
             # forms path from closed list
             while current_node.parent is not None:
                 path.append(current_node.state)
-                current_node = current_node.parent                                # NodeAstar(state=current_node) 
+                current_node = current_node.parent
             path.append(start_node.state)
             # returns reversed path
             path = path[::-1]
@@ -99,11 +94,9 @@ def astar(graph, start, end, heuristic={}):
         neighbours = graph.edges[current_node.state]
         # adds them to open_ if they are already present in open_
         # checks and updates the total cost for all the neighbours
-        print(neighbours)
         for node in neighbours:
-            print("im in for of while")
             # creates neighbour which can be pushed to open_ if required
-            neighbour = NodeAstar(state=node, parent=current_node)                 # Make it cuurent_node.state
+            neighbour = NodeAstar(state=node, parent=current_node)
             # checks if neighbour is in closed
             if neighbour in closed:
                 continue

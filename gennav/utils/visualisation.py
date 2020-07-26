@@ -18,7 +18,9 @@ def visualize_graph(graph, env):
     for node in graph.nodes:
         for neighbour in graph.edges[node]:
             plt.plot(
-                [node.position.x, neighbour.position.x], [node.position.y, neighbour.position.y], color="red",
+                [node.position.x, neighbour.position.x],
+                [node.position.y, neighbour.position.y],
+                color="red",
             )
 
     # Draw the obstacles in the environment

@@ -35,6 +35,12 @@ class RobotState:
             self.orientation.yaw,
         )
 
+    def __hash__(self):
+        return hash(self.position)
+
+    def __eq__(self, other):
+        return self.position == other.position
+
 
 class Velocity:
     """

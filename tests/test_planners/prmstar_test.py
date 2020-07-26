@@ -28,7 +28,6 @@ def test_prmstar_plan():
         # visualize_path(path, poly)
         if len(path.path) != 1:
             assert poly.get_traj_status(path) is True
-        # print(path.path)
 
 
 def test_prmstar_construct():
