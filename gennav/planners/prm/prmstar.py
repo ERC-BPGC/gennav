@@ -2,6 +2,7 @@ import math
 
 from gennav.planners.base import Planner
 from gennav.utils import RobotState, Trajectory
+from gennav.utils.graph import Graph
 from gennav.utils.graph_search.astar import astar
 
 
@@ -31,7 +32,7 @@ class PRMStar(Planner):
                 the values for each key is a list of the neighbour nodes
         """
         nodes = []
-        graph = {}
+        graph = Graph()
         i = 0
         # samples points from the sample space until n points
         # outside obstacles are obtained
@@ -52,18 +53,20 @@ class PRMStar(Planner):
                         (node1.x - node2.x) ** 2 + (node1.y - node2.y) ** 2
                     )
                     if dist < r:
-                        traj = Trajectory(
-                            [RobotState(position=node1), RobotState(position=node2)]
-                        )
+                        n1 = RobotState(position=node1)
+                        n2 = RobotState(position=node2)
+                        traj = Trajectory([n1, n2])
                         if env.get_traj_status(traj):
-                            if node1 not in graph:
-                                graph[node1] = [node2]
-                            elif node2 not in graph[node1]:
-                                graph[node1].append(node2)
-                            if node2 not in graph:
-                                graph[node2] = [node1]
-                            elif node1 not in graph[node2]:
-                                graph[node2].append(node1)
+                            if n1 not in graph.nodes:
+                                graph.add_node(n1)
+
+                            if n2 not in graph.nodes:
+                                graph.add_node(n2)
+
+                            if n2 not in graph.edges[n1] and n1 not in graph.edges[n2]:
+                                graph.add_edge(
+                                    n1, n2,
+                                )
 
         return graph
 
@@ -80,25 +83,23 @@ class PRMStar(Planner):
         graph = self.construct(env)
         # find collision free point in graph closest to start_point
         min_dist = float("inf")
-        for node in graph.keys():
+        for node in graph.nodes:
             dist = math.sqrt(
-                (node.x - start.position.x) ** 2 + (node.y - start.position.y) ** 2
+                (node.position.x - start.position.x) ** 2
+                + (node.position.y - start.position.y) ** 2
             )
-            traj = Trajectory(
-                [RobotState(position=node), RobotState(position=start.position)]
-            )
+            traj = Trajectory([node, start])
             if dist < min_dist and (env.get_traj_status(traj)):
                 min_dist = dist
                 s = node
         # find collision free point in graph closest to end_point
         min_dist = float("inf")
-        for node in graph.keys():
+        for node in graph.nodes:
             dist = math.sqrt(
-                (node.x - goal.position.x) ** 2 + (node.y - goal.position.y) ** 2
+                (node.position.x - goal.position.x) ** 2
+                + (node.position.y - goal.position.y) ** 2
             )
-            traj = Trajectory(
-                [RobotState(position=node), RobotState(position=goal.position)]
-            )
+            traj = Trajectory([node, goal])
             if dist < min_dist and (env.get_traj_status(traj)):
                 min_dist = dist
                 e = node
