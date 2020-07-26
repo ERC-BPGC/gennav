@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   gennav.planners.graph_search
    gennav.planners.prm
    gennav.planners.rrt
 
