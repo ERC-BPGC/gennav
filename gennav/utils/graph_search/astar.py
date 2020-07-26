@@ -42,9 +42,9 @@ def astar(graph, start, end, heuristic={}):
     Args:
         graph (gennav.utils.graph): Dictionary representing the graph where keys are the nodes
             and the value is a list of all neighbouring nodes
-        start (gennav.utils.geometry.Point): Point representing key corresponding
+        start (gennav.utils.RobotState): Point representing key corresponding
             to the start point
-        end (gennav.utils.geometry.Point): Point representing key corresponding
+        end (gennav.utils.RobotState): Point representing key corresponding
             to the end point
         heuristic (dict): Dictionary containing the heuristic values for all the nodes,
             if not specified the default heuristic is euclidean distance
@@ -58,7 +58,7 @@ def astar(graph, start, end, heuristic={}):
         return traj
     open_ = []
     closed = []
-    # calcula]tes heuristic for start if not provided by the user
+    # calculates heuristic for start if not provided by the user
     # pushes the start point in the open_ Priority Queue
 
     start_node = NodeAstar(state=start)
@@ -74,16 +74,21 @@ def astar(graph, start, end, heuristic={}):
     open_.append(start_node)
     # performs astar search to find the shortest path
     while len(open_) > 0:
+        print("Im in while")
         open_.sort()
         current_node = open_.pop(0)
+        print(current_node.state)
+        print(current_node.state in graph.nodes)
+        print(graph.edges[current_node.state])
         closed.append(current_node)
         # checks if the goal has been reached
         if current_node.state.position == end.position:
+            print("im in first if in while")
             path = []
             # forms path from closed list
             while current_node.parent is not None:
                 path.append(current_node.state)
-                current_node = current_node.parent
+                current_node = current_node.parent                                # NodeAstar(state=current_node) 
             path.append(start_node.state)
             # returns reversed path
             path = path[::-1]
@@ -94,9 +99,11 @@ def astar(graph, start, end, heuristic={}):
         neighbours = graph.edges[current_node.state]
         # adds them to open_ if they are already present in open_
         # checks and updates the total cost for all the neighbours
+        print(neighbours)
         for node in neighbours:
+            print("im in for of while")
             # creates neighbour which can be pushed to open_ if required
-            neighbour = NodeAstar(state=node, parent=current_node)
+            neighbour = NodeAstar(state=node, parent=current_node)                 # Make it cuurent_node.state
             # checks if neighbour is in closed
             if neighbour in closed:
                 continue

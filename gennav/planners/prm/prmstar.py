@@ -59,19 +59,18 @@ class PRMStar(Planner):
                         if env.get_traj_status(traj):
                             if RobotState(position=node1) not in graph.nodes:
                                 graph.add_node(RobotState(position=node1))
+
+                            if RobotState(position=node2) not in graph.nodes:
                                 graph.add_node(RobotState(position=node2))
+
+                            if (
+                                RobotState(position=node2) not in graph.edges[node1]
+                                and RobotState(position=node1) not in graph.edges[node2]
+                            ):
                                 graph.add_edge(
                                     RobotState(position=node1),
                                     RobotState(position=node2),
                                 )
-
-                            if RobotState(position=node2) not in graph.nodes:
-                                graph.add_node(RobotState(position=node2))
-                                if RobotState(position=node2) not in graph.edges[node1]:
-                                    graph.add_edge(
-                                        RobotState(position=node1),
-                                        RobotState(position=node2),
-                                    )
 
 
         return graph

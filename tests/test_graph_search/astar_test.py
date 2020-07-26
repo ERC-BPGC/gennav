@@ -34,8 +34,8 @@ def test_astar():
     graph.add_edge(node6, node4)
     graph.add_edge(node6, node5)
 
-    start = Point(0, 0)
-    end = Point(3, 2)
+    start = RobotState(position=Point(0, 0))
+    end = RobotState(position=Point(3, 2))
     _ = astar(graph, start, end)
 
 
@@ -68,13 +68,13 @@ def test_astar_heuristic():
     graph.add_edge(node6, node4)
     graph.add_edge(node6, node5)
     heuristic = {
-        Point(0, 0): 5,
-        Point(1, 1): 3,
-        Point(3, 1): 1,
-        Point(2, 2): 1,
-        Point(3, 2): 0,
-        Point(2, 3): 2,
+        RobotState(position=Point(0, 0)): 5,
+        RobotState(position=Point(1, 1)): 3,
+        RobotState(position=Point(3, 1)): 1,
+        RobotState(position=Point(2, 2)): 1,
+        RobotState(position=Point(3, 2)): 0,
+        RobotState(position=Point(2, 3)): 2,
     }
-    start = Point(0, 0)
-    end = Point(3, 2)
+    start = RobotState(position=Point(0, 0))
+    end = RobotState(position=Point(3, 2))
     _ = astar(graph, start, end, heuristic)
