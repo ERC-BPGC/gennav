@@ -15,10 +15,10 @@ def visualize_graph(graph, env):
     # Clear the figure
     plt.clf()
     # Plot each edge of the tree
-    for node in graph:
-        for neighbour in graph[node]:
+    for node in graph.nodes:
+        for neighbour in graph.edges[node]:
             plt.plot(
-                [node.x, neighbour.x], [node.y, neighbour.y], color="red",
+                [node.position.x, neighbour.position.x], [node.position.y, neighbour.position.y], color="red",
             )
 
     # Draw the obstacles in the environment
