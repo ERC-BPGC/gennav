@@ -1,47 +1,6 @@
 from .geometry import OrientationRPY, Point, Vector3D
 
 
-class RobotState:
-    """
-        Class for representing the robot state
-
-        Args:
-            position : class utils.common.Point (default = utils.common.Point)
-            orientation : class utils.common.OrientationRPY (default = utils.common.OrientationRPY)
-    """
-
-    def __init__(self, position=Point(), orientation=OrientationRPY()):
-
-        self.position = position
-        self.orientation = orientation
-
-    def __str__(self):
-        return "RobotState :\n\tPosition :\n\tx : {}\n\ty : {}\n\tz : {}\n\tOrientation :\n\troll : {}\n\tpitch : {}\n\tyaw : {}\n\t".format(
-            self.position.x,
-            self.position.y,
-            self.position.z,
-            self.orientation.roll,
-            self.orientation.pitch,
-            self.orientation.yaw,
-        )
-
-    def __repr__(self):
-        return "gennav.utils.RobotState(position=Point({}, {}, {}), orientation=OrientationRPY({}, {}, {}))".format(
-            self.position.x,
-            self.position.y,
-            self.position.z,
-            self.orientation.roll,
-            self.orientation.pitch,
-            self.orientation.yaw,
-        )
-
-    def __hash__(self):
-        return hash(self.position)
-
-    def __eq__(self, other):
-        return self.position == other.position
-
-
 class Velocity:
     """
         Class for representing Velocity
@@ -74,6 +33,50 @@ class Velocity:
             self.angular.y,
             self.angular.z,
         )
+
+
+class RobotState:
+    """
+        Class for representing the robot state
+
+        Args:
+            position : class utils.common.Point (default = utils.common.Point)
+            orientation : class utils.common.OrientationRPY (default = utils.common.OrientationRPY)
+            velocity : class utils.common.Velocity (default = utils.common.Velocity)
+    """
+
+    def __init__(
+        self, position=Point(), orientation=OrientationRPY(), velocity=Velocity()
+    ):
+        self.position = position
+        self.orientation = orientation
+        self.velocity = velocity
+
+    def __str__(self):
+        return "RobotState :\n\tPosition :\n\tx : {}\n\ty : {}\n\tz : {}\n\tOrientation :\n\troll : {}\n\tpitch : {}\n\tyaw : {}\n\t".format(
+            self.position.x,
+            self.position.y,
+            self.position.z,
+            self.orientation.roll,
+            self.orientation.pitch,
+            self.orientation.yaw,
+        )
+
+    def __repr__(self):
+        return "gennav.utils.RobotState(position=Point({}, {}, {}), orientation=OrientationRPY({}, {}, {}))".format(
+            self.position.x,
+            self.position.y,
+            self.position.z,
+            self.orientation.roll,
+            self.orientation.pitch,
+            self.orientation.yaw,
+        )
+
+    def __hash__(self):
+        return hash(self.position)
+
+    def __eq__(self, other):
+        return self.position == other.position
 
 
 class Trajectory:
