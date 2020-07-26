@@ -6,8 +6,8 @@ class Velocity:
         Class for representing Velocity
 
         Args:
-            linear : class utils.common.Vector3D (default = utils.common.Vector3D)
-            angular : class utils.common.Vector3D (default = utils.common.Vector3D)
+            linear : class utils.geometry.Vector3D (default = utils.geometry.Vector3D)
+            angular : class utils.geometry.Vector3D (default = utils.geometry.Vector3D)
     """
 
     def __init__(self, linear=Vector3D(), angular=Vector3D()):
@@ -40,8 +40,8 @@ class RobotState:
         Class for representing the robot state
 
         Args:
-            position : class utils.common.Point (default = utils.common.Point)
-            orientation : class utils.common.OrientationRPY (default = utils.common.OrientationRPY)
+            position : class utils.geometry.Point (default = utils.geometry.Point)
+            orientation : class utils.geometry.OrientationRPY (default = utils.geometry.OrientationRPY)
             velocity : class utils.common.Velocity (default = utils.common.Velocity)
     """
 
