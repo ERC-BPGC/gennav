@@ -86,7 +86,11 @@ class RRT(Planner):
                     nearest_node.state.position.y + self.expand_dis * math.sin(theta)
                 )
                 # Check whether new point is inside an obstacles
-                if not env.get_status(RobotState(position=new_point)):
+                # if not env.get_status(RobotState(position=new_point)):
+                traj = Trajectory(
+                    path=[nearest_node.state, RobotState(position=new_point)]
+                )
+                if not env.get_traj_status(traj):
                     continue
                 else:
                     new_node = Node.from_coordinates(new_point)
