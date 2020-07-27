@@ -63,13 +63,13 @@ class potential_field(Planner):
             total_grad (float) : Total gradient due to potential field of all obstacles at the state of the robot
         """
 
-        total_grad = [0, 0]
+        total_grad = [0.0, 0.0]
         min_dist = self.env.minimum_distances(self.current)
         for i, _ in enumerate(self.env.obstacle_list):
             if min_dist[i] < self.THRESH:
                 dummy_state_x = RobotState(
                     position=Point(
-                        self.current.position.x + 1,
+                        self.current.position.x + 0.01,
                         self.current.position.y,
                         self.current.position.z,
                     )
@@ -78,7 +78,7 @@ class potential_field(Planner):
                 dummy_state_y = RobotState(
                     position=Point(
                         self.current.position.x,
-                        self.current.position.y + 1,
+                        self.current.position.y + 0.01,
                         self.current.position.z,
                     )
                 )
