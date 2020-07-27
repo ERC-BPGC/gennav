@@ -2,6 +2,7 @@ import math
 
 from gennav.planners.base import Planner
 from gennav.utils import RobotState, Trajectory
+from gennav.utils.geometry import Point
 
 
 class potential_field(Planner):
@@ -67,7 +68,7 @@ class potential_field(Planner):
         for i, _ in enumerate(self.env.obstacle_list):
             if min_dist[i] < self.THRESH:
                 dummy_state_x = RobotState(
-                    (
+                    position=Point(
                         self.current.position.x + 1,
                         self.current.position.y,
                         self.current.position.z,
@@ -75,22 +76,23 @@ class potential_field(Planner):
                 )
                 x_grad = self.env.minimum_distances(dummy_state_x)[i]
                 dummy_state_y = RobotState(
-                    (
+                    position=Point(
                         self.current.position.x,
                         self.current.position.y + 1,
                         self.current.position.z,
                     )
                 )
                 y_grad = self.env.minimum_distances(dummy_state_y)[i]
+
                 grad = [
-                    (x_grad - min_dist) / 0.01,
-                    (y_grad - min_dist) / 0.01,
+                    (x_grad - min_dist[i]) / 0.01,
+                    (y_grad - min_dist[i]) / 0.01,
                 ]
                 factor = (
                     self.ETA
-                    * ((1 / self.THRESH) - 1 / min_dist)
+                    * ((1 / self.THRESH) - 1 / min_dist[i])
                     * 1
-                    / (min_dist ** 2)
+                    / (min_dist[i] ** 2)
                 )
                 grad = [x * factor for x in grad]
                 total_grad[0] = total_grad[0] + grad[0]
@@ -125,12 +127,8 @@ class potential_field(Planner):
             grad = [0, 0]
             grad[0] = grad_attract[0] + grad_repel[0]
             grad[1] = grad_attract[1] + grad_repel[1]
-            self.current.position.x = (
-                self.current.position.x - self.STEP_SIZE * grad[0]
-            )
-            self.current.position.y = (
-                self.current.position.y - self.STEP_SIZE * grad[1]
-            )
+            self.current.position.x = self.current.position.x - self.STEP_SIZE * grad[0]
+            self.current.position.y = self.current.position.y - self.STEP_SIZE * grad[1]
             waypoints.append(self.current)
             trajectory = Trajectory(waypoints)
         return trajectory
