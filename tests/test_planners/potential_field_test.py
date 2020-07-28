@@ -1,5 +1,5 @@
 from gennav.envs import PolygonEnv
-from gennav.planners.potential_field import potential_field
+from gennav.planners.potential_field import POTENTIAL_FIELD
 from gennav.utils import RobotState
 from gennav.utils.geometry import Point
 

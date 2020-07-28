@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   gennav.planners.potential_field
    gennav.planners.prm
    gennav.planners.rrt
 

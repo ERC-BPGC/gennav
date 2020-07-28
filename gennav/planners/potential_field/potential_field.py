@@ -5,7 +5,7 @@ from gennav.utils import RobotState, Trajectory
 from gennav.utils.geometry import Point
 
 
-class potential_field(Planner):
+class POTENTIAL_FIELD(Planner):
     """Potential Field Class
 
     Attributes:
@@ -92,7 +92,7 @@ class potential_field(Planner):
                     self.ETA
                     * ((1 / self.THRESH) - 1 / min_dist[i])
                     * 1
-                    / (min_dist[i] ** 2)
+                    / (min_dist[i] ** 2 + 1)
                 )
                 grad = [x * factor for x in grad]
                 total_grad[0] = total_grad[0] + grad[0]
