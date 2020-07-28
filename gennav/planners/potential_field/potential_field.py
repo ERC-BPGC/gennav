@@ -5,7 +5,7 @@ from gennav.utils import RobotState, Trajectory
 from gennav.utils.geometry import Point
 
 
-class POTENTIAL_FIELD(Planner):
+class potential_field(Planner):
     """Potential Field Class
 
     Attributes:
