@@ -1,6 +1,14 @@
 gennav.utils package
 ====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   gennav.utils.graph_search
+
 Submodules
 ----------
 
@@ -16,6 +24,14 @@ gennav.utils.geometry module
 ----------------------------
 
 .. automodule:: gennav.utils.geometry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gennav.utils.graph module
+-------------------------
+
+.. automodule:: gennav.utils.graph
    :members:
    :undoc-members:
    :show-inheritance:
