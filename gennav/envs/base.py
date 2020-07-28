@@ -51,7 +51,7 @@ class Environment(object):
         This method needs to be implemented in the specific env implementation
 
         Args:
-            state (gennav.utils.common.RobotState) : The current state of the robot.
+            state (gennav.utils.RobotState) : The current state of the robot.
             *args: Variable length argument list.
             **kwargs: Variable length keyword arguments.
 
@@ -64,7 +64,7 @@ class Environment(object):
         This method needs to be implemented in the specific env implementation.
 
         Args:
-            state (gennav.utils.common.RobotState) : The current state of the robot.
+            state (gennav.utils.RobotState) : The current state of the robot.
             *args : Variable length argument list.
             **kwargs : Variable length keyword arguments.
 
