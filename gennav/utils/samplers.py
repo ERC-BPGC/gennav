@@ -9,7 +9,7 @@ class Sampler(object):
     """Base classs for samplers.
     """
 
-    def __call___(self):
+    def __call__(self):
         """Sample a configuration.
 
         This method needs to be implemented in the specific sampler.
@@ -26,9 +26,9 @@ class UniformRectSampler(Sampler):
 
     Args:
         min_x (float): Minimum x coordinate of sample area
-        min_x (float): Maximum x coordinate of sample area
-        min_x (float): Minimum y coordinate of sample area
-        min_x (float): Maximum y coordinate of sample area
+        max_x (float): Maximum x coordinate of sample area
+        min_y (float): Minimum y coordinate of sample area
+        max_y (float): Maximum y coordinate of sample area
         goal (gennav.utils.RobotState): Goal state. Defaults to None
         goal_sample_p (float): Probability of sampling goal. Defaults to 0
 
