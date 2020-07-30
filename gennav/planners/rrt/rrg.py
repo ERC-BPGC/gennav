@@ -13,7 +13,7 @@ class RRG(Planner):
     """
 
     def __init__(
-        self, sampler, goal_sample_p = 0.1, expand_dis=1.0, max_iter=500,
+        self, sampler, goal_sample_p=0.1, expand_dis=1.0, max_iter=500,
     ):
         """Init RRG parameters
 
@@ -29,7 +29,7 @@ class RRG(Planner):
         self.max_iter = max_iter
         self.graph = Graph()
         self.circle = 1.0
-        
+
     def plan(self, start, goal, env):
         """Plans path from start to goal avoiding obstacles.
         Args:
@@ -52,9 +52,8 @@ class RRG(Planner):
             # Find nearest node to the sampled point
 
             distance_list = [
-                    compute_distance(node.position, rnd_node.position)
-                    for node in node_list
-                ]
+                compute_distance(node.position, rnd_node.position) for node in node_list
+            ]
 
             try:
                 # for python2
@@ -95,9 +94,8 @@ class RRG(Planner):
             # The circle in which to check parent node and rewiring
             r = self.circle * math.sqrt((math.log(nnode) / nnode))
             dist_list = [
-                    compute_distance(node.position, new_node.position)
-                    for node in node_list
-                ]
+                compute_distance(node.position, new_node.position) for node in node_list
+            ]
             # Getting all the indexes within r units of new_node
             near_inds = [dist_list.index(i) for i in dist_list if i <= r ** 2]
             self.graph.add_node(new_node)
