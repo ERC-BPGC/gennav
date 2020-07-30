@@ -20,7 +20,6 @@ def test_rrg_plan():
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
 
-        # Instatiate prm constructer object
         start = RobotState(position=Point(0, 0))
         goal = RobotState(position=Point(12, 10))
         my_tree = RRG(sampler=sampler, expand_dis=1.0, max_iter=500)
