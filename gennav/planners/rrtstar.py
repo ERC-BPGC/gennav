@@ -1,6 +1,12 @@
 import math
 import random
 
+from gennav.planners import Planner
+from gennav.utils import RobotState, Trajectory
+from gennav.utils.common import Node
+from gennav.utils.geometry import Point, compute_distance, compute_angle
+
+
 # Pseudo Code: Sampling based motion planning algorithm
 # 1. Initialize starting nodes, obstacles, goal(end point to be reached) & random sampling area
 # 2. Generate random nodes
@@ -86,29 +92,7 @@ class RRTStar:
         self.node_list = []
         self.goal_node = self.Node(goal[0], goal[1])
 
-    def calc_cost_and_angle(self, initial_node, to_node):
-        """Calculate cost i.e euclidean distance each vertex has traveled relative to its parent vertex & angle b/w nodes(Based on smart RRT* hypotense from https://journals.sagepub.com/doi/10.5772/56718)
-        Args:
-            initial_node (int): The initial node from where cost is to be measured.
-            final_node (int): The node till where cost is to be measured.
-
-        Returns:
-            cost (float): The cost value
-            theta (float) : The angle b/w nodes
-
-        """
-
-        # Euclidean distance
-        cost = math.sqrt(
-            (to_node.x - initial_node.x) ** 2, (to_node.y - initial_node.y) ** 2
-        )
-
-        # Angle in radians
-        theta = math.atan2((to_node.y - initial_node.y), (to_node.x - initial_node.x))
-
-        return cost, theta
-
-    @staticmethod
+        @staticmethod
     def check_collision(node, obstacleList):
         """Check if nodes are colliding with obstacles
         Args:
@@ -198,8 +182,9 @@ class RRTStar:
             node: new_node. The new calculated node based on path optimization
 
         """
-        new_node = self.Node(initial_node.x, initial_node.y)
-        cost, theta = self.calc_cost_and_angle(new_node, to_node)
+        new_node = Node(initial_node.x, initial_node.y)
+        cost = compute_distance(new_node, to_node)
+        theta = compute_angle(new_node, to_node)
 
         new_node.path_x = [new_node.x]
         new_node.path_y = [new_node.y]
@@ -379,7 +364,7 @@ class RRTStar:
 
         """
 
-        cost, _ = self.calc_cost_and_angle(initial_node, to_node)
+        cost = compute_distance(initial_node, to_node)
         return initial_node.cost + d
 
     def propagate_cost_to_leaves(self, parent_node):
