@@ -63,7 +63,6 @@ class RRG(Planner):
             except NameError:
                 # for python 3
                 nearest_node_index = distance_list.index(min(distance_list))
-            nearest_node = RobotState()
             nearest_node = node_list[nearest_node_index]
 
             # Create new point in the direction of sampled point
@@ -118,7 +117,6 @@ class RRG(Planner):
             self.graph.del_edge(start, goal)
 
         path = []
-        p = Trajectory([start])
         p = astar(self.graph, start, goal)
         path.extend(p.path)
         path = Trajectory(path)
