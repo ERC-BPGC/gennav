@@ -14,17 +14,14 @@ def test_rrt():
             [(8, 2), (8, 7), (10, 7), (10, 2)],
         ],
     ]
-    sampler = UniformRectSampler(-5, -5, 15, 15)
+    sampler = UniformRectSampler(-5, 15, -5, 15)
     poly = PolygonEnv()
-    # poly.update(general_obstacles_list)
+    my_tree = RRT(sampler=sampler, expand_dis=0.1)
+    start = RobotState(position=Point(1, 1))
+    goal = RobotState(position=Point(10, 10))
 
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-
-        # Instatiate rrt planner object
-        my_tree = RRT(sampler=sampler, expand_dis=0.1)
-        start = RobotState(position=Point(1, 1))
-        goal = RobotState(position=Point(10, 10))
         path = my_tree.plan(start, goal, poly)
 
         # from gennav.envs.common import visualize_path

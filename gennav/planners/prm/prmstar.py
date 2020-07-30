@@ -1,7 +1,7 @@
 import math
 
 from gennav.planners.base import Planner
-from gennav.utils import RobotState, Trajectory
+from gennav.utils import Trajectory
 from gennav.utils.geometry import compute_distance
 from gennav.utils.graph import Graph
 from gennav.utils.graph_search.astar import astar
@@ -31,11 +31,12 @@ class PRMStar(Planner):
         nodes = []
         graph = Graph()
         i = 0
+
         # samples points from the sample space until n points
         # outside obstacles are obtained
         while i < self.n:
-            sample = self.sampler(self.sample_area)
-            if not env.get_status(RobotState(position=sample)):
+            sample = self.sampler()
+            if not env.get_status(sample):
                 continue
             else:
                 i += 1
@@ -46,21 +47,21 @@ class PRMStar(Planner):
             for node2 in nodes:
                 if node1 != node2:
                     r = self.c * math.sqrt(math.log(self.n) / self.n)
-                    dist = compute_distance(node1, node2)
+                    dist = compute_distance(node1.position, node2.position)
                     if dist < r:
-                        n1 = RobotState(position=node1)
-                        n2 = RobotState(position=node2)
-                        traj = Trajectory([n1, n2])
-                        if env.get_traj_status(traj):
-                            if n1 not in graph.nodes:
-                                graph.add_node(n1)
+                        if env.get_traj_status(Trajectory([node1, node2])):
+                            if node1 not in graph.nodes:
+                                graph.add_node(node1)
 
-                            if n2 not in graph.nodes:
-                                graph.add_node(n2)
+                            if node2 not in graph.nodes:
+                                graph.add_node(node2)
 
-                            if n2 not in graph.edges[n1] and n1 not in graph.edges[n2]:
+                            if (
+                                node2 not in graph.edges[node1]
+                                and node1 not in graph.edges[node2]
+                            ):
                                 graph.add_edge(
-                                    n1, n2,
+                                    node1, node2,
                                 )
 
         return graph

@@ -14,18 +14,20 @@ def test_prmstar_plan():
             [(8, 2), (8, 7), (10, 7), (10, 2)],
         ],
     ]
-    sampler = UniformRectSampler(-5, -5, 15, 15)
+
+    sampler = UniformRectSampler(-5, 15, -5, 15)
     poly = PolygonEnv()
+    start = RobotState(position=Point(0, 0))
+    goal = RobotState(position=Point(12, 10))
+    my_tree = PRMStar(sampler=sampler, c=30, n=100)
+
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-
-        # Instatiate prm constructer object
-        start = RobotState(position=Point(0, 0))
-        goal = RobotState(position=Point(12, 10))
-        my_tree = PRMStar(sampler=sampler, c=30, n=100)
         path = my_tree.plan(start, goal, poly)
+
         # from gennav.envs.common import visualize_path
         # visualize_path(path, poly)
+
         if len(path.path) != 1:
             assert poly.get_traj_status(path) is True
 
@@ -39,13 +41,14 @@ def test_prmstar_construct():
             [(8, 2), (8, 7), (10, 7), (10, 2)],
         ],
     ]
+
     sampler = UniformRectSampler(-5, -5, 15, 15)
     poly = PolygonEnv()
+    my_tree = PRMStar(sampler=sampler, c=30, n=50)
+
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-
-        # Instatiate prm constructer object
-        my_tree = PRMStar(sampler=sampler, c=30, n=50)
         graph = my_tree.construct(poly)  # noqa: F841
+
         # from gennav.utils.visualisation import visualize_graph
         # visualize_graph(graph,poly)
