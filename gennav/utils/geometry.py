@@ -35,6 +35,46 @@ class Point:
     def __repr__(self):
         return "utils.geometry.Point({}, {}, {})".format(self.x, self.y, self.z)
 
+    def __add__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point((self.x + val), (self.y + val), (self.z + val))
+        elif isinstance(val, Point):
+            return Point((self.x + val.x), (self.y + val.y), (self.z + val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for addition. Only int, float and Point allowed"
+            )
+
+    def __sub__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point((self.x - val), (self.y - val), (self.z - val))
+        elif isinstance(val, Point):
+            return Point((self.x - val.x), (self.y - val.y), (self.z - val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for subtraction. Only int, float and Point allowed"
+            )
+
+    def __mul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Point):
+            return Point(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Point allowed"
+            )
+
+    def __rmul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Point):
+            return Point(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Point allowed"
+            )
+
 
 class Quaternion:
     """
@@ -156,6 +196,46 @@ class Vector3D:
     def __repr__(self):
         return "utils.geometry.Vector3D({}, {}, {})".format(self.x, self.y, self.z)
 
+    def __add__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D((self.x + val), (self.y + val), (self.z + val))
+        elif isinstance(val, Vector3D):
+            return Vector3D((self.x + val.x), (self.y + val.y), (self.z + val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for addition. Only int, float and Vector3D allowed"
+            )
+
+    def __sub__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D((self.x - val), (self.y - val), (self.z - val))
+        elif isinstance(val, Vector3D):
+            return Vector3D((self.x - val.x), (self.y - val.y), (self.z - val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for subtraction. Only int, float and Vector3D allowed"
+            )
+
+    def __mul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Vector3D):
+            return Vector3D(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Vector3D allowed"
+            )
+
+    def __rmul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Vector3D):
+            return Vector3D(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Vector3D allowed"
+            )
+
     def magnitude(self):
         """
         Returns the magnitude of the vector
@@ -239,3 +319,16 @@ def transform_traj(traj, point, orientation):
     """
     obj = shapely.geometry.LineString(traj.path)
     return transform(obj, point, orientation)
+
+
+def compute_distance(p1, p2):
+    """Compute distance between two points.
+
+    Args:
+        p1 (gennav.utils.geometry.Point): One of the two points
+        p2 (gennav.utils.geometry.Point): One of the two points
+
+    Returns:
+        float: The computed distance
+    """
+    return math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2 + (p1.z - p2.z) ** 2)
