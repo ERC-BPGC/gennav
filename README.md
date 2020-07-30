@@ -8,7 +8,7 @@
 
 **Status: Under Development**
 
-A Python Package for Robot navigation algorithms.
+A python package for robot navigation algorithms.
 
 ## Installation
 
@@ -31,21 +31,23 @@ pip install gennav
 To plan a path using the Rapidly-exploring random tree algorithm in a polygon based environment representation. 
 
 ```python
-from gennav import planners, envs, utils
+from gennav.planners import RRT
+from gennav.envs import PolygonEnv
 from gennav.utils import RobotState
 from gennav.utils.geometry import Point
-from gennav.utils.samplers import uniform_random_sampler as sampler
+from gennav.utils.samplers import UniformRectSampler
 
+obstacles = []  # obstacles can be added here
+env = PolygonEnv()  # polygon environment to keep track of obstacles
+env.update(obstacles)  # updating environment with obstacles
 
-obstacles = []
-env = envs.PolyEnv()
-env.update(obstacles)
+sampler = UniformRectSampler(-5, 15, -5, 15)  # for sampling random states
+planner = RRT(sampler=sampler, expand_dis=0.1)  # creating the planner
 
-start = RobotState(position=Point(1, 1))
-goal = RobotState(position=Point(10, 10))
+start = RobotState(position=Point(1, 1))  # starting state
+goal = RobotState(position=Point(10, 10))  # goal state
 
-planner = RRT(sample_area=(-5, 15), sampler=sampler, expand_dis=0.1)
-path = planner.plan(start, goal, env)
+path = planner.plan(start, goal, env)  # planning path through obstacles
 ```
 
 Note that the environment have been left blank empty here, they should be updated as per use case.
