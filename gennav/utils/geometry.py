@@ -332,3 +332,15 @@ def compute_distance(p1, p2):
         float: The computed distance
     """
     return math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2 + (p1.z - p2.z) ** 2)
+
+def compute_angle(p1,p2):
+    """Compute angle between two points.
+    
+    Args:
+        p1 (gennav.utils.geometry.Point): One of the two points
+        p2 (gennav.utils.geometry.Point): One of the two points
+        
+    Returns:
+        float: The computed angle in radians
+    """
+    return math.atan2((p2.y - p1.y), (p2.x - p1.x))
