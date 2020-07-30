@@ -2,7 +2,7 @@ from gennav.envs import PolygonEnv
 from gennav.planners.rrt.rrg import RRG
 from gennav.utils import RobotState
 from gennav.utils.geometry import Point
-from gennav.utils.samplers import uniform_random_sampler as sampler
+from gennav.utils.samplers import UniformRectSampler
 
 
 def test_rrg_plan():
@@ -15,6 +15,7 @@ def test_rrg_plan():
         ],
     ]
 
+    sampler = UniformRectSampler(-5, 15, -5, 15)
     poly = PolygonEnv()
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
@@ -22,10 +23,10 @@ def test_rrg_plan():
         # Instatiate prm constructer object
         start = RobotState(position=Point(0, 0))
         goal = RobotState(position=Point(12, 10))
-        my_tree = RRG(sample_area=(-5, 15), sampler=sampler)
-        graph, path = my_tree.plan(start, goal, poly)
-        #from gennav.envs.common import visualize_path
+        my_tree = RRG(sampler=sampler, expand_dis=1.0, max_iter=500)
+        path = my_tree.plan(start, goal, poly)
+        # from gennav.envs.common import visualize_path
 
-        #visualize_path(path, poly)
-        if len(path) != 1:
+        # visualize_path(path, poly)
+        if len(path.path) != 1:
             assert poly.get_traj_status(path) is True
