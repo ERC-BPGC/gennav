@@ -6,14 +6,13 @@ from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
 from gennav.utils.graph import Graph
-from gennav.utils.samplers import uniform_random_circular_sampler as sampler1
-from gennav.utils.samplers import uniform_random_sampler as sampler2
+from gennav.utils.samplers import UniformCircularSampler
 
 
 class InformedRRTstar(Planner):
     def __init__(
         self,
-        sample_area,
+        sampler,
         expand_dis=0.1,
         neighbourhood_radius=0.5,
         goal_distance=0.2,
@@ -22,17 +21,19 @@ class InformedRRTstar(Planner):
         """InformedRRT* Class
 
         Args:
-            sample_area (tuple): area for sampling random points (min,max)
+            sampler (gennav.utils.sampler.Sampler): sampler to get random states
             expand_dis (float, optional): Distance by which the tree expands during the Steer operation . Defaults to 0.1.
             neighbourhood_radius (float, optional): Radius that determines the neighbours of a Node. Defaults to 0.5.
             goal_distance (float, optional): Distance which determines whether a node is near the goal or not. Defaults to 0.2.
             max_iter (int, optional): Maximum number of iterations so as to achieve the best possible path. Defaults to 500.
         """
-        self.sample_area = sample_area
         self.expand_dis = expand_dis
         self.neighbourhood_radius = neighbourhood_radius
         self.goal_distance = goal_distance
         self.max_iter = max_iter
+
+        self.rectangular_sampler = sampler
+        self.circular_sampler = UniformCircularSampler(1)
 
     def plan(self, start, goal, env):
         """Path planning method
@@ -117,9 +118,9 @@ class InformedRRTstar(Planner):
                 L[0, 0] = cbest / 2
                 L[1, 1] = np.sqrt(cbest ** 2 - cmin ** 2) / 2
 
-                rand_point = sampler1(1)
+                rand_state = self.circular_sampler()
                 x_ball = np.array(
-                    [rand_point.x, rand_point.y], dtype=np.float32
+                    [rand_state.position.x, rand_state.position.y], dtype=np.float32
                 ).reshape(2, 1)
 
                 x_rand_array = np.dot(np.dot(C, L), x_ball) + x_center
@@ -130,8 +131,7 @@ class InformedRRTstar(Planner):
                 x_rand_node = Node(state=x_rand)
 
             else:
-                rand_point = sampler2(self.sample_area)
-                x_rand = RobotState(position=Point(rand_point.x, rand_point.y))
+                x_rand = self.rectangular_sampler()
                 x_rand_node = Node(state=x_rand)
 
             # Finding the nearest node to the random point

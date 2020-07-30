@@ -319,3 +319,16 @@ def transform_traj(traj, point, orientation):
     """
     obj = shapely.geometry.LineString(traj.path)
     return transform(obj, point, orientation)
+
+
+def compute_distance(p1, p2):
+    """Compute distance between two points.
+
+    Args:
+        p1 (gennav.utils.geometry.Point): One of the two points
+        p2 (gennav.utils.geometry.Point): One of the two points
+
+    Returns:
+        float: The computed distance
+    """
+    return math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2 + (p1.z - p2.z) ** 2)
