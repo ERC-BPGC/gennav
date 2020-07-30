@@ -80,14 +80,11 @@ class RRG(Planner):
                 )
             )
             # Check whether new point is inside an obstacles
-            trj = Trajectory([new_node, nearest_node])
-            if not env.get_status(new_node):
-                if not env.get_traj_status(trj):
-                    continue
+            trj = Trajectory([nearest_node, new_node])
+            if not env.get_traj_status(trj):
+                continue
             else:
                 node_list.append(new_node)
-
-            # dist_to_goal = compute_distance(new_node.position, goal.position)
 
             # FINDING NEAREST INDICES
             nnode = len(node_list) + 1
@@ -102,25 +99,28 @@ class RRG(Planner):
             self.graph.add_edge(nearest_node, new_node)
             # Add all the collision free edges to the graph.
             for ind in near_inds:
-
                 node_check = node_list[ind]
                 trj = Trajectory([new_node, node_check])
-
                 # If the above condition is met append the edge.
                 if env.get_traj_status(trj):
                     self.graph.add_edge(new_node, node_check)
         if goal not in self.graph.nodes:
+            min_cost = 2.0
+            closest_node = RobotState()
+            for node in self.graph.nodes:
+                temp = compute_distance(node.position, goal.position)
+                if env.get_traj_status(Trajectory([node, goal])) and temp < min_cost:
+                    min_cost = temp
+                    closest_node = node
+            self.graph.add_edge(closest_node, goal)
             self.graph.add_node(goal)
+        if start in self.graph.edges[goal]:
+            self.graph.del_edge(start, goal)
 
         path = []
         p = Trajectory([start])
         p = astar(self.graph, start, goal)
-        if goal not in p.path:
-            path.extend(p.path)
-            path.append(goal)
-            path = Trajectory(path)
-        else:
-            path.extend(p.path)
-            path = Trajectory(path)
+        path.extend(p.path)
+        path = Trajectory(path)
 
         return path
