@@ -40,7 +40,7 @@ class PolygonEnv(Environment):
         Checks whether the position given is not within any obstacle
 
         Args:
-            state (gennav.utils.common.RobotState): State to be checked for
+            state (gennav.utils.RobotState): State to be checked for
 
         Returns:
             bool : True if the state is valid, False otherwise
@@ -92,7 +92,7 @@ class PolygonEnv(Environment):
         Uses shapely Point's distance method to obtain the distance
 
         Args:
-            state (gennav.utils.common.RobotState) : present state of the robot
+            state (gennav.utils.RobotState) : present state of the robot
             return_object (bool default=True) : returns nearest obstacle also
         Returns:
             dist (float) : distance to the nearest obstacle
@@ -112,7 +112,7 @@ class PolygonEnv(Environment):
         Uses shapely Point's distance method to obtain the minimum distances
 
         Args:
-            state (gennav.utils.common.RobotState) : present state of the robot
+            state (gennav.utils.RobotState) : present state of the robot
             sort (bool default = False) : returns the distances in ascending form when set true
         Returns :
             min_dist (list) : list containing minimum distances(float) of each obstacle from the robot state

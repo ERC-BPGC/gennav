@@ -35,6 +35,46 @@ class Point:
     def __repr__(self):
         return "utils.geometry.Point({}, {}, {})".format(self.x, self.y, self.z)
 
+    def __add__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point((self.x + val), (self.y + val), (self.z + val))
+        elif isinstance(val, Point):
+            return Point((self.x + val.x), (self.y + val.y), (self.z + val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for addition. Only int, float and Point allowed"
+            )
+
+    def __sub__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point((self.x - val), (self.y - val), (self.z - val))
+        elif isinstance(val, Point):
+            return Point((self.x - val.x), (self.y - val.y), (self.z - val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for subtraction. Only int, float and Point allowed"
+            )
+
+    def __mul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Point):
+            return Point(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Point allowed"
+            )
+
+    def __rmul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Point(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Point):
+            return Point(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Point allowed"
+            )
+
 
 class Quaternion:
     """
@@ -155,6 +195,46 @@ class Vector3D:
 
     def __repr__(self):
         return "utils.geometry.Vector3D({}, {}, {})".format(self.x, self.y, self.z)
+
+    def __add__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D((self.x + val), (self.y + val), (self.z + val))
+        elif isinstance(val, Vector3D):
+            return Vector3D((self.x + val.x), (self.y + val.y), (self.z + val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for addition. Only int, float and Vector3D allowed"
+            )
+
+    def __sub__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D((self.x - val), (self.y - val), (self.z - val))
+        elif isinstance(val, Vector3D):
+            return Vector3D((self.x - val.x), (self.y - val.y), (self.z - val.z))
+        else:
+            raise TypeError(
+                "Invalid datatype for subtraction. Only int, float and Vector3D allowed"
+            )
+
+    def __mul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Vector3D):
+            return Vector3D(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Vector3D allowed"
+            )
+
+    def __rmul__(self, val):
+        if isinstance(val, int) or isinstance(val, float):
+            return Vector3D(self.x * val, self.y * val, self.z * val)
+        elif isinstance(val, Vector3D):
+            return Vector3D(self.x * val.x, self.y * val.y, self.z * val.z)
+        else:
+            raise TypeError(
+                "Invalid datatype for multiplication. Only int, float and Vector3D allowed"
+            )
 
     def magnitude(self):
         """
