@@ -1,4 +1,4 @@
-from ...utils.common import Velocity
+from ...utils.common import RobotState, Velocity
 from ..base import Controller
 from .common import PIDGains
 
@@ -26,17 +26,17 @@ class OmniWheelPID(Controller):
 
         # Initialise variables
         self.velocity = Velocity()
+        self.robot_state = RobotState()
         self.xdiff, self.ydiff, self.xintegral, self.yintegral = 0, 0, 0, 0
 
-    def _move_bot(self, present, target):
+    def compute_vel(self, traj):
         """
-            Given present position and target position, returns velocity commands
+            Given the trajectory point, it returns the velocity using in differential format
             Args:
-                present : class gennav.utils.geometry.Point
-                target : class gennav.utils.geometry.Point
+                traj : class gennav.utils.Trajectory
         """
-        errorx = target.x - present.x
-        errory = target.y - present.y
+        errorx = traj.x - self.robot_state.position.x
+        errory = traj.y - self.robot_state.position.y
 
         velx = (
             self.xgains.kp * errorx
@@ -62,19 +62,6 @@ class OmniWheelPID(Controller):
         self.yintegral += errory
 
         return self.velocity
-
-    def compute_vel(self, traj):
-        """ Compute the velocity according to given trajectory.
-
-        Args:
-            traj (gennav.utils.Trajectory): Trajectory to compute velocity for.
-
-        Returns:
-            gennav.utils.states.Velocity: The computed velocity.
-
-        # TODO #31
-        """
-        raise NotImplementedError
 
     def constrain(self, vel, dir):
         """
