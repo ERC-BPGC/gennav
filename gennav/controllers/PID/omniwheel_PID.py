@@ -49,11 +49,10 @@ class OmniWheelPID(Controller):
             + self.ygains.ki * self.yintegral
         )
 
-        velx = self.constrain(velx, "x")
-        vely = self.constrain(vely, "y")
 
         self.velocity.linear.x = velx
         self.velocity.linear.y = vely
+        self.velocity = self.constrain(self.velocity)
 
         self.xdiff = errorx - self.xdiff
         self.xintegral += errorx
