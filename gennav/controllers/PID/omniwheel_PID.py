@@ -33,7 +33,7 @@ class OmniWheelPID(Controller):
         """
             Given the trajectory point, it returns the velocity using in differential format
             Args:
-                traj : class gennav.utils.Trajectory
+                traj : class gennav.utils.Trajectory : Trajectory to generate velocity
         """
         errorx = traj.x - self.robot_state.position.x
         errory = traj.y - self.robot_state.position.y
@@ -63,26 +63,22 @@ class OmniWheelPID(Controller):
 
         return self.velocity
 
-    def constrain(self, vel, dir):
+    def constrain(self, velocity):
         """
             Constrains the velocity within the given limits
             Args:
-                vel : Velocity that needs to be constrained
-                dir : Keyword for the velocity component
+                velocity : Velocity that needs to be constrained
         """
-        if dir.lower() == "x":
-            velParam = self.maxX
-        elif dir.lower() == "y":
-            velParam = self.maxY
-        else:
-            raise Exception("Non recognised parameter {} passed.".format(dir))
+        if velocity.linear.x > self.maxX:
+            velocity.linear.x = self.maxX
+        elif velocity.linear.x < -self.maxX:
+            velocity.linear.x = -self.maxX
+        if velocity.linear.y > self.maxY:
+            velocity.linear.y = self.maxY
+        elif velocity.linear.y < -self.maxX:
+            velocity.linear.y = -self.maxY
 
-        if vel > velParam:
-            return velParam
-        elif vel < -velParam:
-            return -velParam
-        else:
-            return vel
+        return velocity
 
     def parameters(self):
         return dict(
