@@ -13,33 +13,34 @@ class RRG(Planner):
     """
 
     def __init__(
-        self, sampler, goal_sample_p=0.1, expand_dis=1.0, max_iter=500,
+        self, sampler, expand_dis=1.0, max_iter=500,
     ):
         """Init RRG parameters
 
         Args:
 
-            sampler (function): samples random points in sample_area
-            goal_sample_p (float, optional): Probability of sampling goal. Defaults to 0.1
+            sampler (gennav.utils.sampler.Sampler): sampler to get random states
             expand_dis (float, optional): distance to expand tree by at each step. Defaults to 1.0.
             max_iter (int, optional): Maximum Iterations. Defaults to 500.
         """
+        super(RRG, self).__init__()
         self.sampler = sampler
         self.exp_dis = expand_dis
         self.max_iter = max_iter
-        self.graph = Graph()
         self.circle = 1.0
 
-    def plan(self, start, goal, env):
+    def plan(self, start, end, env):
         """Plans path from start to goal avoiding obstacles.
         Args:
-            start_point(gennav.utils.RobotState): with start point coordinates.
-            end_point (gennav.utils.RobotState): with end point coordinates.
+            start (gennav.utils.RobotState): Starting state
+            end (gennav.utils.RobotState): Goal state
             env: (gennav.envs.Environment) Base class for an envrionment.
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
         """
-        self.graph.add_node(start)
+        # Initialize graph
+        graph = Graph()
+        graph.add_node(start)
 
         # Initialize node list with Starting Position
         node_list = [start]
@@ -94,31 +95,33 @@ class RRG(Planner):
             ]
             # Getting all the indexes within r units of new_node
             near_inds = [dist_list.index(i) for i in dist_list if i <= r ** 2]
-            self.graph.add_node(new_node)
-            self.graph.add_edge(nearest_node, new_node)
+            graph.add_node(new_node)
+            graph.add_edge(nearest_node, new_node)
             # Add all the collision free edges to the graph.
             for ind in near_inds:
                 node_check = node_list[ind]
                 trj = Trajectory([new_node, node_check])
                 # If the above condition is met append the edge.
                 if env.get_traj_status(trj):
-                    self.graph.add_edge(new_node, node_check)
-        if goal not in self.graph.nodes:
+                    graph.add_edge(new_node, node_check)
+        if end not in graph.nodes:
             min_cost = 2.0
             closest_node = RobotState()
-            for node in self.graph.nodes:
-                temp = compute_distance(node.position, goal.position)
-                if env.get_traj_status(Trajectory([node, goal])) and temp < min_cost:
+            for node in graph.nodes:
+                temp = compute_distance(node.position, end.position)
+                if env.get_traj_status(Trajectory([node, end])) and temp < min_cost:
                     min_cost = temp
                     closest_node = node
-            self.graph.add_edge(closest_node, goal)
-            self.graph.add_node(goal)
-        if start in self.graph.edges[goal]:
-            self.graph.del_edge(start, goal)
+            graph.add_edge(closest_node, end)
+            graph.add_node(end)
+        if start in graph.edges[end]:
+            graph.del_edge(start, end)
 
         path = []
-        p = astar(self.graph, start, goal)
+        p = astar(graph, start, end)
         path.extend(p.path)
+        if len(path) != 1:
+            print("Goal Reached!")
         path = Trajectory(path)
 
         return path
