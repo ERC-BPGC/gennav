@@ -75,7 +75,7 @@ class OmniWheelPID(Controller):
             velocity.linear.x = -self.maxX
         if velocity.linear.y > self.maxY:
             velocity.linear.y = self.maxY
-        elif velocity.linear.y < -self.maxX:
+        elif velocity.linear.y < -self.maxY:
             velocity.linear.y = -self.maxY
 
         return velocity
