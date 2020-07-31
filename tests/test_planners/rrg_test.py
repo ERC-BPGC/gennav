@@ -17,15 +17,16 @@ def test_rrg_plan():
 
     sampler = UniformRectSampler(-5, 15, -5, 15)
     poly = PolygonEnv()
+    my_tree = RRG(sampler=sampler, expand_dis=1.0, max_iter=500)
+    start = RobotState(position=Point(0, 0))
+    goal = RobotState(position=Point(10, 10))
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-
-        start = RobotState(position=Point(0, 0))
-        goal = RobotState(position=Point(12, 10))
-        my_tree = RRG(sampler=sampler, expand_dis=1.0, max_iter=500)
         path = my_tree.plan(start, goal, poly)
+
         # from gennav.envs.common import visualize_path
 
         # visualize_path(path, poly)
+
         if len(path.path) != 1:
             assert poly.get_traj_status(path) is True
