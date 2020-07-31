@@ -10,7 +10,6 @@ import shapely
 class Point:
     """
     A Basic Point class
-
     Args:
         x : x-coordinate of the point (default = 0)
         y : y-coordinate of the point (default = 0)
@@ -79,7 +78,6 @@ class Point:
 class Quaternion:
     """
     Class for Quaternions
-
     Args :
         x : x-component of quaternion (default = 0)
         y : y-component of quaternion (default = 0)
@@ -108,7 +106,6 @@ class Quaternion:
 class OrientationRPY:
     """
     Class for representing Orientation in terms if Roll, Pitch, Yaw
-
     Args:
         roll : rotation about x-axis (default = 0)
         pitch : rotation about y-axis (default = 0)
@@ -135,7 +132,6 @@ class OrientationRPY:
 class PointPath:
     """
     A class for storing Path
-
     Args:
         points = class utils.geometry.Point[] (a list of utils.geometry.Point)
     Note:
@@ -156,7 +152,6 @@ class PointPath:
 class PathComplete:
     """
     Class that can be used to represent path which contains RobotStates as waypoints
-
     Args:
         states = class utils.geometry.RobotState[] (a list of utils.geometry.RobotState)
     Note:
@@ -176,7 +171,6 @@ class PathComplete:
 class Vector3D:
     """
     Class for representing a 3 Dimensional Vector
-
     Args:
         x : x-component (default = 0)
         y : y-component (default = 0)
@@ -245,7 +239,6 @@ class Vector3D:
     def unit(self):
         """
         Returns the unit vector of the vector as a Vector3D object
-
         Returns:
             unitVector (utils.geometry.Vector3D) : Unit vector of the given vector
         """
@@ -270,12 +263,10 @@ def transform(obj, position, orientation):
     """
     Tranform geometric object (shape, line, point etc) w.r.t given
     position and orientation in cartesian system of coordinates.
-
     Args:
         obj (shapely.geometry): object to be transformed.
         point (gennav.utils.geometry.Point): base location.
         orientation (gennav.utils.geometry.OrientationRPY): base roll pitch and yaw.
-
     Returns:
         gennav.utils.RoboState: Transformed robot state.
     """
@@ -291,12 +282,10 @@ def transform_state(state, point, orientation):
     """
     Tranform a robot state w.r.t given position and orientation
     in cartesian system of coordinates.
-
     Args:
         state (gennav.utils.RoboState): state to be transformed.
         point (gennav.utils.geometry.Point): base location.
         orientation (gennav.utils.geometry.OrientationRPY): base roll pitch and yaw.
-
     Returns:
         gennav.utils.RoboState: Transformed robot state.
     """
@@ -308,12 +297,10 @@ def transform_traj(traj, point, orientation):
     """
     Tranform a trajectory w.r.t given position and orientation
     in cartesian system of coordinates.
-
     Args:
         traj (gennav.utils.Trajectory): state to be transformed.
         point (gennav.utils.geometry.Point): base location.
         orientation (gennav.utils.geometry.OrientationRPY): base roll pitch and yaw.
-
     Returns:
         gennav.utils.RoboState: Transformed robot state.
     """
@@ -323,23 +310,20 @@ def transform_traj(traj, point, orientation):
 
 def compute_distance(p1, p2):
     """Compute distance between two points.
-
     Args:
         p1 (gennav.utils.geometry.Point): One of the two points
         p2 (gennav.utils.geometry.Point): One of the two points
-
     Returns:
         float: The computed distance
     """
     return math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2 + (p1.z - p2.z) ** 2)
 
-def compute_angle(p1,p2):
+
+def compute_angle(p1, p2):
     """Compute angle between two points.
-    
     Args:
         p1 (gennav.utils.geometry.Point): One of the two points
         p2 (gennav.utils.geometry.Point): One of the two points
-        
     Returns:
         float: The computed angle in radians
     """
