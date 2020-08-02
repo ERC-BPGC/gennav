@@ -2,6 +2,7 @@ import random
 from math import cos, pi, sin
 
 from gennav.utils.common import RobotState
+from gennav.utils.custom_exceptions import SamplingFailed
 from gennav.utils.geometry import Point
 
 
@@ -45,7 +46,7 @@ class UniformRectSampler(Sampler):
         self.goal = goal
         self.goal_sample_p = goal_sample_p
         if goal is None and goal_sample_p > 0:
-            raise ValueError("goal much be specified if goal_sample_p > 0")
+            raise SamplingFailed(goal, message="goal must be specified if goal_sample_p > 0")
 
     def __call__(self):
         """
@@ -85,7 +86,7 @@ class UniformCircularSampler(Sampler):
         self.goal = goal
         self.goal_sample_p = goal_sample_p
         if goal is None and goal_sample_p > 0:
-            raise ValueError("goal much be specified if goal_sample_p > 0")
+            raise SamplingFailed(goal, message="goal must be specified if goal_sample_p > 0")
 
     def __call__(self):
         """Randomly sample point in area while sampling goal point at a specified rate.

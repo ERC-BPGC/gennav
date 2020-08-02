@@ -16,7 +16,7 @@ def test_rrg_plan():
     ]
 
     sampler = UniformRectSampler(-5, 15, -5, 15)
-    poly = PolygonEnv()
+    poly = PolygonEnv(buffer_dist=1.0)
     my_tree = RRG(sampler=sampler, expand_dis=1.0, max_iter=500)
     start = RobotState(position=Point(0, 0))
     goal = RobotState(position=Point(10, 10))

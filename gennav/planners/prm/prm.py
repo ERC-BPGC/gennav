@@ -1,5 +1,6 @@
 from gennav.planners.base import Planner
 from gennav.utils import Trajectory
+from gennav.utils.custom_exceptions import GoalStateinObs, PathNotFound, StartStateinObs
 from gennav.utils.geometry import compute_distance
 from gennav.utils.graph import Graph
 from gennav.utils.graph_search.astar import astar
@@ -76,6 +77,13 @@ class PRM(Planner):
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
         """
+        # Check if start and goal states are obstacle free
+        if not env.get_status(start):
+            raise StartStateinObs(start)
+
+        if not env.get_status(goal):
+            raise GoalStateinObs(goal)
+
         # construct graph
         graph = self.construct(env)
         # find collision free point in graph closest to start_point
@@ -100,7 +108,7 @@ class PRM(Planner):
         # perform astar search
         p = astar(graph, s, e)
         if len(p.path) == 1:
-            return traj
+            raise PathNotFound(p)
         else:
             traj.path.extend(p.path)
         # add end_point to path
