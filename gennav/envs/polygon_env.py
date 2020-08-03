@@ -3,9 +3,8 @@
 """
 
 import shapely
-from shapely.geometry import LineString, Polygon
-
 from gennav.envs.base import Environment
+from shapely.geometry import LineString, Polygon
 
 
 class PolygonEnv(Environment):
@@ -15,7 +14,7 @@ class PolygonEnv(Environment):
             buffer_dist (float): distance passed to shapely.buffer()
     """
 
-    def __init__(self, buffer_dist=0.):
+    def __init__(self, buffer_dist=0.0):
         super(PolygonEnv, self).__init__()
         self.obstacle_list = None
         self.buffer_dist = buffer_dist

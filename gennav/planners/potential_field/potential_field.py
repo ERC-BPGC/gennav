@@ -2,7 +2,11 @@ import math
 
 from gennav.planners.base import Planner
 from gennav.utils import RobotState, Trajectory
-from gennav.utils.custom_exceptions import GoalStateinObs, PathNotFound, StartStateinObs
+from gennav.utils.exceptions.custom_exceptions import (
+    InvalidGoalState,
+    InvalidStartState,
+    PathNotFound,
+)
 from gennav.utils.geometry import Point
 
 
@@ -113,10 +117,10 @@ class PotentialField(Planner):
         """
         # Check if start and goal states are obstacle free
         if not env.get_status(start):
-            raise StartStateinObs(start)
+            raise InvalidStartState(start, message="Start state is in obstacle.")
 
         if not env.get_status(goal):
-            raise GoalStateinObs(goal)
+            raise InvalidGoalState(goal, message="Goal state is in obstacle.")
 
         self.current = start
         self.goal = goal
@@ -139,5 +143,5 @@ class PotentialField(Planner):
             waypoints.append(self.current)
             trajectory = Trajectory(waypoints)
         if len(trajectory.path) == 1:
-            raise PathNotFound(trajectory)
+            raise PathNotFound(trajectory, message="Path contains only one state")
         return trajectory

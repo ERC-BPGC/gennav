@@ -4,7 +4,11 @@ import numpy as np
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
-from gennav.utils.custom_exceptions import GoalStateinObs, PathNotFound, StartStateinObs
+from gennav.utils.exceptions.custom_exceptions import (
+    InvalidGoalState,
+    InvalidStartState,
+    PathNotFound,
+)
 from gennav.utils.geometry import Point
 from gennav.utils.graph import Graph
 from gennav.utils.samplers import UniformCircularSampler
@@ -49,11 +53,10 @@ class InformedRRTstar(Planner):
         """
         # Check if start and goal states are obstacle free
         if not env.get_status(start):
-            raise StartStateinObs(start)
+            raise InvalidStartState(start, message="Start state is in obstacle.")
 
         if not env.get_status(goal):
-            raise GoalStateinObs(goal)
-
+            raise InvalidGoalState(goal, message="Goal state is in obstacle.")
         # Initialize start and goal nodes.
         graph = Graph()
         x_start = Node(start=start)
@@ -256,7 +259,7 @@ class InformedRRTstar(Planner):
             path.append(x_start.state)
             traj = Trajectory(path=path)
             if len(traj.path) == 1:
-                raise PathNotFound(path)
+                raise PathNotFound(path, message="Path contains only one state")
 
         else:
             print("Goal reached!")

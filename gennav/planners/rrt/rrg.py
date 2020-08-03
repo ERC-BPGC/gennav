@@ -2,7 +2,11 @@ import math
 
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
-from gennav.utils.custom_exceptions import GoalStateinObs, PathNotFound, StartStateinObs
+from gennav.utils.exceptions.custom_exceptions import (
+    InvalidGoalState,
+    InvalidStartState,
+    PathNotFound,
+)
 from gennav.utils.geometry import Point, compute_distance
 from gennav.utils.graph import Graph
 from gennav.utils.graph_search.astar import astar
@@ -39,12 +43,12 @@ class RRG(Planner):
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
         """
-        # Check if start or end states lie inside obstacles
+        # Check if start and end states are obstacle free
         if not env.get_status(start):
-            raise StartStateinObs(start)
+            raise InvalidStartState(start, message="Start state is in obstacle.")
 
         if not env.get_status(end):
-            raise GoalStateinObs(end)
+            raise InvalidGoalState(end, message="Goal state is in obstacle.")
 
         # Initialize graph
         graph = Graph()
@@ -133,6 +137,6 @@ class RRG(Planner):
         path = Trajectory(path)
 
         if len(path.path) == 1:
-            raise PathNotFound(path)
+            raise PathNotFound(path, message="Path contains only one state")
 
         return path

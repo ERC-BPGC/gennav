@@ -15,7 +15,7 @@ def test_rrt():
         ],
     ]
     sampler = UniformRectSampler(-5, 15, -5, 15)
-    poly = PolygonEnv(buffer_dist=0.1)
+    poly = PolygonEnv(buffer_dist=0.5)
     my_tree = RRT(sampler=sampler, expand_dis=0.1)
     start = RobotState(position=Point(1, 1))
     goal = RobotState(position=Point(10, 10))
