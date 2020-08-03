@@ -126,4 +126,4 @@ def astar(graph, start, end, heuristic={}):
     # if path doesn't exsist it raises a PathNotFound Exception.
     path = [start]
     traj = Trajectory(path)
-    raise PathNotFound(path, message="Path contains only one state")
+    raise PathNotFound(traj, message="Path contains only one state")
