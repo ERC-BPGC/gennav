@@ -44,7 +44,7 @@ class DiffPID(Controller):
         """
             Given the trajectory point, it returns the velocity using in differential format
             Args:
-                traj : class gennav.utils.Trajectory
+                traj : class gennav.utils.Trajectory : Trajectory to generate velocity
         """
         errorx = traj.x - self.robot_state.position.x
         errory = traj.y - self.robot_state.position.y
