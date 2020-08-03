@@ -3,7 +3,7 @@ import math
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
-from gennav.utils.exceptions.custom_exceptions import (
+from gennav.utils.custom_exceptions import (
     InvalidGoalState,
     InvalidStartState,
     PathNotFound,

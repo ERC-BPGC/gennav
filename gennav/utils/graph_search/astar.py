@@ -1,4 +1,5 @@
 from gennav.utils.common import Node, Trajectory
+from gennav.utils.custom_exceptions import PathNotFound
 from gennav.utils.geometry import compute_distance
 
 
@@ -122,7 +123,7 @@ def astar(graph, start, end, heuristic={}):
             if flag == 1:
                 open_.append(neighbour)
 
-    # if path doesn't exsist it returns just the start point as the path
+    # if path doesn't exsist it raises a PathNotFound Exception.
     path = [start]
     traj = Trajectory(path)
-    return traj
+    raise PathNotFound(path, message="Path contains only one state")

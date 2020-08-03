@@ -1,6 +1,6 @@
 from gennav.planners.base import Planner
 from gennav.utils import Trajectory
-from gennav.utils.exceptions.custom_exceptions import (
+from gennav.utils.custom_exceptions import (
     InvalidGoalState,
     InvalidStartState,
     PathNotFound,

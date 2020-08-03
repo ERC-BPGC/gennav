@@ -2,7 +2,7 @@ import random
 from math import cos, pi, sin
 
 from gennav.utils.common import RobotState
-from gennav.utils.exceptions.custom_exceptions import SamplingFailed
+from gennav.utils.custom_exceptions import SamplingFailed
 from gennav.utils.geometry import Point
 
 

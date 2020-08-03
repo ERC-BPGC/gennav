@@ -1,10 +1,4 @@
-class Error(Exception):
-    """Base class for exceptions in this module."""
-
-    pass
-
-
-class InvalidStartState(Error):
+class InvalidStartState(Exception):
     """Exception raised when starting state is invalid.
 
     Args:
@@ -20,7 +14,7 @@ class InvalidStartState(Error):
         return "%s -> %s" % (self.start, self.message)
 
 
-class InvalidGoalState(Error):
+class InvalidGoalState(Exception):
     """Exception raised when ending/goal state is invalid.
 
     Args:
@@ -36,7 +30,7 @@ class InvalidGoalState(Error):
         return "%s -> %s" % (self.end, self.message)
 
 
-class SamplingFailed(Error):
+class SamplingFailed(Exception):
     """Exception raised when the Sampler fails to return a valid state.
 
     Args:
@@ -52,7 +46,7 @@ class SamplingFailed(Error):
         return "%s is an invalid point -> %s" % (self.sample, self.message)
 
 
-class PathNotFound(Error):
+class PathNotFound(Exception):
     """Exception raised when path is not found.
 
     Args:
