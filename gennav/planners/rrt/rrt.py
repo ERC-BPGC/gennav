@@ -29,6 +29,7 @@ class RRT(Planner):
 
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information like the node_list
         """
 
         # Initialize start and goal nodes
@@ -109,5 +110,6 @@ class RRT(Planner):
             path.append(last_node.state)
             last_node = last_node.parent
         path.append(start)
-
-        return Trajectory(path[::-1])
+        info_dict = {}
+        info_dict["node_list"] = node_list
+        return (Trajectory(path[::-1]), info_dict)

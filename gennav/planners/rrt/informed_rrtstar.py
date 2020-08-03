@@ -5,7 +5,6 @@ from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
 from gennav.utils.geometry import Point
-from gennav.utils.graph import Graph
 from gennav.utils.samplers import UniformCircularSampler
 
 
@@ -45,16 +44,14 @@ class InformedRRTstar(Planner):
 
         Returns:
             [gennav.utils.Trajectory]: The path as a Trajectory
+            dict: Dictionary containing additional information like the node_list
         """
 
         # Initialize start and goal nodes.
-        graph = Graph()
-        x_start = Node(start=start)
+        x_start = Node(state=start)
         x_goal = Node(state=goal)
-
         # Starting the tree:
         node_list = [x_start]
-        graph.add_node(x_start)
 
         # X_soln contains all the nodes near the goal
         X_soln = []
@@ -81,9 +78,7 @@ class InformedRRTstar(Planner):
                             (node.state.position.x - x_goal.state.position.x) ** 2
                             + (node.state.position.y - x_goal.state.position.y) ** 2
                         )
-
             # sample the new random point using the sample function
-
             if cbest < float("inf"):
                 # Converting x_start and x_goal into arrays so that matrix calculations can be handled
                 x_start_array = np.array(
@@ -151,7 +146,7 @@ class InformedRRTstar(Planner):
 
             x_nearest = node_list[min_index]
 
-            # Steering at a ditance of self.expand_dis
+            # Steering at a distance of self.expand_dis
 
             theta = math.atan2(
                 x_rand_node.state.position.y - x_nearest.state.position.y,
@@ -160,7 +155,6 @@ class InformedRRTstar(Planner):
 
             x = x_nearest.state.position.x + self.expand_dis * math.cos(theta)
             y = x_nearest.state.position.y + self.expand_dis * math.sin(theta)
-
             t = RobotState(position=Point(x, y))
 
             x_new = Node(state=t)
@@ -170,7 +164,6 @@ class InformedRRTstar(Planner):
             if env.get_traj_status(traj):
                 # Adding new node to the node list
                 node_list.append(x_new)
-                graph.add_node(x_new)
 
                 # Defining the neighbours of x_new
                 X_near = []
@@ -213,9 +206,6 @@ class InformedRRTstar(Planner):
                 x_new.parent = x_min
                 x_new.cost = c_min
 
-                # Adding edge
-                graph.add_edge(x_min.state, x_new.state)
-
                 # Rewiring
                 for x_near in X_near:
                     c_near = x_near.cost
@@ -228,18 +218,15 @@ class InformedRRTstar(Planner):
                         traj = Trajectory(path=[x_new.state, x_near.state])
 
                         if env.get_traj_status(traj):
-                            graph.del_edge(x_near.parent.state, x_near.state)
                             x_near.parent = x_new
                             x_near.cost = c_new
-                            graph.add_edge(x_new.state, x_near.state)
 
-                if (
-                    math.sqrt(
-                        (x_goal.state.position.x - x_new.state.position.x) ** 2
-                        + (x_goal.state.position.y - x_new.state.position.y) ** 2
-                    )
-                    < self.goal_distance
-                ):
+                goal_traj = Trajectory(path=[x_new.state, x_goal.state])
+
+                if math.sqrt(
+                    (x_goal.state.position.x - x_new.state.position.x) ** 2
+                    + (x_goal.state.position.y - x_new.state.position.y) ** 2
+                ) < self.goal_distance and env.get_traj_status(goal_traj):
                     X_soln.append(x_new)
 
         # X_soln contains all the solutions
@@ -248,17 +235,22 @@ class InformedRRTstar(Planner):
             path = []
             path.append(x_start.state)
             traj = Trajectory(path=path)
-            return traj
+            info_dict = {}
+            info_dict["node_list"] = node_list
+            return (traj, info_dict)
 
         else:
             print("Goal reached!")
             Cbest = X_soln[0].cost
             Xbest = X_soln[0]
+            node_list.append(x_goal)
 
             for node in X_soln:
                 if node.cost < Cbest:
                     Cbest = node.cost
                     Xbest = node
+
+            x_goal.parent = Xbest
 
             # Xbest is the optimum solution to the problem.
 
@@ -278,5 +270,7 @@ class InformedRRTstar(Planner):
             # print("No. of solutions " + str(len(X_soln)))
 
             trajectory = Trajectory(path=path)
+            info_dict = {}
+            info_dict["node_list"] = node_list
 
-            return trajectory
+            return (trajectory, info_dict)
