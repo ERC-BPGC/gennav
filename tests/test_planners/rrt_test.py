@@ -22,7 +22,11 @@ def test_rrt():
 
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-        (path, _) = my_tree.plan(start, goal, poly)
+        path, _ = my_tree.plan(start, goal, poly)
+
+        # from gennav.utils.visualisation import visualize_node
+        # node_list = _['node_list']
+        # visualize_node(node_list, poly)
 
         # from gennav.envs.common import visualize_path
         # visualize_path(path, poly)

@@ -4,7 +4,7 @@ import numpy as np
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
-from gennav.utils.geometry import Point
+from gennav.utils.geometry import Point, compute_angle, compute_distance
 from gennav.utils.samplers import UniformCircularSampler
 
 
@@ -61,22 +61,17 @@ class InformedRRTstar(Planner):
             if len(X_soln) == 0:
                 cbest = float("inf")
             else:
-                cbest = X_soln[0].cost + math.sqrt(
-                    (X_soln[0].state.position.x - x_goal.state.position.x) ** 2
-                    + (X_soln[0].state.position.y - x_goal.state.position.y) ** 2
+                cbest = X_soln[0].cost + compute_distance(
+                    X_soln[0].state.position, x_goal.state.position
                 )
                 for node in X_soln:
                     if (
                         node.cost
-                        + math.sqrt(
-                            (node.state.position.x - x_goal.state.position.x) ** 2
-                            + (node.state.position.y - x_goal.state.position.y) ** 2
-                        )
+                        + compute_distance(node.state.position, x_goal.state.position)
                         < cbest
                     ):
-                        cbest = node.cost + math.sqrt(
-                            (node.state.position.x - x_goal.state.position.x) ** 2
-                            + (node.state.position.y - x_goal.state.position.y) ** 2
+                        cbest = node.cost + compute_distance(
+                            node.state.position, x_goal.state.position
                         )
             # sample the new random point using the sample function
             if cbest < float("inf"):
@@ -131,8 +126,7 @@ class InformedRRTstar(Planner):
 
             # Finding the nearest node to the random point
             distance_list = [
-                (node.state.position.x - x_rand_node.state.position.x) ** 2
-                + (node.state.position.y - x_rand_node.state.position.y) ** 2
+                compute_distance(node.state.position, x_rand_node.state.position)
                 for node in node_list
             ]
 
@@ -148,10 +142,7 @@ class InformedRRTstar(Planner):
 
             # Steering at a distance of self.expand_dis
 
-            theta = math.atan2(
-                x_rand_node.state.position.y - x_nearest.state.position.y,
-                x_rand_node.state.position.x - x_nearest.state.position.x,
-            )
+            theta = compute_angle(x_nearest.state.position, x_rand_node.state.position)
 
             x = x_nearest.state.position.x + self.expand_dis * math.cos(theta)
             y = x_nearest.state.position.y + self.expand_dis * math.sin(theta)
@@ -168,21 +159,10 @@ class InformedRRTstar(Planner):
                 # Defining the neighbours of x_new
                 X_near = []
                 for node in node_list:
-                    if (
-                        (
-                            math.sqrt(
-                                (node.state.position.x - x_new.state.position.x) ** 2
-                                + (node.state.position.y - x_new.state.position.y) ** 2
-                            )
-                        )
-                        < (
-                            self.neighbourhood_radius
-                        )  # If it is inside the neighbourhood radius
-                        and (
-                            ((node.state.position.x - x_new.state.position.x) ** 2)
-                            + ((node.state.position.y - x_new.state.position.y) ** 2)
-                        )
-                        != 0  # Excludes x_new itself
+                    if (compute_distance(node.state.position, x_new.state.position)) < (
+                        self.neighbourhood_radius
+                    ) and (  # If it is inside the neighbourhood radius
+                        compute_distance(node.state.position, x_new.state.position) != 0
                     ):
                         X_near.append(node)
 
@@ -190,9 +170,8 @@ class InformedRRTstar(Planner):
                 c_min = x_min.cost + self.expand_dis
 
                 for x_near in X_near:
-                    c_new = x_near.cost + math.sqrt(
-                        (x_near.state.position.x - x_new.state.position.x) ** 2
-                        + (x_near.state.position.y - x_new.state.position.y) ** 2
+                    c_new = x_near.cost + compute_distance(
+                        x_near.state.position, x_new.state.position
                     )
 
                     if c_new < c_min:
@@ -209,9 +188,8 @@ class InformedRRTstar(Planner):
                 # Rewiring
                 for x_near in X_near:
                     c_near = x_near.cost
-                    c_new = x_new.cost + math.sqrt(
-                        (x_near.state.position.x - x_new.state.position.x) ** 2
-                        + (x_near.state.position.y - x_new.state.position.y) ** 2
+                    c_new = x_new.cost + compute_distance(
+                        x_near.state.position, x_new.state.position
                     )
 
                     if c_new < c_near:
@@ -223,9 +201,8 @@ class InformedRRTstar(Planner):
 
                 goal_traj = Trajectory(path=[x_new.state, x_goal.state])
 
-                if math.sqrt(
-                    (x_goal.state.position.x - x_new.state.position.x) ** 2
-                    + (x_goal.state.position.y - x_new.state.position.y) ** 2
+                if (
+                    compute_distance(x_goal.state.position, x_new.state.position)
                 ) < self.goal_distance and env.get_traj_status(goal_traj):
                     X_soln.append(x_new)
 
