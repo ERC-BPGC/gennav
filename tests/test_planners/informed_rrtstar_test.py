@@ -9,7 +9,6 @@ def test_informedrrtstar():
     general_obstacles_list = [
         [(1, 1), (2, 1), (2, 2), (1, 2)],
         [(3, 4), (4, 4), (4, 5), (3, 5)],
-        [(3, 2), (3, 3), (4, 3), (4, 2)],
     ]
 
     poly = PolygonEnv(buffer_dist=0.1)
@@ -23,7 +22,7 @@ def test_informedrrtstar():
         max_iter=2000,
     )
     start = RobotState(position=Point(0, 0))
-    goal = RobotState(position=Point(6, 6))
+    goal = RobotState(position=Point(5, 5))
     path, _ = my_tree.plan(start, goal, poly)
 
     # from gennav.utils.visualisation import visualize_node

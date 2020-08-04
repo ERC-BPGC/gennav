@@ -114,6 +114,7 @@ class PotentialField(Planner):
 
         Returns:
             trajectory (gennav.utils.Trajectory) : A list of waypoints(in the form of robot states) that the robot will follow to go to the goal from the start
+            dict: Dictionary containing additional information
         """
         # Check if start and goal states are obstacle free
         if not env.get_status(start):
@@ -144,4 +145,4 @@ class PotentialField(Planner):
             trajectory = Trajectory(waypoints)
         if len(trajectory.path) == 1:
             raise PathNotFound(trajectory, message="Path contains only one state")
-        return trajectory
+        return trajectory, {}

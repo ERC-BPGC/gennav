@@ -4,14 +4,12 @@ import numpy as np
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
-from gennav.utils.geometry import Point, compute_angle, compute_distance
 from gennav.utils.custom_exceptions import (
     InvalidGoalState,
     InvalidStartState,
     PathNotFound,
 )
-from gennav.utils.geometry import Point
-from gennav.utils.graph import Graph
+from gennav.utils.geometry import Point, compute_angle, compute_distance
 from gennav.utils.samplers import UniformCircularSampler
 
 
@@ -50,7 +48,7 @@ class InformedRRTstar(Planner):
             env (gennav.envs.Environment): Environment object
 
         Returns:
-            [gennav.utils.Trajectory]: The path as a Trajectory
+            gennav.utils.Trajectory: The path as a Trajectory
             dict: Dictionary containing additional information like the node_list
         """
         # Check if start and goal states are obstacle free

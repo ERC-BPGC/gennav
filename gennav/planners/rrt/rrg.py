@@ -42,6 +42,7 @@ class RRG(Planner):
             env: (gennav.envs.Environment) Base class for an envrionment.
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information
         """
         # Check if start and end states are obstacle free
         if not env.get_status(start):
@@ -139,4 +140,4 @@ class RRG(Planner):
         if len(path.path) == 1:
             raise PathNotFound(path, message="Path contains only one state")
 
-        return path
+        return path, {}
