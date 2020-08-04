@@ -7,7 +7,7 @@ from gennav.utils.geometry import Point
 def test_potential_field():
 
     obstacle_list = [[(1, 1), (1.5, 1.5), (1.5, 1)]]
-    env = PolygonEnv()
+    env = PolygonEnv(buffer_dist=0.1)
     env.update(obstacle_list)
     my_planner = PotentialField(KP=5, ETA=100, THRESH=15, STEP_SIZE=0.1, error=0.2)
     start = RobotState(position=Point(0, 0))

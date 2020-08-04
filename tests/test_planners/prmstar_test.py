@@ -16,7 +16,7 @@ def test_prmstar_plan():
     ]
 
     sampler = UniformRectSampler(-5, 15, -5, 15)
-    poly = PolygonEnv()
+    poly = PolygonEnv(buffer_dist=0.1)
     start = RobotState(position=Point(0, 0))
     goal = RobotState(position=Point(12, 10))
     my_tree = PRMStar(sampler=sampler, c=30, n=100)

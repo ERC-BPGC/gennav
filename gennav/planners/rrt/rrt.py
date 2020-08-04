@@ -3,6 +3,11 @@ import math
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
+from gennav.utils.custom_exceptions import (
+    InvalidGoalState,
+    InvalidStartState,
+    PathNotFound,
+)
 from gennav.utils.geometry import Point, compute_distance
 
 
@@ -30,6 +35,12 @@ class RRT(Planner):
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
         """
+        # Check if start and goal states are obstacle free
+        if not env.get_status(start):
+            raise InvalidStartState(start, message="Start state is in obstacle.")
+
+        if not env.get_status(goal):
+            raise InvalidGoalState(goal, message="Goal state is in obstacle.")
 
         # Initialize start and goal nodes
         start_node = Node(state=start)
@@ -75,11 +86,7 @@ class RRT(Planner):
                 )
 
                 # Check whether new point is inside an obstacles
-                # if not env.get_status(RobotState(position=new_point)):
-                traj = Trajectory(
-                    path=[nearest_node.state, RobotState(position=new_point)]
-                )
-                if not env.get_traj_status(traj):
+                if not env.get_status(RobotState(position=new_point)):
                     continue
                 else:
                     new_node = Node.from_coordinates(new_point)
@@ -109,5 +116,9 @@ class RRT(Planner):
             path.append(last_node.state)
             last_node = last_node.parent
         path.append(start)
+        path = Trajectory(path[::-1])
 
-        return Trajectory(path[::-1])
+        if len(path.path) == 1:
+            raise PathNotFound(path, message="Path contains only one state")
+
+        return path
