@@ -11,7 +11,8 @@ def test_informedrrtstar():
         [(3, 4), (4, 4), (4, 5), (3, 5)],
         [(3, 2), (3, 3), (4, 3), (4, 2)],
     ]
-    poly = PolygonEnv()
+
+    poly = PolygonEnv(buffer_dist=0.1)
     poly.update(general_obstacles_list)
     sampler = UniformRectSampler(0, 6, 0, 6)
     my_tree = InformedRRTstar(
