@@ -80,6 +80,7 @@ class PRM(Planner):
             env (gennav.envs.Environment): Base class for an envrionment.
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information
         """
         # Check if start and goal states are obstacle free
         if not env.get_status(start):
@@ -116,4 +117,4 @@ class PRM(Planner):
             traj.path.extend(p.path)
         # add end_point to path
         traj.path.append(goal)
-        return traj
+        return traj, {}

@@ -34,6 +34,7 @@ class RRT(Planner):
 
         Returns:
             gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information like the node_list
         """
         # Check if start and goal states are obstacle free
         if not env.get_status(start):
@@ -116,9 +117,11 @@ class RRT(Planner):
             path.append(last_node.state)
             last_node = last_node.parent
         path.append(start)
+        info_dict = {}
+        info_dict["node_list"] = node_list
         path = Trajectory(path[::-1])
 
         if len(path.path) == 1:
             raise PathNotFound(path, message="Path contains only one state")
 
-        return path
+        return (path, info_dict)

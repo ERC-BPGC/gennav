@@ -22,7 +22,7 @@ def test_rrg_plan():
     goal = RobotState(position=Point(10, 10))
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-        path = my_tree.plan(start, goal, poly)
+        path, _ = my_tree.plan(start, goal, poly)
 
         # from gennav.envs.common import visualize_path
 
