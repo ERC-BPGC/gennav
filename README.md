@@ -47,7 +47,7 @@ planner = RRT(sampler=sampler, expand_dis=0.1)  # creating the planner
 start = RobotState(position=Point(1, 1))  # starting state
 goal = RobotState(position=Point(10, 10))  # goal state
 
-path = planner.plan(start, goal, env)  # planning path through obstacles
+path, info_dict = planner.plan(start, goal, env)  # planning path through obstacles
 ```
 
 Note that the environment have been left blank empty here, they should be updated as per use case.
