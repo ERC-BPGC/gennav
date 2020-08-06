@@ -33,7 +33,7 @@ class OmniWheelPID(Controller):
         """
             Given the trajectory point, it returns the velocity using in differential format
             Args:
-                traj : class gennav.utils.Trajectory : Trajectory to generate velocity
+                traj : (class gennav.utils.Trajectory) Trajectory to generate velocity
         """
         errorx = traj.x - self.robot_state.position.x
         errory = traj.y - self.robot_state.position.y
@@ -65,7 +65,7 @@ class OmniWheelPID(Controller):
         """
             Constrains the velocity within the given limits
             Args:
-                velocity : Velocity that needs to be constrained
+                velocity : (class gennav.utils.states.velocity) Velocity that needs to be constrained
         """
         if velocity.linear.x > self.maxX:
             velocity.linear.x = self.maxX
