@@ -16,14 +16,14 @@ def test_prm_plan():
     ]
 
     sampler = UniformRectSampler(-5, 15, -5, 15)
-    poly = PolygonEnv()
+    poly = PolygonEnv(buffer_dist=0.1)
     start = RobotState(position=Point(0, 0))
     goal = RobotState(position=Point(12, 10))
     my_tree = PRM(sampler=sampler, r=5, n=100)
 
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
-        path = my_tree.plan(start, goal, poly)
+        path, _ = my_tree.plan(start, goal, poly)
 
         from gennav.envs.common import visualize_path
         visualize_path(path, poly)
