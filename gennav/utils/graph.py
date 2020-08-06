@@ -1,5 +1,6 @@
 from collections import defaultdict
 from math import sqrt
+from gennav.utils import RobotState
 
 
 class Graph:
@@ -30,8 +31,10 @@ class Graph:
         """
         self.edges[from_node].append(to_node)
         self.edges[to_node].append(from_node)
-        self.distances[(from_node, to_node)] = self.calc_dist(from_node, to_node)
-
+        if isinstance(from_node,RobotState):
+            self.distances[(from_node, to_node)] = self.calc_dist(from_node, to_node)
+        else:
+            self.distances[(from_node, to_node)] = self.calc_dist(from_node.state, to_node.state)
     def del_edge(self, from_node, to_node):
         """Deletes edge connecting two nodes to the graph.
 
