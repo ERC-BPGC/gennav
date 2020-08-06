@@ -25,8 +25,8 @@ def test_prm_plan():
         poly.update(obstacles)
         path, _ = my_tree.plan(start, goal, poly)
 
-        # from gennav.envs.common import visualize_path
-        # visualize_path(path, poly)
+        from gennav.envs.common import visualize_path
+        visualize_path(path, poly)
 
         if len(path.path) != 1:
             assert poly.get_traj_status(path) is True
@@ -50,5 +50,6 @@ def test_prm_construct():
         poly.update(obstacles)
         graph = my_tree.construct(poly)  # noqa: F841
 
-        # from gennav.utils.visualisation import visualize_graph
-        # visualize_graph(graph, poly)
+        from gennav.utils.visualisation import visualize_graph
+        visualize_graph(graph, poly)
+test_prm_construct()
