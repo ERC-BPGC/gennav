@@ -1,17 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import cmath
 import math
 
 import numpy as np
+from gennav.envs.base import Environment
 from matplotlib import pyplot as plt
 from shapely.geometry import LineString
-
-from .base import Environment
 
 
 class ScanEnv(Environment):
     def __init__(self, scan_=None, bot_size=0.4, ang_range=[0, 2 * np.pi], viz=False):
-        ScanEnv.__init__(self)
+        super(ScanEnv, self).__init__()
         self._scan = None
         self._bot_size = bot_size
         self._ang_range = ang_range

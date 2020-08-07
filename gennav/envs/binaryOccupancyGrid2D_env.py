@@ -1,8 +1,9 @@
-from gennav.envs.base import Environment
 import numpy as np
-import matplotlib.pyplot as plt
-from gennav.utils.common import RobotState, Trajectory
+from gennav.envs.base import Environment
+from gennav.utils.common import RobotState
 from gennav.utils.geometry import Point
+from matplotlib import pyplot as plt
+
 
 class BinaryOccupancyGrid2DEnv(Environment):
     """Base class for a Binary Occupancy Grid 2D envrionment.
@@ -12,61 +13,77 @@ class BinaryOccupancyGrid2DEnv(Environment):
             Y (unsigned int) : the number of grid cells in the y-direction
     """
 
-    def __init__(self, X = 10, Y = 10):
+    def __init__(self, X=10, Y=10):
         super(BinaryOccupancyGrid2DEnv, self).__init__()
         self.X = X
         self.Y = Y
         self.scan = None
         self.robotPose = None
-        self.grid = np.zeros((self.X, self.Y))
+        self.scale = 5
+        self.grid = np.zeros((self.X * self.scale, self.Y * self.scale))
 
         # Storing transforms
         self.transforms = {}
-        self.mapTbot = {"from" : "map",
-            "to" : "bot",
-            "transform" : np.array([[1, 0, self.X/2],[0, 1, self.Y/2],[0, 0, 1]]).reshape(3, 3)}
-        self.botTworld = {"from" : "bot",
-            "to" : "world",
-            "transform" : np.empty((3, 3))}
-        self.mapTworld = {"from" : "map", "to" : "world", "transform" : np.dot(self.mapTbot["transform"], self.botTworld["transform"])}
+        self.mapTbot = {
+            "from": "map",
+            "to": "bot",
+            "transform": self.scale
+            * np.array(
+                [[1, 0, int(self.X / 2)], [0, 1, int(self.Y / 2)], [0, 0, 1]]
+            ).reshape(3, 3),
+        }
+        self.botTworld = {"from": "bot", "to": "world", "transform": np.empty((3, 3))}
+        self.mapTworld = {
+            "from": "map",
+            "to": "world",
+            "transform": np.dot(self.mapTbot["transform"], self.botTworld["transform"]),
+        }
         self.transforms["mapTbot"] = self.mapTbot
         self.transforms["botTworld"] = self.botTworld
         self.transforms["mapTworld"] = self.mapTworld
 
     def update(self, scan, robotPose):
+        """Function to update the environment
+        Args:
+            scan (list) : List of ang_min, ang_max, ranges
+            robotPose (gennav.utils.RobotPose) : Current RobotPose
+        """
         self.scan = scan
         self.robotPose = robotPose
-        self.fillOccupancy()
         self.compute_transforms()
-
+        self.fillOccupancy()
 
     def fillOccupancy(self):
-        """Function that fills the occupancy grid in every update
-        
-            Assumptions:
-                1. RobotPose is considered (0, 0, 0) to accomadate the laser scan, which produces ranges wrt to the bot
-                2. The RobotPose in the occupancy grid is (X/2, Y/2, 0)
+        """Function that fill the occupnacy grid on every update
+        Assumptions:
+                1. RobotPose is considered (0, 0, 0) to accomodate the laser scan, which produces ranges wrt to the bot
+                2. The RobotPose in the occupancy grid is (X * scale_factor/2, Y * scale_factor /2, 0)
                 3. The attribute robotPose is the real pose of the robot wrt to the world Frame,
-                    thus it helps us to calculate the transform for the queries 
+                    thus it helps us to calculate the transform for trajectory and pose validity queries
         """
         self.grid[:] = 0
         ang_min, ang_max, ranges = self.scan
-        angle_step = (ang_max - ang_min)/len(ranges)
+        angle_step = (ang_max - ang_min) / len(ranges)
         for i, rng in enumerate(ranges):
 
-            # Check for obstacles 
-            if rng is not np.inf:
-                x, y = (self.X/2) + rng * np.cos(ang_min + i * angle_step), (self.Y/2) + rng * np.sin(ang_max + i * angle_step)
+            # Check for obstacles
+            if np.abs(rng) is not np.inf:
+                x, y = (
+                    rng * np.cos(ang_min + i * angle_step),
+                    rng * np.sin(ang_max + i * angle_step),
+                )
+                newState = self.transform("bot", "map", RobotState(Point(x, y, 0)))
+                x_, y_ = newState.position.x, newState.position.y
 
                 # Checking if the range is within the grid, to mark them as occupied
-                if 0 <= x < self.X and 0 <= y < self.Y:
-                    if self.grid[int(x)][int(y)] != 1:
-                        self.grid[int(x)][int(y)] = 1
-            
+                if 0 <= x_ < self.grid.shape[0] and 0 <= y_ < self.grid.shape[1]:
+                    if self.grid[int(x_)][int(-y_ - 1)] != 1:
+                        self.grid[int(x_)][int(-y_ - 1)] = 1
+
     def get_status(self, state):
         """ Get whether a given state is valid within the environment.
 
-        This method needs to be implemented in the specific env implementation.
+        Method for checking the validity of a given RobotPose in the environment.
 
         Args:
             state (gennav.utils.RobotState): State to be checked
@@ -75,16 +92,16 @@ class BinaryOccupancyGrid2DEnv(Environment):
             bool: True if state is valid otherwise False
         """
         state = self.transform("world", "map", state)
-        point = (int(state.position.x), int(state.position.y))
-        if self.grid[point[0]][point[1]] == 1:
+        x, y = state.position.x, state.position.y
+        if self.grid[x][-y - 1] == 1:
             return False
         else:
             return True
-                
+
     def get_traj_status(self, traj):
         """ Get whether a given trajectory is valid within the environment.
 
-        This method needs to be implemented in the specific env implementation.
+        Method for checking the validity of a trajectory in the given environment.
 
         Args:
             state (gennav.utils.Trajectory): Trajectory to be checked
@@ -94,13 +111,13 @@ class BinaryOccupancyGrid2DEnv(Environment):
         """
         collision = False
         for i in range(len(traj.path) - 1):
-            collision = self.check_line_segment(self.transform("world", "map", traj.path[i]), self.transform("world", "map", traj.path[i+1]))
-            if collision == True:
+            collision = self.check_line_segment(
+                self.transform("world", "map", traj.path[i]),
+                self.transform("world", "map", traj.path[i + 1]),
+            )
+            if collision:
                 break
         return not collision
-
-    def nearest_obstacle_distance(self, state):
-        pass
 
     def transform(self, frame1, frame2, rsf1):
         """Transform robotPose from one pose to the other
@@ -110,12 +127,12 @@ class BinaryOccupancyGrid2DEnv(Environment):
                 frame2 (string) : to the frame (world, bot, map)
                 rsf1 (gennav.utils.common.RobotState) : RobotState in frame1
             Returns:
-                (gennav.utils.common.RobotState) : RobotState in frame2
+                rsf2 (gennav.utils.common.RobotState) : RobotState in frame2
         """
         # TODO: Make it more robust in terms of checking frames
 
         # Check if the required trnasform or the inverse of the transform exists
-        frame = frame2+ "T" + frame1
+        frame = frame2 + "T" + frame1
         frame_inv = frame1 + "T" + frame2
         if frame in self.transforms.keys():
             t_matrix = self.transforms[frame]["transform"]
@@ -123,11 +140,13 @@ class BinaryOccupancyGrid2DEnv(Environment):
             t_matrix = np.linalg.inv(self.transforms[frame_inv]["transform"])
         else:
             raise Exception("Transform for the frames not found")
-        
+
         # Transform using matrix multiplication
-        pf2 = np.dot(t_matrix, np.array([rsf1.position.x, rsf1.position.y, 1]).reshape(-1, 1))
-        rsf2 = RobotState(position=Point(pf2[0], pf2[1]))
-        
+        pf2 = np.dot(
+            t_matrix, np.array([rsf1.position.x, rsf1.position.y, 1]).reshape(3, 1)
+        )
+        rsf2 = RobotState(position=Point(pf2[0].item(), pf2[1].item()))
+
         # Return RobotState
         return rsf2
 
@@ -135,23 +154,26 @@ class BinaryOccupancyGrid2DEnv(Environment):
         """Computes transforms between frames
 
             Uses robot pose to compute transform between the world frame and the bot frame
-            
         """
-        x, y, yaw = self.robotPose.position.x, self.robotPose.position.y, self.robotPose.orientation.yaw
-        worldTbot = np.array([[np.cos(yaw), -np.sin(yaw), x],[np.sin(yaw), np.cos(yaw), y], [0, 0, 1]]).reshape(3, 3)
+        x, y, yaw = (
+            self.robotPose.position.x,
+            self.robotPose.position.y,
+            self.robotPose.orientation.yaw,
+        )
+        worldTbot = np.array(
+            [[np.cos(yaw), -np.sin(yaw), x], [np.sin(yaw), np.cos(yaw), y], [0, 0, 1]]
+        ).reshape(3, 3)
         self.botTworld["transform"] = np.linalg.inv(worldTbot)
-        self.mapTworld["transform"] = np.dot(self.mapTbot["transform"], self.botTworld["transform"])
-        
+        self.mapTworld["transform"] = np.dot(
+            self.mapTbot["transform"], self.botTworld["transform"]
+        )
 
     def visualise_grid(self):
         """
             Helper function to visualise grid
         """
-        fig, ax = plt.subplots()
-        #ax.grid(color="black", alpha=0.5, ls = '-', lw=1)
-        ax.imshow(self.grid, cmap="binary", vmin=0, vmax=1)
-        plt.gca().invert_yaxis()
-        #plt.show()  
+        plt.imshow(self.grid, origin="bottom", cmap="binary")
+        plt.show()
 
     def check_line_segment(self, state1, state2):
         """Checks whether a line segment is collision free in the environent
@@ -161,39 +183,17 @@ class BinaryOccupancyGrid2DEnv(Environment):
 
             Args:
                 state1 (gennav.utils.common.RobotState) : One end point
-                state2 (gennav.utils.common.RobotState) : The pther end point
+                state2 (gennav.utils.common.RobotState) : The other end point
         """
         point1 = state1.position
         point2 = state2.position
         x1, y1 = point1.x, point1.y
         x2, y2 = point2.x, point2.y
-        m = (y2 - y1)/(x2 - x1)
+        m = (y2 - y1) / (x2 - x1)
         collision = False
         for x in np.arange(x1, x2, 0.5):
             y = m * x - m * x1 + y1
-            if self.grid[int(x)][int(y)] == 1:
+            if self.grid[int(x)][int(-y - 1)] == 1:
                 collision = True
                 break
-        return collision              
-
-if __name__ == "__main__":
-    
-    ranges1 = [min(abs(np.random.uniform(20, 21)/np.cos(theta)), abs(np.random.uniform(10, 15)/np.sin(theta))) for theta in np.arange(0, 3.14*2, 3.14*2/500)]
-    ranges2 = [10 for _ in range(500)]
-    ang_min = 0
-    ang_max = 6.28
-    obst = [[ang_min, ang_max, ranges1], [ang_min, ang_max, ranges2]]
-    state = RobotState(Point(5, 5))
-    state2 = RobotState(Point(16, 5))
-    state3 = RobotState(Point(12, 10))
-    traj = Trajectory([state, state2, state3])
-
-    
-    env = BinaryOccupancyGrid2DEnv(50, 50)
-    for ob in obst:
-        env.update(ob, state)
-        env.visualise_grid()
-        print(env.transform("world", "map", state2))
-        print(env.get_status(state2))
-        print(env.get_traj_status(traj))
-        plt.show()
+        return collision
