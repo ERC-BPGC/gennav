@@ -20,6 +20,14 @@ gennav.utils.common module
    :undoc-members:
    :show-inheritance:
 
+gennav.utils.custom\_exceptions module
+--------------------------------------
+
+.. automodule:: gennav.utils.custom_exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.utils.geometry module
 ----------------------------
 
