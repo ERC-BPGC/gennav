@@ -54,7 +54,7 @@ Note that the environment have been left blank empty here, they should be update
 
 For more details you can refer to our [documentation](https://gennav.readthedocs.io/en/latest/index.html).
 
-### ROS Integration
+## ROS Integration
 
 If you wish to use gennav in a ROS based stack, check out [gennav_ros](https://github.com/ERC-BPGC/gennav_ros).
 

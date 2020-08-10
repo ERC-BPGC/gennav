@@ -16,10 +16,10 @@ def visualize_graph(graph, env):
     # Clear the figure
     plt.clf()
     # Plot each edge of the tree
-    chk=False
+    chk = False
     for node in graph.nodes:
-        if isinstance(node,RobotState):
-            chk=True
+        if isinstance(node, RobotState):
+            chk = True
             break
     if chk:
         for node in graph.nodes:
