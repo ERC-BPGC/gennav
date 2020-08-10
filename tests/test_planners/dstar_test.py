@@ -33,8 +33,6 @@ def test_dstar():
     from gennav.envs.common import visualize_path
 
     visualize_path(path_new, poly)
-    if len(path.path) != 1:
-        assert poly.get_traj_status(path) is True
 
 
 test_dstar()
