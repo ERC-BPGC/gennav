@@ -1,5 +1,5 @@
-from collections import defaultdict
-from math import sqrt
+from gennav.utils import RobotState
+from .geometry import compute_distance
 
 
 class Graph:
@@ -8,7 +8,7 @@ class Graph:
 
     def __init__(self):
         self.nodes = set()
-        self.edges = defaultdict(list)
+        self.edges = {}
         self.distances = {}
 
     def add_node(self, node):
@@ -18,6 +18,7 @@ class Graph:
             node (gennav.utils.RobotState):to be added to the set of nodes.
         """
         self.nodes.add(node)
+        self.edges[node] = []
 
     def add_edge(
         self, node1, node2,
@@ -30,7 +31,14 @@ class Graph:
         """
         self.edges[node1].append(node2)
         self.edges[node2].append(node1)
-        self.distances[(node1, node2)] = self.calc_dist(node1, node2)
+        if isinstance(node1, RobotState):
+            self.distances[(node1, node2)] = compute_distance(
+                node1.position, node2.position
+            )
+        else:
+            self.distances[(node1, node2)] = compute_distance(
+                node1.state.position, node2.state.position
+            )
 
     def del_edge(self, node1, node2):
         """Deletes edge connecting two nodes to the graph.
@@ -40,7 +48,7 @@ class Graph:
             node2 (gennav.utils.RobotState): other end of the edge.
         """
 
-        if len(self.edges[node1]) == 0:
+        if node1 not in self.edges:
             raise ValueError("Edge does not exist.")
         else:
             if len(self.edges[node1]) == 1:
@@ -50,27 +58,10 @@ class Graph:
 
         del self.distances[(node1, node2)]
 
-        if len(self.edges[node2]) == 0:
+        if node1 not in self.edges:
             raise ValueError("Edge does not exist.")
         else:
             if len(self.edges[node2]) == 1:
                 del self.edges[node2]
             else:
                 self.edges[node2].remove(node1)
-
-    def calc_dist(self, node1, node2):
-        """Calculates distance between two nodes.
-
-        Args:
-            node1 (gennav.utils.RobotState): one end of the edge.
-            node2 (gennav.utils.RobotState): other end of the edge.
-
-        Returns:
-            dist (float): distance between two nodes.
-        """
-        self.dist = sqrt(
-            (node1.position.x - node2.position.x) ** 2
-            + (node1.position.y - node2.position.y) ** 2
-            + (node1.position.z - node2.position.z) ** 2
-        )
-        return self.dist

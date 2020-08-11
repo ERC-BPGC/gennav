@@ -42,7 +42,7 @@ def test_prm_construct():
         ],
     ]
 
-    sampler = UniformRectSampler(-5, -5, 15, 15)
+    sampler = UniformRectSampler(-5, 15, -5, 15)
     poly = PolygonEnv()
     my_tree = PRM(sampler=sampler, r=5, n=50)
 

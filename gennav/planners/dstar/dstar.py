@@ -1,0 +1,407 @@
+from gennav.planners.base import Planner
+from gennav.utils import Trajectory
+from gennav.utils.geometry import compute_distance
+from gennav.utils.graph import Graph
+from gennav.utils.common import Node
+from gennav.utils.custom_exceptions import (
+    InvalidGoalState,
+    InvalidStartState,
+    PathNotFound,
+)
+
+
+def c(node1, node2):
+    if node1.t == float("inf") or node1.t == float("inf"):
+        return float("inf")
+    else:
+        return compute_distance(node1.state.position, node2.state.position)
+
+
+def insert(node, h_):
+    global open_
+    if node.tag == "NEW":
+        node.k = h_
+        node.h = h_
+        node.tag = "OPEN"
+        open_.append(node)
+    if node not in open_:
+        node.k = min(node.h, h_)
+        node.h = h_
+        closed.remove(node)
+        node.tag = "OPEN"
+        open_.append(node)
+    else:
+        node.k = min(node.k, h_)
+        node.h = h_
+
+
+class NodeDstar(Node):
+    """
+    Node class for Dstar Node
+    """
+
+    # Initialize the class
+    def __init__(self, **data):
+        Node.__init__(self, **data)
+        self.h = None
+        self.k = None
+        self.t = None
+        self.tag = "NEW"
+
+    # Sort nodes
+    def __lt__(self, other):
+        return self.k < other.k
+
+    def __le__(self, other):
+        return self.k <= other.k
+
+    def __ge__(self, other):
+        return self.k >= other.k
+
+    def __gt__(self, other):
+        return self.k > other.k
+
+    # Compare nodes
+    def __eq__(self, other):
+        if not isinstance(other, NodeDstar):
+            return False
+        return self.state.position == other.state.position
+
+    def __hash__(self):
+        return hash(self.state)
+
+
+class DStar(Planner):
+    """DStar Class.
+
+    Args:
+        sampler (gennav.utils.sampler.Sampler): sampler to get random states
+        r (float): maximum radius to look for neighbours
+        n (int): total no. of nodes to be sampled in sample_area
+    """
+
+    def __init__(self, sampler, r, n):
+        super(DStar, self)
+        self.sampler = sampler
+        self.r = r
+        self.n = n
+        self.flag = 0
+
+    def construct(self, env):
+        """Constructs DStar graph.
+
+        Args:
+            env (gennav.envs.Environment): Base class for an envrionment.
+
+        Returns:
+            graph (gennav.utils.graph): A dict where the keys correspond to nodes and
+                the values for each key is a list of the neighbour nodes
+        """
+        nodes = []
+        graph = Graph()
+        i = 0
+
+        # samples points from the sample space until n points
+        # outside obstacles are obtained
+        while i < self.n:
+            sample = self.sampler()
+            if not env.get_status(sample):
+                continue
+            else:
+                i += 1
+                node = NodeDstar(state=sample)
+                nodes.append(node)
+
+        # finds neighbours for each node in a fixed radius r
+        for node1 in nodes:
+            for node2 in nodes:
+                if node1 != node2:
+                    dist = compute_distance(node1.state.position, node2.state.position)
+                    if dist < self.r:
+                        if env.get_traj_status(Trajectory([node1.state, node2.state])):
+                            if node1 not in graph.nodes:
+                                graph.add_node(node1)
+
+                            if node2 not in graph.nodes:
+                                graph.add_node(node2)
+
+                            if (
+                                node2 not in graph.edges[node1]
+                                and node1 not in graph.edges[node2]
+                            ):
+                                graph.add_edge(
+                                    node1, node2,
+                                )
+
+        return graph
+
+    def plan(self, start, goal, env):
+        """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
+
+        Args:
+            start (gennav.utils.RobotState): tuple with start point coordinates.
+            goal (gennav.utils.RobotState): tuple with end point coordinates.
+            env (gennav.envs.Environment): Base class for an envrionment.
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            
+        """
+        # construct graph
+        global graph, traj
+        graph = self.construct(env)
+        # find collision free point in graph closest to start_point
+        min_dist = float("inf")
+        for node in graph.nodes:
+            dist = compute_distance(node.state.position, start.position)
+            traj = Trajectory([node.state, start])
+            if dist < min_dist and (env.get_traj_status(traj)):
+                min_dist = dist
+                start_node = node
+        # find collision free point in graph closest to end_point
+        min_dist = float("inf")
+        for node in graph.nodes:
+            dist = compute_distance(node.state.position, goal.position)
+            traj = Trajectory([node.state, goal])
+            if dist < min_dist and (env.get_traj_status(traj)):
+                min_dist = dist
+                goal_node = node
+        global open_, closed
+        open_ = []
+        closed = []
+        goal_node.h = 0
+        goal_node.k = 0
+        open_.append(goal_node)
+        while len(open_) > 0:
+            open_.sort()
+            current_node = open_.pop(0)
+            current_node.tag = "CLOSED"
+            closed.append(current_node)
+            if current_node.state.position == start_node.state.position:
+                path = []
+                path.append(start)
+                # while current_node.parent is not None:
+                #     print 1
+                #     path.append(current_node.state)
+                #     h_=float("inf")
+                #     neighbours=graph.edges[current_node]
+                #     for neighbour in neighbours:
+                #         if neighbour.h<h_:
+                #             node=neighbour
+                #             h_=neighbour.h
+                #     current_node=node
+                while current_node.parent is not None:
+                    path.append(current_node.state)
+                    current_node = current_node.parent
+                path.append(goal_node.state)
+                path.append(goal)
+                traj = Trajectory(path)
+                return traj
+            neighbours = graph.edges[current_node]
+            for neighbour in neighbours:
+                if neighbour.tag=="CLOSED":
+                    continue
+                neighbour.parent = current_node
+                neighbour.h = compute_distance(
+                    current_node.state.position, neighbour.state.position
+                )+current_node.h
+                neighbour.k = neighbour.h
+                neighbour.tag = "OPEN"
+                open_.append(neighbour)
+        path = [start]
+        traj = Trajectory(path)
+        raise PathNotFound(traj, message="Path contains only one state")
+
+    def replan(self, start, goal, env):
+        """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
+
+        Args:
+            start (gennav.utils.RobotState): tuple with start point coordinates.
+            goal (gennav.utils.RobotState): tuple with end point coordinates.
+            env (gennav.envs.Environment): Base class for an envrionment.
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            
+        """
+        global traj, open_, graph, closed
+        min_dist = float("inf")
+        old_traj = traj
+        for node in old_traj.path:
+            dist = compute_distance(node.position, start.position)
+            traj_chk = Trajectory([node, start])
+            if dist < min_dist and (env.get_traj_status(traj_chk)):
+                min_dist = dist
+                s = node
+        a = old_traj.path.index(s)
+        new_traj = Trajectory([start])
+        new_traj.path.extend(old_traj.path[a:])
+        if env.get_traj_status(new_traj):
+            return new_traj
+        print 1
+        min_dist = float("inf")
+        for node in graph.nodes:
+            dist = compute_distance(node.state.position, start.position)
+            traj = Trajectory([node.state, start])
+            if dist < min_dist and (env.get_traj_status(traj)):
+                min_dist = dist
+                print 2
+                start_node = node
+        # find collision free point in graph closest to end_point
+        min_dist = float("inf")
+        for node in graph.nodes:
+            dist = compute_distance(node.state.position, goal.position)
+            traj = Trajectory([node.state, goal])
+            if dist < min_dist and (env.get_traj_status(traj)):
+                min_dist = dist
+                print 3
+                goal_node = node
+        found=0
+        for state in traj.path:
+            if not env.get_status(state):
+                print 4
+                for item in graph.nodes:
+                    if item.state == state:
+                        node_ = item
+                        break
+                node_.t = float("inf")
+                if node_.tag == "CLOSED":
+                    print 4
+                    closed.remove(node_)
+                    node_.tag = "OPEN"
+                    open_.append(node)
+                else:
+                    print 999
+                found=1
+                break
+        if found==0:
+            for state in traj.path:
+                if traj.path.index(state) < len(traj.path) - 1 and (
+                    not env.get_traj_status(
+                        Trajectory([state, traj.path[traj.path.index(state) + 1]])
+                    )
+                ):                
+                    
+                    print 55
+                    next_state=traj.path[traj.path.index(state) + 1]
+                    ##unable to find next_state in graph.nodes
+                    for item in graph.nodes:
+                        if item.state == next_state:
+                            print 444
+                            node_ = item
+                            break
+                    node_.t = float("inf")
+                    if node_.tag == "CLOSED":
+                        print 5
+                        closed.remove(node_)
+                        node_.tag = "OPEN"
+                        open_.append(node)
+                    else:
+                        print 999
+                    found=1
+                    break
+                else:
+                    print 333
+        if found==1:
+            if node_.h is not None:
+                for neighbour in graph.edges[node_]:
+                    if neighbour.tag == "CLOSED":
+                        print 6
+                        closed.remove(neighbour)
+                        neighbour.tag = "OPEN"
+                        open_.append(neighbour)
+                    elif neighbour.tag == "NEW":
+                        print 60
+                        neighbour.parent=node
+                        neighbour.h=compute_distance(
+                            node_.state.position, neighbour.state.position
+                        )+node_.h
+                        neighbour.k=neighbour.h
+                        neighbour.tag = "OPEN"
+                        open_.append(neighbour)
+        while len(open_) > 0:
+            open_.sort()
+            current_node = open_.pop(0)
+            current_node.tag = "CLOSED"
+            closed.append(current_node)
+            if current_node.k >= start_node.h and start_node.tag == "CLOSED":
+                print 7
+                current_node = start_node
+                path = []
+                path.append(start)
+                # while current_node.parent is not None:
+                #     print 1
+                #     path.append(current_node.state)
+                #     h_ = float("inf")
+                #     neighbours = graph.edges[current_node]
+                #     for neighbour in neighbours:
+                #         if neighbour.h < h_:
+                #             node_ = neighbour
+                #             h_ = neighbour.h
+                #     current_node = node_
+                i = 0
+                while current_node.parent is not None:
+                    path.append(current_node.state)
+                    current_node = current_node.parent
+                    if i > 40:
+                        traj = Trajectory(path)
+                        print 88
+                        return traj
+                    i += 1
+                path.append(goal_node.state)
+                path.append(goal)
+                traj = Trajectory(path)
+                print 9
+                return traj
+            if current_node.k < current_node.h and current_node.k is not None:
+                print 10
+                for neighbour in graph.edges[current_node]:
+                    if (
+                        neighbour.tag != "NEW"
+                        and neighbour.h <= current_node.k
+                        and current_node.h > neighbour.h + c(current_node, neighbour)
+                    ):
+                        current_node.parent = neighbour
+                        current_node.h = neighbour.h + c(current_node, neighbour)
+            if current_node.k == current_node.h and current_node.k is not None:
+                print 11
+                for neighbour in graph.edges[current_node]:
+                    if (
+                        neighbour.tag == "NEW"
+                        or (
+                            neighbour.parent == current_node
+                            and neighbour.h
+                            != current_node.h + c(current_node, neighbour)
+                        )
+                        or (
+                            neighbour.parent != current_node
+                            and neighbour.h
+                            > current_node.h + c(current_node, neighbour)
+                        )
+                    ):
+                        neighbour.parent = current_node
+                        insert(neighbour, current_node.h + c(current_node, neighbour))
+            elif current_node.k is not None:
+                print 12
+                for neighbour in graph.edges[current_node]:
+                    if neighbour.tag == "NEW" or (
+                        neighbour.parent == current_node
+                        and neighbour.h != current_node.h + c(current_node, neighbour)
+                    ):
+                        neighbour.parent = current_node
+                        insert(neighbour, current_node.h + c(current_node, neighbour))
+                    elif (
+                        neighbour.parent != current_node
+                        and neighbour.h > current_node.h + c(current_node, neighbour)
+                    ):
+                        insert(current_node, current_node.h)
+
+                    elif (
+                        neighbour.parent != current_node
+                        and current_node.h > neighbour.h + c(current_node, neighbour)
+                        and (neighbour.tag == "CLOSED")
+                        and neighbour.h > current_node.k
+                    ):
+                        insert(neighbour, neighbour.h)
+
+        path = [start]
+        traj = Trajectory(path)
+        raise PathNotFound(traj, message="Path contains only one state")
