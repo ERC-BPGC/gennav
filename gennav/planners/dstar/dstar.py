@@ -254,8 +254,10 @@ class DStar(Planner):
                 min_dist = dist
                 print 3
                 goal_node = node
+        found=0
         for state in traj.path:
             if not env.get_status(state):
+                print 4
                 for item in graph.nodes:
                     if item.state == state:
                         node_ = item
@@ -268,42 +270,53 @@ class DStar(Planner):
                     open_.append(node)
                 else:
                     print 999
+                found=1
                 break
-
-            elif traj.path.index(state) < len(traj.path) - 1 and (
-                not env.get_traj_status(
-                    Trajectory([state, traj.path[traj.path.index(state) + 1]])
-                )
-            ):                
-                for item in graph.nodes:
-                    if item.state == state:
-                        node_ = item
-                        break
-                node_.t = float("inf")
-                if node_.tag == "CLOSED":
-                    print 5
-                    closed.remove(node_)
-                    node_.tag = "OPEN"
-                    open_.append(node)
+        if found==0:
+            for state in traj.path:
+                if traj.path.index(state) < len(traj.path) - 1 and (
+                    not env.get_traj_status(
+                        Trajectory([state, traj.path[traj.path.index(state) + 1]])
+                    )
+                ):                
+                    
+                    print 55
+                    next_state=traj.path[traj.path.index(state) + 1]
+                    ##unable to find next_state in graph.nodes
+                    for item in graph.nodes:
+                        if item.state == next_state:
+                            print 444
+                            node_ = item
+                            break
+                    node_.t = float("inf")
+                    if node_.tag == "CLOSED":
+                        print 5
+                        closed.remove(node_)
+                        node_.tag = "OPEN"
+                        open_.append(node)
+                    else:
+                        print 999
+                    found=1
+                    break
                 else:
-                    print 999
-                break
-        if node_.tag=="OPEN":
-            for neighbour in graph.edges[node_]:
-                if neighbour.tag == "CLOSED":
-                    print 6
-                    closed.remove(neighbour)
-                    neighbour.tag = "OPEN"
-                    open_.append(neighbour)
-                elif neighbour.tag == "NEW":
-                    print 60
-                    neighbour.parent=node
-                    neighbour.h=compute_distance(
-                        node_.state.position, neighbour.state.position
-                    )+node_.h
-                    neighbour.k=neighbour.h
-                    neighbour.tag = "OPEN"
-                    open_.append(neighbour)
+                    print 333
+        if found==1:
+            if node_.h is not None:
+                for neighbour in graph.edges[node_]:
+                    if neighbour.tag == "CLOSED":
+                        print 6
+                        closed.remove(neighbour)
+                        neighbour.tag = "OPEN"
+                        open_.append(neighbour)
+                    elif neighbour.tag == "NEW":
+                        print 60
+                        neighbour.parent=node
+                        neighbour.h=compute_distance(
+                            node_.state.position, neighbour.state.position
+                        )+node_.h
+                        neighbour.k=neighbour.h
+                        neighbour.tag = "OPEN"
+                        open_.append(neighbour)
         while len(open_) > 0:
             open_.sort()
             current_node = open_.pop(0)
@@ -338,7 +351,7 @@ class DStar(Planner):
                 traj = Trajectory(path)
                 print 9
                 return traj
-            if current_node.k < current_node.h:
+            if current_node.k < current_node.h and current_node.k is not None:
                 print 10
                 for neighbour in graph.edges[current_node]:
                     if (
@@ -348,7 +361,7 @@ class DStar(Planner):
                     ):
                         current_node.parent = neighbour
                         current_node.h = neighbour.h + c(current_node, neighbour)
-            if current_node.k == current_node.h:
+            if current_node.k == current_node.h and current_node.k is not None:
                 print 11
                 for neighbour in graph.edges[current_node]:
                     if (
@@ -366,7 +379,7 @@ class DStar(Planner):
                     ):
                         neighbour.parent = current_node
                         insert(neighbour, current_node.h + c(current_node, neighbour))
-            else:
+            elif current_node.k is not None:
                 print 12
                 for neighbour in graph.edges[current_node]:
                     if neighbour.tag == "NEW" or (
