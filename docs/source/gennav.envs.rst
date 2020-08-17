@@ -12,6 +12,14 @@ gennav.envs.base module
    :undoc-members:
    :show-inheritance:
 
+gennav.envs.binaryOccupancyGrid2D\_env module
+---------------------------------------------
+
+.. automodule:: gennav.envs.binaryOccupancyGrid2D_env
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.envs.common module
 -------------------------
 
