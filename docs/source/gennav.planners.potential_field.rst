@@ -12,7 +12,6 @@ gennav.planners.potential\_field.potential\_field module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

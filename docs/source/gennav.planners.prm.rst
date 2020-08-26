@@ -20,7 +20,6 @@ gennav.planners.prm.prmstar module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

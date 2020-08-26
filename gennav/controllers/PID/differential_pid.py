@@ -44,7 +44,7 @@ class DiffPID(Controller):
         """
             Given the trajectory point, it returns the velocity using in differential format
             Args:
-                traj : (class gennav.utils.Trajectory) Trajectory to generate velocity
+                traj (gennav.utils.Trajectory): Trajectory to generate velocity
         """
         errorx = traj.x - self.robot_state.position.x
         errory = traj.y - self.robot_state.position.y
@@ -80,7 +80,7 @@ class DiffPID(Controller):
         """
             Constrains the velocity within the given limits
             Args:
-                velocity : (class gennav.utils.states.velocity) Velocity that needs to be constrained
+                velocity (gennav.utils.states.velocity): Velocity that needs to be constrained
         """
         if velocity.linear.x > self.maxVel:
             velocity.linear.x = self.maxVel

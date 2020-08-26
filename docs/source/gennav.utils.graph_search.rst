@@ -12,7 +12,6 @@ gennav.utils.graph\_search.astar module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 
