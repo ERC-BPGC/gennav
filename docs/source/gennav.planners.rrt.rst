@@ -12,6 +12,14 @@ gennav.planners.rrt.informed\_rrtstar module
    :undoc-members:
    :show-inheritance:
 
+gennav.planners.rrt.rrg module
+------------------------------
+
+.. automodule:: gennav.planners.rrt.rrg
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.planners.rrt.rrt module
 ------------------------------
 

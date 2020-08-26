@@ -11,9 +11,9 @@ def test_informedrrtstar():
         [(3, 4), (4, 4), (4, 5), (3, 5)],
     ]
 
-    poly = PolygonEnv()
+    poly = PolygonEnv(buffer_dist=0.1)
     poly.update(general_obstacles_list)
-    sampler = UniformRectSampler(-2, 13, -2, 13)
+    sampler = UniformRectSampler(0, 6, 0, 6)
     my_tree = InformedRRTstar(
         sampler=sampler,
         expand_dis=0.1,
@@ -21,9 +21,13 @@ def test_informedrrtstar():
         goal_distance=0.5,
         max_iter=2000,
     )
-    start = RobotState(position=Point(1, 1))
-    goal = RobotState(position=Point(10, 10))
-    path = my_tree.plan(start, goal, poly)
+    start = RobotState(position=Point(0, 0))
+    goal = RobotState(position=Point(5, 5))
+    path, _ = my_tree.plan(start, goal, poly)
+
+    # from gennav.utils.visualisation import visualize_node
+    # node_list = _['node_list']
+    # visualize_node(node_list, poly)
 
     # from gennav.envs.common import visualize_path
     # visualize_path(path, poly)

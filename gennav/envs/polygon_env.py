@@ -8,19 +8,20 @@ from shapely.geometry import LineString, Polygon
 
 
 class PolygonEnv(Environment):
-    """
-        PolygonEnvironment Class
+    """PolygonEnvironment Class
         Attributes:
             obstacles (list of Coordinates)
+            buffer_dist (float): distance passed to shapely.buffer()
     """
 
-    def __init__(self):
+    def __init__(self, buffer_dist=0.0):
         super(PolygonEnv, self).__init__()
         self.obstacle_list = None
+        self.buffer_dist = buffer_dist
 
     def collision(self, points, obstacles):
-        """
-            A helper function that checks for Collision between the given obstacles and a set of points using shapely
+        """A helper function that checks for Collision between the given obstacles and a set of points using shapely
+
             Args:
                 points (list of coordinates (x, y)) - a list of points
                 obstacles(list of list of cooridnates(x,y)) - a list of obstacles
@@ -29,7 +30,7 @@ class PolygonEnv(Environment):
         """
         collision = False
         for obst in obstacles:
-            if LineString(points).intersects(Polygon(obst)):
+            if LineString(points).intersects(Polygon(obst).buffer(self.buffer_dist)):
                 collision = True
                 break
         return collision
@@ -50,7 +51,7 @@ class PolygonEnv(Environment):
         )
         valid = True
         for obst in self.obstacle_list:
-            if position.within(Polygon(obst)):
+            if position.within(Polygon(obst).buffer(self.buffer_dist)):
                 valid = False
                 break
         return valid
