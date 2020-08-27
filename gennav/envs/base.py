@@ -1,14 +1,14 @@
 class Environment(object):
     """
-        Base class for an envrionment.
+    Base class for an envrionment.
 
-        An environment object should encapsulate all data processing
-        related to a specific environment representation and should
-        provide the ability to check for collision using this API
+    An environment object should encapsulate all data processing
+    related to a specific environment representation and should
+    provide the ability to check for collision using this API
     """
 
     def get_status(self, state):
-        """ Get whether a given state is valid within the environment.
+        """Get whether a given state is valid within the environment.
 
         This method needs to be implemented in the specific env implementation.
 
@@ -21,7 +21,7 @@ class Environment(object):
         raise NotImplementedError
 
     def get_traj_status(self, traj):
-        """ Get whether a given trajectory is valid within the environment.
+        """Get whether a given trajectory is valid within the environment.
 
         This method needs to be implemented in the specific env implementation.
 
@@ -34,7 +34,7 @@ class Environment(object):
         raise NotImplementedError
 
     def update(self, *args, **kwargs):
-        """ Update the environment.
+        """Update the environment.
 
         This method needs to be implemented in the specific env implementation.
 
@@ -46,7 +46,7 @@ class Environment(object):
         raise NotImplementedError
 
     def nearest_obstacle_distance(self, state, *args, **kwargs):
-        """ Get the distance to nearest obstacle.
+        """Get the distance to nearest obstacle.
 
         This method needs to be implemented in the specific env implementation
 
@@ -59,7 +59,7 @@ class Environment(object):
         raise NotImplementedError
 
     def minimum_distance(self, state, *args, **kwargs):
-        """ Gives a list of minimum distance of each obstacle from the robot state.
+        """Gives a list of minimum distance of each obstacle from the robot state.
 
         This method needs to be implemented in the specific env implementation.
 

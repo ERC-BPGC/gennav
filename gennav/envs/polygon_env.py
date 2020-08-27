@@ -9,9 +9,9 @@ from shapely.geometry import LineString, Polygon
 
 class PolygonEnv(Environment):
     """PolygonEnvironment Class
-        Attributes:
-            obstacles (list of Coordinates)
-            buffer_dist (float): distance passed to shapely.buffer()
+    Attributes:
+        obstacles (list of Coordinates)
+        buffer_dist (float): distance passed to shapely.buffer()
     """
 
     def __init__(self, buffer_dist=0.0):
@@ -22,11 +22,11 @@ class PolygonEnv(Environment):
     def collision(self, points, obstacles):
         """A helper function that checks for Collision between the given obstacles and a set of points using shapely
 
-            Args:
-                points (list of coordinates (x, y)) - a list of points
-                obstacles(list of list of cooridnates(x,y)) - a list of obstacles
-            Returns:
-                bool : True if collision is detected
+        Args:
+            points (list of coordinates (x, y)) - a list of points
+            obstacles(list of list of cooridnates(x,y)) - a list of obstacles
+        Returns:
+            bool : True if collision is detected
         """
         collision = False
         for obst in obstacles:

@@ -28,7 +28,6 @@ gennav.planners.rrt.rrt module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

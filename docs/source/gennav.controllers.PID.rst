@@ -28,7 +28,6 @@ gennav.controllers.PID.omniwheel\_PID module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

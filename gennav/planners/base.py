@@ -1,6 +1,6 @@
 class Planner(object):
     """
-        Base class for path planning algorithms.
+    Base class for path planning algorithms.
 
     """
 

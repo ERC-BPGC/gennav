@@ -68,7 +68,6 @@ gennav.utils.visualisation module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

@@ -3,8 +3,7 @@ from math import sqrt
 
 
 class Graph:
-    """Graph class used for graph based algorithms.
-    """
+    """Graph class used for graph based algorithms."""
 
     def __init__(self):
         self.nodes = set()
@@ -20,7 +19,9 @@ class Graph:
         self.nodes.add(node)
 
     def add_edge(
-        self, node1, node2,
+        self,
+        node1,
+        node2,
     ):
         """Adds edge connecting two nodes to the graph.
 

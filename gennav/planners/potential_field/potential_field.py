@@ -31,7 +31,7 @@ class PotentialField(Planner):
         self.STEP_SIZE = STEP_SIZE
 
     def grad_attractive(self):
-        """ Calculates the gradient due to the attractive component of the potential field, i.e, the potential field created by the goal point
+        """Calculates the gradient due to the attractive component of the potential field, i.e, the potential field created by the goal point
 
         Args:
             None
@@ -105,7 +105,7 @@ class PotentialField(Planner):
         return total_grad
 
     def plan(self, start, goal, env):
-        """ Plans the path to be taken by the robot to get from start to goal in the form of waypoints
+        """Plans the path to be taken by the robot to get from start to goal in the form of waypoints
 
         Args:
             start (gennav.utils.RobotState) : starting state of the robot (x, y and z coordinates)
