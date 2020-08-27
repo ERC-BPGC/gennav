@@ -5,15 +5,15 @@ from .common import PIDGains
 
 class OmniWheelPID(Controller):
     """
-        Controller class for an OmniWheel drive robot.
-        It inherits from the main Controller class.
-        Args:
-            maxX : Maximum velocity in the x-direction (default = 0.25)
-            maxY : Maximum velocity in the y-direction (default = 0.25)
-            xgains : PIDGains (default = PIDGains(1, 0, 0))
-            ygains : PIDGains (default = PIDGains(1, 0, 0))
-        Returns:
-            vel : (class utils.states.Velocity) with the required velocity commands
+    Controller class for an OmniWheel drive robot.
+    It inherits from the main Controller class.
+    Args:
+        maxX : Maximum velocity in the x-direction (default = 0.25)
+        maxY : Maximum velocity in the y-direction (default = 0.25)
+        xgains : PIDGains (default = PIDGains(1, 0, 0))
+        ygains : PIDGains (default = PIDGains(1, 0, 0))
+    Returns:
+        vel : (class utils.states.Velocity) with the required velocity commands
     """
 
     def __init__(
@@ -31,9 +31,9 @@ class OmniWheelPID(Controller):
 
     def compute_vel(self, traj):
         """
-            Given the trajectory point, it returns the velocity using in differential format
-            Args:
-                traj (gennav.utils.Trajectory): Trajectory to generate velocity
+        Given the trajectory point, it returns the velocity using in differential format
+        Args:
+            traj (gennav.utils.Trajectory): Trajectory to generate velocity
         """
         errorx = traj.x - self.robot_state.position.x
         errory = traj.y - self.robot_state.position.y
@@ -63,9 +63,9 @@ class OmniWheelPID(Controller):
 
     def constrain(self, velocity):
         """
-            Constrains the velocity within the given limits
-            Args:
-                velocity (gennav.utils.states.velocity): Velocity that needs to be constrained
+        Constrains the velocity within the given limits
+        Args:
+            velocity (gennav.utils.states.velocity): Velocity that needs to be constrained
         """
         if velocity.linear.x > self.maxX:
             velocity.linear.x = self.maxX
