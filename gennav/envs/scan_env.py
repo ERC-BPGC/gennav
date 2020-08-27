@@ -31,7 +31,7 @@ class ScanEnv(Environment):
             self._make_obstacles()
 
     def get_status(self, state):
-        """ Get whether a given state is valid within the environment.
+        """Get whether a given state is valid within the environment.
 
         Checks whether position of given state is clear of all points in the
         scan by a certain threshold given as the robot size.
@@ -62,7 +62,7 @@ class ScanEnv(Environment):
         return False
 
     def get_traj_status(self, traj):
-        """ Get whether a given trajectory is valid within the environment.
+        """Get whether a given trajectory is valid within the environment.
 
         Checks if the path is clear of all obstacles by a certain threshold
         given as the robot size.
@@ -186,7 +186,7 @@ class ScanEnv(Environment):
         return self._scan
 
     def update(self, data):
-        """ Update the environment.
+        """Update the environment.
 
         Updates internal representation with new scan data.
 

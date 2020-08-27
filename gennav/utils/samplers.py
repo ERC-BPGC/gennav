@@ -7,8 +7,7 @@ from gennav.utils.geometry import Point
 
 
 class Sampler(object):
-    """Base classs for samplers.
-    """
+    """Base classs for samplers."""
 
     def __call__(self):
         """Sample a configuration.

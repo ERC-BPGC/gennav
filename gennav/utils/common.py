@@ -3,11 +3,11 @@ from .geometry import OrientationRPY, Point, Vector3D
 
 class Velocity:
     """
-        Class for representing Velocity
+    Class for representing Velocity
 
-        Args:
-            linear : class utils.geometry.Vector3D (default = utils.geometry.Vector3D)
-            angular : class utils.geometry.Vector3D (default = utils.geometry.Vector3D)
+    Args:
+        linear : class utils.geometry.Vector3D (default = utils.geometry.Vector3D)
+        angular : class utils.geometry.Vector3D (default = utils.geometry.Vector3D)
     """
 
     def __init__(self, linear=Vector3D(), angular=Vector3D()):
@@ -37,12 +37,12 @@ class Velocity:
 
 class RobotState:
     """
-        Class for representing the robot state
+    Class for representing the robot state
 
-        Args:
-            position : class utils.geometry.Point (default = utils.geometry.Point)
-            orientation : class utils.geometry.OrientationRPY (default = utils.geometry.OrientationRPY)
-            velocity : class utils.common.Velocity (default = utils.common.Velocity)
+    Args:
+        position : class utils.geometry.Point (default = utils.geometry.Point)
+        orientation : class utils.geometry.OrientationRPY (default = utils.geometry.OrientationRPY)
+        velocity : class utils.common.Velocity (default = utils.common.Velocity)
     """
 
     def __init__(
@@ -101,8 +101,7 @@ class Node:
     """
 
     def __init__(self, **data):
-        """Node init parameters.
-        """
+        """Node init parameters."""
         self.data = data
         self.state = data.get("state", RobotState())
         self.parent = data.get("parent")

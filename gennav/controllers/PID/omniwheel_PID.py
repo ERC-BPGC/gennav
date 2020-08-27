@@ -5,15 +5,15 @@ from .common import PIDGains
 
 class OmniWheelPID(Controller):
     """
-        Controller class for an OmniWheel drive robot.
-        It inherits from the main Controller class.
-        Args:
-            maxX : Maximum velocity in the x-direction (default = 0.25)
-            maxY : Maximum velocity in the y-direction (default = 0.25)
-            xgains : PIDGains (default = PIDGains(1, 0, 0))
-            ygains : PIDGains (default = PIDGains(1, 0, 0))
-        Returns:
-            vel : (class utils.states.Velocity) with the required velocity commands
+    Controller class for an OmniWheel drive robot.
+    It inherits from the main Controller class.
+    Args:
+        maxX : Maximum velocity in the x-direction (default = 0.25)
+        maxY : Maximum velocity in the y-direction (default = 0.25)
+        xgains : PIDGains (default = PIDGains(1, 0, 0))
+        ygains : PIDGains (default = PIDGains(1, 0, 0))
+    Returns:
+        vel : (class utils.states.Velocity) with the required velocity commands
     """
 
     def __init__(
@@ -30,10 +30,10 @@ class OmniWheelPID(Controller):
 
     def _move_bot(self, present, target):
         """
-            Given present position and target position, returns velocity commands
-            Args:
-                present : class gennav.utils.geometry.Point
-                target : class gennav.utils.geometry.Point
+        Given present position and target position, returns velocity commands
+        Args:
+            present : class gennav.utils.geometry.Point
+            target : class gennav.utils.geometry.Point
         """
         errorx = target.x - present.x
         errory = target.y - present.y
@@ -64,7 +64,7 @@ class OmniWheelPID(Controller):
         return self.velocity
 
     def compute_vel(self, traj):
-        """ Compute the velocity according to given trajectory.
+        """Compute the velocity according to given trajectory.
 
         Args:
             traj (gennav.utils.Trajectory): Trajectory to compute velocity for.
@@ -78,10 +78,10 @@ class OmniWheelPID(Controller):
 
     def constrain(self, vel, dir):
         """
-            Constrains the velocity within the given limits
-            Args:
-                vel : Velocity that needs to be constrained
-                dir : Keyword for the velocity component
+        Constrains the velocity within the given limits
+        Args:
+            vel : Velocity that needs to be constrained
+            dir : Keyword for the velocity component
         """
         if dir.lower() == "x":
             velParam = self.maxX
