@@ -44,7 +44,6 @@ gennav.envs.scan\_env module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

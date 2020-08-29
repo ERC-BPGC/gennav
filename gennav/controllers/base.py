@@ -1,12 +1,12 @@
 class Controller(object):
     """
-        Base class for a controller.
+    Base class for a controller.
 
-        Args:
-            init_state (gennav.utils.RoboState): Intial state of the robot.
+    Args:
+        init_state (gennav.utils.RoboState): Intial state of the robot.
 
-        Attributes:
-            robot_state (gennav.utils.RoboState): The state of the robot.
+    Attributes:
+        robot_state (gennav.utils.RoboState): The state of the robot.
 
     """
 
@@ -14,7 +14,7 @@ class Controller(object):
         self.robot_state = init_state
 
     def set_state(self, state):
-        """ Set the state of the robot within the controller.
+        """Set the state of the robot within the controller.
 
         Args:
             state (gennav.utils.RoboState): State to be checked
@@ -25,7 +25,7 @@ class Controller(object):
         self.robot_state = state
 
     def compute_vel(self, traj):
-        """ Compute the velocity according to given trajectory.
+        """Compute the velocity according to given trajectory.
 
         Args:
             traj (gennav.utils.Trajectory): Trajectory to compute velocity for.

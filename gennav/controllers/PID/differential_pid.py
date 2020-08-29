@@ -7,15 +7,15 @@ from .common import PIDGains
 
 class DiffPID(Controller):
     """
-        Controller class for an OmniWheel drive robot.
-        It inherits from the main Controller class.
-        Args:
-            maxVel : Maximum velocity for translation(default = 0.25)
-            maxAng : Maximum velocity for rotation(default = pi/2)
-            vel_gains : PIDGains (default = PIDGains(1, 0, 0))
-            angle_gains : PIDGains (default = PIDGains(1, 0, 0))
-        Returns:
-            vel : (class utils.states.Velocity) with the required velocity commands
+    Controller class for an OmniWheel drive robot.
+    It inherits from the main Controller class.
+    Args:
+        maxVel : Maximum velocity for translation(default = 0.25)
+        maxAng : Maximum velocity for rotation(default = pi/2)
+        vel_gains : PIDGains (default = PIDGains(1, 0, 0))
+        angle_gains : PIDGains (default = PIDGains(1, 0, 0))
+    Returns:
+        vel : (class utils.states.Velocity) with the required velocity commands
     """
 
     def __init__(
@@ -42,9 +42,9 @@ class DiffPID(Controller):
 
     def compute_vel(self, traj):
         """
-            Given the trajectory point, it returns the velocity using in differential format
-            Args:
-                traj : class gennav.utils.Trajectory
+        Given the trajectory point, it returns the velocity using in differential format
+        Args:
+            traj (gennav.utils.Trajectory): Trajectory to generate velocity
         """
         errorx = traj.x - self.robot_state.position.x
         errory = traj.y - self.robot_state.position.y
@@ -78,9 +78,9 @@ class DiffPID(Controller):
 
     def constrain(self, velocity):
         """
-            Constrains the velocity within the given limits
-            Args:
-                velocity : Velocity that needs to be constrained
+        Constrains the velocity within the given limits
+        Args:
+            velocity (gennav.utils.states.velocity): Velocity that needs to be constrained
         """
         if velocity.linear.x > self.maxVel:
             velocity.linear.x = self.maxVel

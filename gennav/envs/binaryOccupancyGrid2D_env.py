@@ -8,9 +8,9 @@ from matplotlib import pyplot as plt
 class BinaryOccupancyGrid2DEnv(Environment):
     """Base class for a Binary Occupancy Grid 2D envrionment.
 
-        Arguments:
-            X (unsigned int) : The number of grid cells in the x-direction
-            Y (unsigned int) : the number of grid cells in the y-direction
+    Arguments:
+        X (unsigned int) : The number of grid cells in the x-direction
+        Y (unsigned int) : the number of grid cells in the y-direction
     """
 
     def __init__(self, X=10, Y=10):
@@ -81,7 +81,7 @@ class BinaryOccupancyGrid2DEnv(Environment):
                         self.grid[int(x_)][int(-y_ - 1)] = 1
 
     def get_status(self, state):
-        """ Get whether a given state is valid within the environment.
+        """Get whether a given state is valid within the environment.
 
         Method for checking the validity of a given RobotPose in the environment.
 
@@ -99,7 +99,7 @@ class BinaryOccupancyGrid2DEnv(Environment):
             return True
 
     def get_traj_status(self, traj):
-        """ Get whether a given trajectory is valid within the environment.
+        """Get whether a given trajectory is valid within the environment.
 
         Method for checking the validity of a trajectory in the given environment.
 
@@ -122,12 +122,12 @@ class BinaryOccupancyGrid2DEnv(Environment):
     def transform(self, frame1, frame2, rsf1):
         """Transform robotPose from one pose to the other
 
-            Args:
-                frame1 (string) : from the frame (world, bot, map)
-                frame2 (string) : to the frame (world, bot, map)
-                rsf1 (gennav.utils.common.RobotState) : RobotState in frame1
-            Returns:
-                rsf2 (gennav.utils.common.RobotState) : RobotState in frame2
+        Args:
+            frame1 (string) : from the frame (world, bot, map)
+            frame2 (string) : to the frame (world, bot, map)
+            rsf1 (gennav.utils.common.RobotState) : RobotState in frame1
+        Returns:
+            rsf2 (gennav.utils.common.RobotState) : RobotState in frame2
         """
         # TODO: Make it more robust in terms of checking frames
 
@@ -153,7 +153,7 @@ class BinaryOccupancyGrid2DEnv(Environment):
     def compute_transforms(self):
         """Computes transforms between frames
 
-            Uses robot pose to compute transform between the world frame and the bot frame
+        Uses robot pose to compute transform between the world frame and the bot frame
         """
         x, y, yaw = (
             self.robotPose.position.x,
@@ -170,7 +170,7 @@ class BinaryOccupancyGrid2DEnv(Environment):
 
     def visualise_grid(self):
         """
-            Helper function to visualise grid
+        Helper function to visualise grid
         """
         plt.imshow(self.grid, origin="bottom", cmap="binary")
         plt.show()
@@ -178,12 +178,12 @@ class BinaryOccupancyGrid2DEnv(Environment):
     def check_line_segment(self, state1, state2):
         """Checks whether a line segment is collision free in the environent
 
-            Computes a line segment from the start point to the end point and
-            parametrically checks if the grid cells they occupy are occupied.
+        Computes a line segment from the start point to the end point and
+        parametrically checks if the grid cells they occupy are occupied.
 
-            Args:
-                state1 (gennav.utils.common.RobotState) : One end point
-                state2 (gennav.utils.common.RobotState) : The other end point
+        Args:
+            state1 (gennav.utils.common.RobotState) : One end point
+            state2 (gennav.utils.common.RobotState) : The other end point
         """
         point1 = state1.position
         point2 = state2.position

@@ -67,7 +67,8 @@ class PRM(Planner):
                                 and node1 not in graph.edges[node2]
                             ):
                                 graph.add_edge(
-                                    node1, node2,
+                                    node1,
+                                    node2,
                                 )
 
         return graph
