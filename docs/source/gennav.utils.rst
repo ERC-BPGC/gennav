@@ -60,6 +60,14 @@ gennav.utils.samplers module
    :undoc-members:
    :show-inheritance:
 
+gennav.utils.simulator module
+-----------------------------
+
+.. automodule:: gennav.utils.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.utils.visualisation module
 ---------------------------------
 
