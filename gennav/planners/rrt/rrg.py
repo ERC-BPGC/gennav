@@ -18,7 +18,10 @@ class RRG(Planner):
     """
 
     def __init__(
-        self, sampler, expand_dis=1.0, max_iter=500,
+        self,
+        sampler,
+        expand_dis=1.0,
+        max_iter=500,
     ):
         """Init RRG parameters
 
