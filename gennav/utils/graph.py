@@ -19,9 +19,7 @@ class Graph:
         self.nodes.add(node)
 
     def add_edge(
-        self,
-        node1,
-        node2,
+        self, node1, node2,
     ):
         """Adds edge connecting two nodes to the graph.
 

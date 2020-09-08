@@ -131,7 +131,7 @@ class RRT(Planner):
             raise PathNotFound(path, message="Path contains only one state")
 
         return (path, info_dict)
-    
+
     def replan(self, start, goal, env):
         """Replans path from start to goal avoiding obstacles.
 

@@ -67,8 +67,7 @@ class PRM(Planner):
                                 and node1 not in graph.edges[node2]
                             ):
                                 graph.add_edge(
-                                    node1,
-                                    node2,
+                                    node1, node2,
                                 )
 
         return graph
@@ -119,7 +118,7 @@ class PRM(Planner):
         # add end_point to path
         traj.path.append(goal)
         return traj, {}
-    
+
     def replan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then replans path from start to goal within the graph.
         Args:
