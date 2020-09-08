@@ -131,3 +131,17 @@ class RRT(Planner):
             raise PathNotFound(path, message="Path contains only one state")
 
         return (path, info_dict)
+    
+    def replan(self, start, goal, env):
+        """Replans path from start to goal avoiding obstacles.
+
+        Args:
+            start_point(gennav.utils.RobotState): with start point coordinates.
+            end_point (gennav.utils.RobotState): with end point coordinates.
+            env: (gennav.envs.Environment) Base class for an envrionment.
+
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information like the node_list
+        """
+        self.plan(start, goal, env)
