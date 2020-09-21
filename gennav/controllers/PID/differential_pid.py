@@ -1,6 +1,6 @@
 import math
 
-from ...utils.common import RobotState, Velocity
+from ...utils import RobotState, Velocity
 from ..base import Controller
 from .common import PIDGains
 

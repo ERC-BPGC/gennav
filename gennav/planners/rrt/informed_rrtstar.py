@@ -2,8 +2,7 @@ import math
 
 import numpy as np
 from gennav.planners import Planner
-from gennav.utils import RobotState, Trajectory
-from gennav.utils.common import Node
+from gennav.utils import RobotState, Trajectory, Node
 from gennav.utils.custom_exceptions import (
     InvalidGoalState,
     InvalidStartState,

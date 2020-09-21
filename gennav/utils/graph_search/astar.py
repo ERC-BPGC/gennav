@@ -1,4 +1,4 @@
-from gennav.utils.common import Node, Trajectory
+from gennav.utils import Node, Trajectory
 from gennav.utils.custom_exceptions import PathNotFound
 from gennav.utils.geometry import compute_distance
 
