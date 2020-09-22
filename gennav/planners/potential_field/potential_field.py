@@ -146,3 +146,17 @@ class PotentialField(Planner):
         if len(trajectory.path) == 1:
             raise PathNotFound(trajectory, message="Path contains only one state")
         return trajectory, {}
+
+    def replan(self, start, goal, env):
+        """Replans the path to be taken by the robot to get from start to goal in the form of waypoints
+
+        Args:
+            start (gennav.utils.RobotState) : starting state of the robot (x, y and z coordinates)
+            goal (gennav.utils.RobotState) : goal state of the robot (x, y and z coordinates)
+            env (gennav.envs.Environment) : Type of environment the robot is operating in
+
+        Returns:
+            trajectory (gennav.utils.Trajectory) : A list of waypoints(in the form of robot states) that the robot will follow to go to the goal from the start
+            dict: Dictionary containing additional information
+        """
+        self.plan(start, goal, env)

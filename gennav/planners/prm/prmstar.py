@@ -118,3 +118,15 @@ class PRMStar(Planner):
         # add end_point to path
         traj.path.append(goal)
         return traj, {}
+
+    def replan(self, start, goal, env):
+        """Constructs a graph avoiding obstacles and then replans path from start to goal within the graph.
+        Args:
+            start (gennav.utils.RobotState): tuple with start point coordinates.
+            goal (gennav.utils.RobotState): tuple with end point coordinates.
+            env (gennav.envs.Environment): Base class for an envrionment.
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information
+        """
+        self.plan(start, goal, env)
