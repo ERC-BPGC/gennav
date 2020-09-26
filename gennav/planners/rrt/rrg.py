@@ -17,12 +17,7 @@ class RRG(Planner):
     RRT star algorithm
     """
 
-    def __init__(
-        self,
-        sampler,
-        expand_dis=1.0,
-        max_iter=500,
-    ):
+    def __init__(self, sampler, expand_dis=1.0, max_iter=500, *args, **kwargs):
         """Init RRG parameters
 
         Args:
@@ -37,7 +32,7 @@ class RRG(Planner):
         self.max_iter = max_iter
         self.circle = 1.0
 
-    def plan(self, start, end, env, *args, **kwargs):
+    def plan(self, start, end, env):
         """Plans path from start to goal avoiding obstacles.
         Args:
             start (gennav.utils.RobotState): Starting state
@@ -145,7 +140,7 @@ class RRG(Planner):
 
         return path, {}
 
-    def replan(self, start, end, env, *args, **kwargs):
+    def replan(self, start, end, env):
         """Replans path from start to goal avoiding obstacles.
         Args:
             start (gennav.utils.RobotState): Starting state
@@ -155,4 +150,4 @@ class RRG(Planner):
             gennav.utils.Trajectory: The planned path as trajectory
             dict: Dictionary containing additional information
         """
-        self.plan(start, end, env, *args, **kwargs)
+        self.plan(start, end, env)

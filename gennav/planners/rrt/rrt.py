@@ -19,12 +19,12 @@ class RRT(Planner):
         expand_dis (float): distance to expand tree by at each step
     """
 
-    def __init__(self, sampler, expand_dis=0.1):
+    def __init__(self, sampler, expand_dis=0.1, *args, **kwargs):
         super(RRT, self).__init__()
         self.sampler = sampler
         self.expand_dis = expand_dis
 
-    def plan(self, start, goal, env, *args, **kwargs):
+    def plan(self, start, goal, env):
         """Plans path from start to goal avoiding obstacles.
 
         Args:
@@ -132,7 +132,7 @@ class RRT(Planner):
 
         return (path, info_dict)
 
-    def replan(self, start, goal, env, *args, **kwargs):
+    def replan(self, start, goal, env):
         """Replans path from start to goal avoiding obstacles.
 
         Args:
@@ -144,4 +144,4 @@ class RRT(Planner):
             gennav.utils.Trajectory: The planned path as trajectory
             dict: Dictionary containing additional information like the node_list
         """
-        self.plan(start, goal, env, *args, **kwargs)
+        self.plan(start, goal, env)

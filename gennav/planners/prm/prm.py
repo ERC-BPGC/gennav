@@ -19,7 +19,7 @@ class PRM(Planner):
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sampler, r, n):
+    def __init__(self, sampler, r, n, *args, **kwargs):
         super(PRM, self)
         self.sampler = sampler
         self.r = r
@@ -73,7 +73,7 @@ class PRM(Planner):
 
         return graph
 
-    def plan(self, start, goal, env, *args, **kwargs):
+    def plan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
@@ -120,7 +120,7 @@ class PRM(Planner):
         traj.path.append(goal)
         return traj, {}
 
-    def replan(self, start, goal, env, *args, **kwargs):
+    def replan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then replans path from start to goal within the graph.
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
@@ -130,4 +130,4 @@ class PRM(Planner):
             gennav.utils.Trajectory: The planned path as trajectory
             dict: Dictionary containing additional information
         """
-        self.plan(start, goal, env, *args, **kwargs)
+        self.plan(start, goal, env)

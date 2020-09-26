@@ -21,7 +21,7 @@ class PotentialField(Planner):
         error (float) : Minimum distance from the goal after which the bot will stop
     """
 
-    def __init__(self, KP, ETA, THRESH, STEP_SIZE, error):
+    def __init__(self, KP, ETA, THRESH, STEP_SIZE, error, *args, **kwargs):
         """ initialise potential field parameters"""
 
         self.KP = KP
@@ -104,7 +104,7 @@ class PotentialField(Planner):
                 total_grad[1] = total_grad[1] + grad[1]
         return total_grad
 
-    def plan(self, start, goal, env, *args, **kwargs):
+    def plan(self, start, goal, env):
         """Plans the path to be taken by the robot to get from start to goal in the form of waypoints
 
         Args:
@@ -147,7 +147,7 @@ class PotentialField(Planner):
             raise PathNotFound(trajectory, message="Path contains only one state")
         return trajectory, {}
 
-    def replan(self, start, goal, env, *args, **kwargs):
+    def replan(self, start, goal, env):
         """Replans the path to be taken by the robot to get from start to goal in the form of waypoints
 
         Args:
@@ -159,4 +159,4 @@ class PotentialField(Planner):
             trajectory (gennav.utils.Trajectory) : A list of waypoints(in the form of robot states) that the robot will follow to go to the goal from the start
             dict: Dictionary containing additional information
         """
-        self.plan(start, goal, env, *args, **kwargs)
+        self.plan(start, goal, env)

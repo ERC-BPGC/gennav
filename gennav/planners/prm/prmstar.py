@@ -20,7 +20,7 @@ class PRMStar(Planner):
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sampler, c, n):
+    def __init__(self, sampler, c, n, *args, **kwargs):
         self.sampler = sampler
         self.n = n
         self.c = c
@@ -72,7 +72,7 @@ class PRMStar(Planner):
 
         return graph
 
-    def plan(self, start, goal, env, *args, **kwargs):
+    def plan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
@@ -119,7 +119,7 @@ class PRMStar(Planner):
         traj.path.append(goal)
         return traj, {}
 
-    def replan(self, start, goal, env, *args, **kwargs):
+    def replan(self, start, goal, env):
         """Constructs a graph avoiding obstacles and then replans path from start to goal within the graph.
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
@@ -129,4 +129,4 @@ class PRMStar(Planner):
             gennav.utils.Trajectory: The planned path as trajectory
             dict: Dictionary containing additional information
         """
-        self.plan(start, goal, env, *args, **kwargs)
+        self.plan(start, goal, env)
