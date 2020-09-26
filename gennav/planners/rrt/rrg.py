@@ -17,12 +17,7 @@ class RRG(Planner):
     RRT star algorithm
     """
 
-    def __init__(
-        self,
-        sampler,
-        expand_dis=1.0,
-        max_iter=500,
-    ):
+    def __init__(self, sampler, expand_dis=1.0, max_iter=500, *args, **kwargs):
         """Init RRG parameters
 
         Args:

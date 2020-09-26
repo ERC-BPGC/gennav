@@ -21,6 +21,8 @@ class InformedRRTstar(Planner):
         neighbourhood_radius=0.5,
         goal_distance=0.2,
         max_iter=500,
+        *args,
+        **kwargs
     ):
         """InformedRRT* Class
 

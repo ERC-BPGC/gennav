@@ -20,7 +20,7 @@ class PRMStar(Planner):
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sampler, c, n):
+    def __init__(self, sampler, c, n, *args, **kwargs):
         self.sampler = sampler
         self.n = n
         self.c = c

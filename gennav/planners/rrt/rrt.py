@@ -19,7 +19,7 @@ class RRT(Planner):
         expand_dis (float): distance to expand tree by at each step
     """
 
-    def __init__(self, sampler, expand_dis=0.1):
+    def __init__(self, sampler, expand_dis=0.1, *args, **kwargs):
         super(RRT, self).__init__()
         self.sampler = sampler
         self.expand_dis = expand_dis

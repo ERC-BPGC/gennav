@@ -19,7 +19,7 @@ class PRM(Planner):
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sampler, r, n):
+    def __init__(self, sampler, r, n, *args, **kwargs):
         super(PRM, self)
         self.sampler = sampler
         self.r = r

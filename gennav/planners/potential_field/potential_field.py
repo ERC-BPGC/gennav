@@ -21,7 +21,7 @@ class PotentialField(Planner):
         error (float) : Minimum distance from the goal after which the bot will stop
     """
 
-    def __init__(self, KP, ETA, THRESH, STEP_SIZE, error):
+    def __init__(self, KP, ETA, THRESH, STEP_SIZE, error, *args, **kwargs):
         """ initialise potential field parameters"""
 
         self.KP = KP

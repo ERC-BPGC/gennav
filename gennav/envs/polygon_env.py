@@ -14,7 +14,7 @@ class PolygonEnv(Environment):
         buffer_dist (float): distance passed to shapely.buffer()
     """
 
-    def __init__(self, buffer_dist=0.0):
+    def __init__(self, buffer_dist=0.0, *args, **kwargs):
         super(PolygonEnv, self).__init__()
         self.obstacle_list = None
         self.buffer_dist = buffer_dist
