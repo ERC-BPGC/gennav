@@ -73,7 +73,7 @@ class PRM(Planner):
 
         return graph
 
-    def plan(self, start, goal, env):
+    def plan(self, start, goal, env, *args, **kwargs):
         """Constructs a graph avoiding obstacles and then plans path from start to goal within the graph.
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
@@ -120,7 +120,7 @@ class PRM(Planner):
         traj.path.append(goal)
         return traj, {}
 
-    def replan(self, start, goal, env):
+    def replan(self, start, goal, env, *args, **kwargs):
         """Constructs a graph avoiding obstacles and then replans path from start to goal within the graph.
         Args:
             start (gennav.utils.RobotState): tuple with start point coordinates.
@@ -130,4 +130,4 @@ class PRM(Planner):
             gennav.utils.Trajectory: The planned path as trajectory
             dict: Dictionary containing additional information
         """
-        self.plan(start, goal, env)
+        self.plan(start, goal, env, *args, **kwargs)

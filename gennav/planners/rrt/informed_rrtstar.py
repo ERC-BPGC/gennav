@@ -39,7 +39,7 @@ class InformedRRTstar(Planner):
         self.rectangular_sampler = sampler
         self.circular_sampler = UniformCircularSampler(1)
 
-    def plan(self, start, goal, env):
+    def plan(self, start, goal, env, *args, **kwargs):
         """Path planning method
 
         Args:
@@ -264,7 +264,7 @@ class InformedRRTstar(Planner):
 
             return (trajectory, info_dict)
 
-    def replan(self, start, goal, env):
+    def replan(self, start, goal, env, *args, **kwargs):
         """Path replanning method
 
         Args:
@@ -276,4 +276,4 @@ class InformedRRTstar(Planner):
             gennav.utils.Trajectory: The path as a Trajectory
             dict: Dictionary containing additional information like the node_list
         """
-        self.plan(start, goal, env)
+        self.plan(start, goal, env, *args, **kwargs)

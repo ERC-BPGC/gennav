@@ -24,7 +24,7 @@ class RRT(Planner):
         self.sampler = sampler
         self.expand_dis = expand_dis
 
-    def plan(self, start, goal, env):
+    def plan(self, start, goal, env, *args, **kwargs):
         """Plans path from start to goal avoiding obstacles.
 
         Args:
@@ -132,7 +132,7 @@ class RRT(Planner):
 
         return (path, info_dict)
 
-    def replan(self, start, goal, env):
+    def replan(self, start, goal, env, *args, **kwargs):
         """Replans path from start to goal avoiding obstacles.
 
         Args:
@@ -144,4 +144,4 @@ class RRT(Planner):
             gennav.utils.Trajectory: The planned path as trajectory
             dict: Dictionary containing additional information like the node_list
         """
-        self.plan(start, goal, env)
+        self.plan(start, goal, env, *args, **kwargs)
