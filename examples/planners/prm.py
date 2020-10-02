@@ -9,7 +9,7 @@ from gennav.utils.samplers import UniformRectSampler
 from gennav.utils.visualisation import visualize_graph
 
 # general_obstacle_list: obstacles in shapely defined by their vertices.
-# sampler = UniformRectSampler(): samples nodes in some area (here: -5 < x < 15 and -5 < y < 15)
+# sampler = UniformRectSampler(): samples nodes in sample area (here: -5 < x < 15 and -5 < y < 15)
 # r = maximum radius to look for neighbours
 # n = total no. of nodes to be sampled in sample_area
 
