@@ -9,9 +9,9 @@ from gennav.utils.samplers import UniformRectSampler
 from gennav.utils.visualisation import visualize_graph
 
 # general_obstacle_list: obstacles in shapely defined by their vertices.
-# sampler = UniformRectSampler(): samples points between -5 < x < 15 and -5 < y < 15
-# r = maximum distance for joining two nodes from the graph
-# n = number of nodes in the graph
+# sampler = UniformRectSampler(): samples nodes in some area (here: -5 < x < 15 and -5 < y < 15)
+# r = maximum radius to look for neighbours
+# n = total no. of nodes to be sampled in sample_area
 
 # Using PRM to plan the path:
 
@@ -36,7 +36,7 @@ def prm_plan():
     # Plan a path using the PRM.plan method for each obstacle:
     for obstacles in general_obstacles_list:
         polygon.update(obstacles)  # updates the environment with the obstacle
-        path = my_tree.plan(start, goal, polygon)
+        path = my_prm.plan(start, goal, polygon)
 
         visualize_path(path, polygon)
 
@@ -64,7 +64,7 @@ def prm_construct():
     # Construct a graph in the configuration space of each obstacle using the PRM.construct method:
     for obstacles in general_obstacles_list:
         polygon.update(obstacles)  # updates the environment with the obstacle
-        graph = my_tree.construct(polygon)  # noqa: F841
+        graph = my_prm.construct(polygon)  # noqa: F841
 
         visualize_graph(graph, polygon)
         
