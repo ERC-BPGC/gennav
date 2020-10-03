@@ -15,6 +15,8 @@ from gennav.utils.visualisation import visualize_graph
 # n = total no. of nodes to be sampled in sample_area
 
 # Using PRM to plan the path:
+
+
 def prm_plan():
     general_obstacles_list = [
         [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
