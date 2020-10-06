@@ -8,7 +8,15 @@ from shapely.geometry import LineString
 
 
 class ScanEnv(Environment):
-    def __init__(self, scan_=None, bot_size=0.4, ang_range=[0, 2 * np.pi], viz=False):
+    def __init__(
+        self,
+        scan_=None,
+        bot_size=0.4,
+        ang_range=[0, 2 * np.pi],
+        viz=False,
+        *args,
+        **kwargs
+    ):
         super(ScanEnv, self).__init__()
         self._scan = None
         self._bot_size = bot_size

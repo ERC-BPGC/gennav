@@ -21,6 +21,8 @@ class InformedRRTstar(Planner):
         neighbourhood_radius=0.5,
         goal_distance=0.2,
         max_iter=500,
+        *args,
+        **kwargs
     ):
         """InformedRRT* Class
 
@@ -263,3 +265,17 @@ class InformedRRTstar(Planner):
             info_dict["node_list"] = node_list
 
             return (trajectory, info_dict)
+
+    def replan(self, start, goal, env):
+        """Path replanning method
+
+        Args:
+            start (gennav.utils.common.RobotState): Starting state.
+            goal (gennav.utils.common.RobotState): Destination state
+            env (gennav.envs.Environment): Environment object
+
+        Returns:
+            gennav.utils.Trajectory: The path as a Trajectory
+            dict: Dictionary containing additional information like the node_list
+        """
+        self.plan(start, goal, env)

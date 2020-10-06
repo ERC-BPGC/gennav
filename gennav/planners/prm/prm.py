@@ -19,7 +19,7 @@ class PRM(Planner):
         n (int): total no. of nodes to be sampled in sample_area
     """
 
-    def __init__(self, sampler, r, n):
+    def __init__(self, sampler, r, n, *args, **kwargs):
         super(PRM, self)
         self.sampler = sampler
         self.r = r
@@ -119,3 +119,15 @@ class PRM(Planner):
         # add end_point to path
         traj.path.append(goal)
         return traj, {}
+
+    def replan(self, start, goal, env):
+        """Constructs a graph avoiding obstacles and then replans path from start to goal within the graph.
+        Args:
+            start (gennav.utils.RobotState): tuple with start point coordinates.
+            goal (gennav.utils.RobotState): tuple with end point coordinates.
+            env (gennav.envs.Environment): Base class for an envrionment.
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information
+        """
+        self.plan(start, goal, env)

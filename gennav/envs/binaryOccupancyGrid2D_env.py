@@ -13,7 +13,7 @@ class BinaryOccupancyGrid2DEnv(Environment):
         Y (unsigned int) : the number of grid cells in the y-direction
     """
 
-    def __init__(self, X=10, Y=10):
+    def __init__(self, X=10, Y=10, *args, **kwargs):
         super(BinaryOccupancyGrid2DEnv, self).__init__()
         self.X = X
         self.Y = Y

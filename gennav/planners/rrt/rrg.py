@@ -17,12 +17,7 @@ class RRG(Planner):
     RRT star algorithm
     """
 
-    def __init__(
-        self,
-        sampler,
-        expand_dis=1.0,
-        max_iter=500,
-    ):
+    def __init__(self, sampler, expand_dis=1.0, max_iter=500, *args, **kwargs):
         """Init RRG parameters
 
         Args:
@@ -144,3 +139,15 @@ class RRG(Planner):
             raise PathNotFound(path, message="Path contains only one state")
 
         return path, {}
+
+    def replan(self, start, end, env):
+        """Replans path from start to goal avoiding obstacles.
+        Args:
+            start (gennav.utils.RobotState): Starting state
+            end (gennav.utils.RobotState): Goal state
+            env: (gennav.envs.Environment) Base class for an envrionment.
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information
+        """
+        self.plan(start, end, env)
