@@ -41,6 +41,7 @@ cover/
 
 # Code editor config
 .vscode/
+.idea/
 
 # Jupyter Notebook
 .ipynb_checkpoints

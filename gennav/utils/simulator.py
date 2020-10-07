@@ -9,23 +9,53 @@ class Simulator:
     """
     Simulator Class to simulate odometry for testing controllers
     Args:
-           e = time period variable for each iteration of controller
+           e = time period constant for each iteration of controller
     Returns:
            plot of iteration vs distance after running the controller for n iterations
            distance: array of distance from starting position with each iteration
     """
 
-    def _init_(self, e=0.1):
+    def __init__(self, e=0.01):
         self.velocity = Velocity()
         self.e = e
         self.robot_state = RobotState()
 
-    def simulator_omni(self, traj, n, controller):
+    def simulator(self, controller, traj, n):
         """
-        it simulates odometry to test differential drive controller
         Args:
-               traj: Trajectory point for the controller
-               n: number of iterations controller should run
+             controller: controller class that needs to be simulated
+             traj: trajectory point for the controller
+             n: number of iterations controller should run
+        """
+        raise NotImplementedError
+
+
+class Simulator_omni(Simulator):
+    """
+    Simulator class for omniPID controller
+    it inherits from main simulator class
+    Args:
+         e: time period constant for each iteration
+    Returns:
+         plot of iteration vs distance after running the controller for n iterations
+         distance: array of distance from starting position with each iteration
+
+    """
+
+    def __init__(self, e=0.01):
+        super().__init__(e=e)
+        self.e = e
+
+        # initialize variables
+        self.velocity = Velocity()
+        self.robot_state = RobotState()
+
+    def simulator(self, traj, n, controller):
+        """
+        it simulates odometry to test a omnidrive controller
+        Args:
+               traj: trajectory point for the controller
+               n: number of iterations the controller should run
                controller: controller class that needs to be simulated
         """
         x_odom, y_odom = (0, 0)
@@ -42,8 +72,9 @@ class Simulator:
             x_odom = x_odom + x_dist + np.random.rand()
             y_odom = y_odom + y_dist + np.random.rand()
             dist = math.sqrt(math.pow(x_odom, 2) + math.pow(y_odom, 2))
-            distance = np.append(np.array(dist))
-            iterate = np.append(np.array(i))
+            goal = math.sqrt(math.pow(traj.x, 2) + math.pow(traj.y, 2))
+            distance.append((goal - dist))
+            iterate.append(i)
             i = i + 1
         plt.plot(iterate, distance)
         plt.xlabel("iteration")
@@ -51,7 +82,28 @@ class Simulator:
         plt.show()
         return distance
 
-    def simulator_diff(self, traj, n, controller):
+
+class Simulator_diff(Simulator):
+    """
+    Simulator class for omniPID controller
+    it inherits from main simulator class
+    Args:
+         e: time period constant for each iteration
+     Returns:
+         plot of iteration vs distance after running the controller for n iterations
+         distance: array of distance from starting position with each iteration
+
+    """
+
+    def __init__(self, e=0.01):
+        super().__init__(e=e)
+        self.e = e
+
+        # initialize variables
+        self.velocity = Velocity()
+        self.robot_state = RobotState()
+
+    def simulator(self, controller, traj, n):
         """
         it simulates odometry to test a omnidrive controller
         Args:
@@ -78,8 +130,9 @@ class Simulator:
             y_odom = y_odom + y_dist + np.random.rand()
             yaw_odom = yaw_odom + ang
             dist = math.sqrt(math.pow(x_odom, 2) + math.pow(y_odom, 2))
-            distance = np.append(np.array(dist))
-            iterate = np.append(np.array(i))
+            goal = math.sqrt(math.pow(traj.x, 2) + math.pow(traj.y, 2))
+            distance.append((goal - dist))
+            iterate.append(i)
             i = i + 1
         plt.plot(iterate, distance)
         plt.xlabel("iteration")
