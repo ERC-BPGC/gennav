@@ -1,9 +1,11 @@
-from gennav.envs import PolygonEnv
+from gennav.envs import PolygonEnv  # module for environment
 from gennav.envs.common import visualize_path  # module for visualizing path
-from gennav.planners import RRG
-from gennav.utils import RobotState
-from gennav.utils.geometry import Point
-from gennav.utils.samplers import UniformRectSampler
+from gennav.planners import RRG  # planner class
+from gennav.utils import RobotState  # for giving start and end point
+from gennav.utils.geometry import Point  # parameter to Robostate
+from gennav.utils.samplers import (  # importing sampler class for sampling points
+    UniformRectSampler,
+)
 
 general_obstacles_list = [
     [[(8, 5), (7, 8), (2, 9), (3, 5)], [(3, 3), (3, 5), (5, 5), (5, 3)]],
@@ -33,4 +35,4 @@ for obstacles in general_obstacles_list:  # updating the environment with all ob
     poly.update(obstacles)
 path, _ = my_tree.plan(start, goal, poly)  # planning the path
 
-visualize_path(path, poly)
+visualize_path(path, poly)  # visualizing path and obstacles
