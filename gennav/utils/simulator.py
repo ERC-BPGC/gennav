@@ -10,7 +10,7 @@ class Simulator:
     Simulator Class to simulate odometry for testing controllers
     Args:
            e = time period constant for each iteration of controller
-    Returns:
+    Returns:cd
            plot of iteration vs distance after running the controller for n iterations
            distance: array of distance from starting position with each iteration
     """
