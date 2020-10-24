@@ -28,6 +28,14 @@ gennav.planners.rrt.rrt module
    :undoc-members:
    :show-inheritance:
 
+gennav.planners.rrt.rrt\_connect module
+---------------------------------------
+
+.. automodule:: gennav.planners.rrt.rrt_connect
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gennav.planners.rrt.rrtstar module
 ----------------------------------
 

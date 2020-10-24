@@ -1,5 +1,4 @@
 import numpy as np
-
 from gennav.planners import Planner
 from gennav.utils import RobotState, Trajectory
 from gennav.utils.common import Node
@@ -14,8 +13,8 @@ from gennav.utils.geometry import Point, compute_distance
 class RRTConnect(Planner):
     """RRTConnect Planner Class.
 
-    Drawback: A lot of nearest neighbour searches are performed. 
-              Should use kd-trees to optimize this
+    Drawback: A lot of nearest neighbour searches are performed.
+              Should use kd-trees to optimize this.
 
     Args:
         sampler (gennav.utils.sampler.Sampler): sampler to get random states
@@ -30,6 +29,13 @@ class RRTConnect(Planner):
     def expand_tree(self, node_list, target_state, env):
         """
         A function to expand the tree in the direction of target node
+        Args:
+            node_list (list): Starting state
+            target_state (gennav.utils.RobotState): Target state
+            env (gennav.envs.Environment): Base class for an envrionment.
+        Returns:
+            gennav.utils.common.Node: new_node towards the target node
+            bool: Boolean to determine if the new_state is valid or not
         """
         distance_list = [
             compute_distance(node.state.position, target_state.position)
@@ -71,10 +77,14 @@ class RRTConnect(Planner):
 
     def plan(self, start, goal, env):
         """
-        1. expand 1 tree. 
-        2. make the new vertex target for the other tree. expand the 
-           other tree until met an obstacle
-        
+        Plans path from start to goal avoiding obstacles.
+        Args:
+            start (gennav.utils.RobotState): Starting state
+            end (gennav.utils.RobotState): Goal state
+            env (gennav.envs.Environment): Base class for an envrionment.
+        Returns:
+            gennav.utils.Trajectory: The planned path as trajectory
+            dict: Dictionary containing additional information
         """
         # Check if start and goal states are obstacle free
         if not env.get_status(start):

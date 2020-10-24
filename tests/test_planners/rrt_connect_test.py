@@ -4,6 +4,9 @@ from gennav.utils import RobotState
 from gennav.utils.geometry import Point
 from gennav.utils.samplers import UniformRectSampler
 
+# import timeit
+# import time
+
 
 def test_rrt_connect():
     general_obstacles_list = [
@@ -22,15 +25,18 @@ def test_rrt_connect():
 
     for obstacles in general_obstacles_list:
         poly.update(obstacles)
+
+        # start_time = timeit.default_timer()
+
         path, _ = my_tree.plan(start, goal, poly)
 
-        # from gennav.utils.visualisation import visualize_node
+        # total_time = timeit.default_timer() - start_time
+        # print("RRTConnect took {} s to build the tree".format(total_time))
 
+        # from gennav.utils.visualisation import visualize_node
         # node_list = _["node_list"]
         # visualize_node(node_list, poly)
-
         # from gennav.envs.common import visualize_path
-
         # visualize_path(path, poly)
 
         assert poly.get_traj_status(path) is True
