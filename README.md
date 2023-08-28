@@ -60,4 +60,4 @@ If you wish to use gennav in a ROS based stack, check out [gennav_ros](https://g
 
 ## Contributions
 
-Contributions are always welcome. We reccomend you check out [contribution guidelines](./CONTRIBUTION.md) and view the [docs](https://gennav.readthedocs.io/en/latest/index.html) beforehand.
+Contributions are always welcome. We recommend you check out [contribution guidelines](./CONTRIBUTION.md) and view the [docs](https://gennav.readthedocs.io/en/latest/index.html) beforehand.
