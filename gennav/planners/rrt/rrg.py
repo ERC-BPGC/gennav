@@ -134,6 +134,8 @@ class RRG(Planner):
         if len(path) != 1:
             print("Goal Reached!")
         path = Trajectory(path)
+        # from gennav.envs.common import visualize_path # module for visualizing path
+        # visualize_path(path, env)
 
         if len(path.path) == 1:
             raise PathNotFound(path, message="Path contains only one state")
